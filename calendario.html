@@ -4,270 +4,39 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Calendário - SEMED</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --green-dark: #3a5a4a;
-      --green-mid:  #4a6b5a;
-      --green-btn:  #7a9a4a;
-      --green-event: #7a9a4a;
-      --green-event2: #5a7a3a;
-      --pink-bg:    #fce8e8;
-      --grey-bg:    #e8e8e4;
-      --today-bg:   #fffde0;
-      --cal-border: #ddd;
-      --font: 'Nunito', sans-serif;
-    }
-
-    body { font-family: var(--font); background: #fff; color: #222; }
-
-    /* ── NAVBAR ── */
-    nav {
-      background: var(--green-dark);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 60px;
-      height: 100px;
-      width: 100%;
-    }
-    .logo-box {
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.3);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 6px 12px;
-      border-radius: 4px;
-      letter-spacing: 1px;
-    }
-    .nav-links { display: flex; gap: 28px; align-items: center; }
-    .nav-links a {
-      color: #cde0d0;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 600;
-      transition: color .2s;
-    }
-    .nav-links a:hover { color: #fff; }
-    .btn-conta {
-      background: var(--green-btn);
-      color: #fff !important;
-      padding: 7px 18px;
-      border-radius: 20px;
-      font-size: 13px !important;
-      font-weight: 700 !important;
-    }
-    .btn-conta:hover { background: #6a8a3a !important; }
-
-    /* ── HERO ── */
-    .hero {
-      background: var(--grey-bg);
-      text-align: center;
-      width: 100%;
-      height: 500px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .hero h1 {
-      font-size: 28px;
-      font-weight: 800;
-      letter-spacing: 1px;
-      color: #111;
-    }
-
-    /* ── MAIN CONTENT ── */
-    .content {
-      background: #fff;
-      padding: 28px 20px 40px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    /* pink accent bars */
-    .accent-bar {
-      width: 100%;
-      max-width: 620px;
-      height: 14px;
-      background: var(--pink-bg);
-      border-radius: 6px;
-      margin-bottom: 6px;
-    }
-    .accent-bar.bottom { margin-top: 6px; margin-bottom: 0; }
-
-    /* ── CALENDAR WRAPPER ── */
-    .cal-wrapper {
-      width: 100%;
-      max-width: 620px;
-      background: #fff;
-      border: 1px solid #e0e0e0;
-      border-radius: 4px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,.06);
-    }
-
-    /* toolbar */
-    .cal-toolbar {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 4px;
-      padding: 8px 10px;
-      border-bottom: 1px solid var(--cal-border);
-    }
-    .cal-toolbar button {
-      border: 1px solid #bbb;
-      background: #fff;
-      color: #333;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background .15s;
-    }
-    .cal-toolbar button:hover { background: #f0f0f0; }
-    .cal-toolbar .btn-today { padding: 4px 12px; }
-
-    /* grid */
-    .cal-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-    }
-
-    /* day-of-week headers */
-    .cal-head {
-      text-align: center;
-      font-size: 11px;
-      font-weight: 700;
-      color: #555;
-      padding: 6px 0;
-      border-bottom: 1px solid var(--cal-border);
-      text-transform: lowercase;
-    }
-
-    /* cells */
-    .cal-cell {
-      min-height: 76px;
-      border-right: 1px solid var(--cal-border);
-      border-bottom: 1px solid var(--cal-border);
-      padding: 4px 5px;
-      vertical-align: top;
-      position: relative;
-    }
-    .cal-cell:nth-child(7n) { border-right: none; }
-
-    .cal-num {
-      font-size: 11px;
-      color: #888;
-      text-align: right;
-      margin-bottom: 3px;
-    }
-    .cal-cell.current-month .cal-num { color: #333; }
-    .cal-cell.today { background: var(--today-bg); }
-    .cal-cell.today .cal-num {
-      background: var(--green-dark);
-      color: #fff;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-left: auto;
-      font-weight: 800;
-    }
-
-    /* events */
-    .event {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 10px;
-      font-weight: 700;
-      color: #fff;
-      border-radius: 3px;
-      padding: 2px 5px;
-      margin-bottom: 2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100%;
-    }
-    .event.green  { background: var(--green-event); }
-    .event.dark   { background: var(--green-event2); }
-    .event .dot   { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.6); flex-shrink: 0; }
-
-    /* month label */
-    .cal-month-label {
-      grid-column: 1 / -1;
-      text-align: left;
-      font-size: 12px;
-      font-weight: 700;
-      color: #555;
-      padding: 5px 8px;
-      border-bottom: 1px solid var(--cal-border);
-      background: #fafafa;
-    }
-
-    /* ── FOOTER ── */
-    footer {
-      background: var(--green-dark);
-      padding: 28px 40px;
-    }
-    .footer-inner {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 12px;
-    }
-    .footer-logo {
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.3);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 8px 14px;
-      border-radius: 4px;
-      letter-spacing: 1px;
-    }
-    .footer-copy {
-      font-size: 12px;
-      color: rgba(255,255,255,.6);
-      margin-top: 4px;
-    }
-  </style>
+  <link rel="stylesheet" href="calendario.css" />
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav>
-  <div class="logo-box">SEMED<br>LOGO</div>
-  <div class="nav-links">
-    <a href="#">Início</a>
-    <a href="#">Transparência</a>
-    <a href="#">Serviços</a>
-    <a href="#">Notícias</a>
-    <a href="#">Calendário</a>
-    <a href="#" class="btn-conta">Minha Conta</a>
-  </div>
-</nav>
+<!-- ── HEADER ── -->
+<header>
+  <a href="index.html">
+    <img src="/resources/img/logo-Copia.png" alt="Logo SEMED" class="logo-img" />
+  </a>
+  <nav>
+    <ul>
+      <li><a href="index.html">Início</a></li>
+      <li><a href="transparencia.html">Transparência</a></li>
+      <li><a href="servicos.html">Serviços</a></li>
+      <li><a href="noticias.html">Notícias</a></li>
+      <li><a href="calendario.html" class="active">Calendário</a></li>
+      <li><a href="login.html" class="btn-conta">Minha Conta</a></li>
+    </ul>
+  </nav>
+</header>
 
-<!-- HERO -->
+<!-- ── HERO ── -->
 <div class="hero">
   <h1>calendário</h1>
 </div>
 
-<!-- CONTENT -->
-<div class="content">
+<!-- ── CONTEÚDO PRINCIPAL ── -->
+<main class="cal-main">
   <div class="accent-bar"></div>
 
-  <!-- CALENDAR -->
+  <!-- CALENDÁRIO -->
   <div class="cal-wrapper">
+
     <!-- Toolbar -->
     <div class="cal-toolbar">
       <button class="btn-today">today</button>
@@ -275,9 +44,10 @@
       <button>&#8250;</button>
     </div>
 
-    <!-- Grid -->
+    <!-- Grade -->
     <div class="cal-grid">
-      <!-- Headers -->
+
+      <!-- Cabeçalhos dos dias -->
       <div class="cal-head">dom.</div>
       <div class="cal-head">seg.</div>
       <div class="cal-head">ter.</div>
@@ -286,7 +56,7 @@
       <div class="cal-head">sex.</div>
       <div class="cal-head">sáb.</div>
 
-      <!-- Week 1: previous month spillover -->
+      <!-- Semana 1 (sobra do mês anterior) -->
       <div class="cal-cell"><div class="cal-num">30</div></div>
       <div class="cal-cell current-month"><div class="cal-num">1</div></div>
       <div class="cal-cell current-month"><div class="cal-num">2</div></div>
@@ -295,7 +65,7 @@
       <div class="cal-cell current-month"><div class="cal-num">5</div></div>
       <div class="cal-cell current-month"><div class="cal-num">6</div></div>
 
-      <!-- Week 2 -->
+      <!-- Semana 2 -->
       <div class="cal-cell current-month"><div class="cal-num">7</div></div>
       <div class="cal-cell current-month"><div class="cal-num">8</div></div>
       <div class="cal-cell current-month"><div class="cal-num">9</div></div>
@@ -307,7 +77,7 @@
       <div class="cal-cell current-month"><div class="cal-num">12</div></div>
       <div class="cal-cell current-month"><div class="cal-num">13</div></div>
 
-      <!-- Week 3 -->
+      <!-- Semana 3 -->
       <div class="cal-cell current-month"><div class="cal-num">14</div></div>
       <div class="cal-cell current-month today">
         <div class="cal-num">15</div>
@@ -319,7 +89,7 @@
       <div class="cal-cell current-month"><div class="cal-num">19</div></div>
       <div class="cal-cell current-month"><div class="cal-num">20</div></div>
 
-      <!-- Week 4 -->
+      <!-- Semana 4 -->
       <div class="cal-cell current-month"><div class="cal-num">21</div></div>
       <div class="cal-cell current-month">
         <div class="cal-num">22</div>
@@ -331,42 +101,30 @@
       <div class="cal-cell current-month"><div class="cal-num">26</div></div>
       <div class="cal-cell current-month"><div class="cal-num">27</div></div>
 
-      <!-- Week 5 -->
+      <!-- Semana 5 -->
       <div class="cal-cell current-month"><div class="cal-num">28</div></div>
-      <div class="cal-cell current-month today"><div class="cal-num">29</div></div>
+      <div class="cal-cell current-month"><div class="cal-num">29</div></div>
       <div class="cal-cell current-month"><div class="cal-num">30</div></div>
       <div class="cal-cell"><div class="cal-num">1</div></div>
       <div class="cal-cell"><div class="cal-num">2</div></div>
       <div class="cal-cell"><div class="cal-num">3</div></div>
       <div class="cal-cell"><div class="cal-num">4</div></div>
-    </div>
-  </div>
+
+    </div><!-- /cal-grid -->
+  </div><!-- /cal-wrapper -->
 
   <div class="accent-bar bottom"></div>
-</div>
+</main>
 
-<!-- FOOTER -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-logo">
-    <!-- Certifique-se de que a imagem está na pasta 'img' -->
-    <img src="/resources/img/logo - Copia.png" alt="Logo SEMED" class="logo-footer-img">
-            </div>
-        <div class="footer-map">
-    <h3>Mapa do site</h3>
-    <p>
-        <a href="#" class="footer-link-disabled">Transparência</a> | 
-        <a href="#" class="footer-link-disabled">Calendário</a>
-    </p>
-    <p>
-        <a href="#" class="footer-link-disabled">Serviços</a> | 
-        <a href="login.html" class="footer-link">Minha Conta</a>
-    </p>
-    <p><a href="#" class="footer-link-disabled">Notícias</a></p>
-        </div>
-        
-        <p class="copyright">© 2026 Prefeitura de São Miguel do Tocantins - Secretaria Municipal de Educação</p>
-    </footer>
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-logo">
+    <img src="/resources/img/logo-Copia.png" alt="Logo SEMED" class="logo-footer-img" />
+  </div>
+  <p class="footer-copy">
+    &copy; 2025 Prefeitura de São Miguel do Tocantins &ndash; Secretaria Municipal de Educação
+  </p>
+</footer>
 
 </body>
 </html>
