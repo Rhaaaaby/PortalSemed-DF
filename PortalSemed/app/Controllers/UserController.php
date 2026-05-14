@@ -57,14 +57,6 @@ class UserController
 
         $usuario = $this->model->buscarPorCpf($data['cpf']);
 
-        ///var_dump([
-        ///'senha_digitada' => $data['password'],
-        ///'senha_tipo' => gettype($data['password']),
-        ///'hash' => $usuario['password'],
-        ///'verify' => password_verify($data['password'], $usuario['password'])
-        ///]);
-        ///exit;
-
         if (
         !isset($data['cpf'], $data['password']) ||
         !$usuario ||
