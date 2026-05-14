@@ -1,0 +1,19 @@
+{
+    "name": "peii/portalsemed",
+    "description": "Portal Semed",
+    "type": "project",
+    "require": {
+        "firebase/php-jwt": "^6.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "App\\Database\\": "Database/"
+        }
+    },
+    "config": {
+        "audit": {
+            "block-insecure": false
+        }
+    }
+}
