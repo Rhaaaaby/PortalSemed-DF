@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Transparência - SEMED</title>
+  <link rel="stylesheet" href="transparencia.css" />
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <a href="index.html">
+    <img src="/resources/img/logo - Copia.png" alt="Logo SEMED" class="logo-img" />
+  </a>
+  <nav>
+    <ul>
+      <li><a href="index.html">Início</a></li>
+      <li><a href="transparencia.html">Transparência</a></li>
+      <li><a href="servicos.html">Serviços</a></li>
+      <li><a href="noticias.html">Notícias</a></li>
+      <li><a href="calendario.html" class="active">Calendário</a></li>
+      <li><a href="login.html" class="btn-conta">Minha Conta</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <h1>transparência</h1>
+</div>
+
+<!-- ── CONTEÚDO PRINCIPAL ── -->
+<main class="transp-main">
+  <div class="transp-card">
+
+    <h2>Transparência</h2>
+    <p class="descricao">Aqui você encontra documentos oficiais, relatórios e informações públicas.</p>
+
+    <!-- FILTROS -->
+    <div class="filtros">
+      <div>
+        <label for="tipo">Tipo de documento:</label>
+        <select id="tipo" onchange="filtrarTabela()">
+          <option value="Todos">Todos</option>
+          <option value="Relatório">Relatório</option>
+          <option value="Edital">Edital</option>
+          <option value="Ata">Ata</option>
+        </select>
+      </div>
+      <div>
+        <label for="ano">Ano:</label>
+        <input type="text" id="ano" value="2025" maxlength="4" oninput="filtrarTabela()" />
+      </div>
+    </div>
+
+    <!-- TABELA -->
+    <table class="transp-table" id="tabelaDoc">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Documento</th>
+          <th>Tipo</th>
+          <th>Ação</th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <tr data-tipo="Relatório" data-ano="2025">
+          <td>15/02/2025</td>
+          <td>Relatório Financeiro 2024</td>
+          <td>Relatório</td>
+          <td>
+            <a href="/resources/documentos/Relatorio-Financeiro-2024.pdf" download class="btn-download">Download</a>
+          </td>
+        </tr>
+        <tr data-tipo="Edital" data-ano="2025">
+          <td>10/01/2025</td>
+          <td>Edital de Seleção de Professores</td>
+          <td>Edital</td>
+          <td>
+            <a href="/resources/documentos/Edital-Selecao-Professores.pdf" download class="btn-download">Download</a>
+          </td>
+        </tr>
+        <tr data-tipo="Ata" data-ano="2024">
+          <td>20/12/2024</td>
+          <td>Ata de Reunião Ordinária</td>
+          <td>Ata</td>
+          <td>
+            <a href="/resources/documentos/Ata-Reuniao-Ordinaria.pdf" download class="btn-download">Download</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- PAGINAÇÃO -->
+    <div class="paginacao">
+      <a href="#">Anterior</a>
+      <a href="#" class="ativo">1</a>
+      <a href="#">2</a>
+      <a href="#">3</a>
+      <a href="#">Próxima...</a>
+    </div>
+
+  </div>
+</main>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-top">
+
+    <div class="footer-info">
+      <img src="/resources/img/logo-Copia.png" alt="Logo SEMED" class="logo-footer-img" />
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipiscing elit.
+        Dolor sit amet consectetur adipiscing.
+      </p>
+    </div>
+
+    <div class="footer-map">
+      <h4>Mapa do site</h4>
+      <div class="footer-map-links">
+        <a href="transparencia.html" class="footer-link">Transparência</a>
+        <a href="calendario.html" class="footer-link">Calendário</a>
+        <a href="servicos.html" class="footer-link">Serviços</a>
+        <a href="login.html" class="footer-link">Minha Conta</a>
+        <a href="noticias.html" class="footer-link">Notícias</a>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="footer-copy">
+    &copy; 2025 Prefeitura de São Miguel do Tocantins &ndash; Secretaria Municipal de Educação
+  </p>
+</footer>
+
+<!-- ── FILTRO JS ── -->
+<script>
+  function filtrarTabela() {
+    const tipo = document.getElementById('tipo').value;
+    const ano  = document.getElementById('ano').value.trim();
+    const rows = document.querySelectorAll('#tbody tr');
+
+    rows.forEach(row => {
+      const rowTipo = row.dataset.tipo;
+      const rowAno  = row.dataset.ano;
+
+      const tipoOk = (tipo === 'Todos' || rowTipo === tipo);
+      const anoOk  = (ano === '' || rowAno === ano);
+
+      row.style.display = (tipoOk && anoOk) ? '' : 'none';
+    });
+  }
+</script>
+
+</body>
+</html>
