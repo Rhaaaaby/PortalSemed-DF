@@ -1,0 +1,74 @@
+<!<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso ao Portal - São Miguel do Tocantins</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- REUTILIZANDO O CABEÇALHO DA PÁGINA INICIAL -->
+    <header>
+        <!-- No cabeçalho (Header) -->
+<div class="logo">
+    <a href="index.html">
+        <img src="img/logo.png" alt="Logo SEMED São Miguel" class="logo-img">
+    </a>
+</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="#">Transparência</a></li>
+                <li><a href="#">Serviços</a></li>
+                <li><a href="#">Notícias</a></li>
+                <li><a href="#">Calendário</a></li>
+                <li><a href="#" class="btn-conta-link"><button class="btn-conta">Minha Conta</button></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL AJUSTADO -->
+    <main class="login-main-container">
+        <div class="login-card">
+            <h2>Acesso ao Portal</h2>
+            
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="cpf">CPF:</label>
+                    <input type="text" id="cpf" name="cpf" placeholder="Digite seu CPF" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="senha">Senha:</label>
+                    <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+                </div>
+                
+                <!-- Botão Entrar com a cor verde-alface -->
+                <button type="submit" class="btn-entrar">Entrar</button>
+                
+                <a href="#" class="link-esqueci">Esqueci minha senha</a>
+                
+                <!-- Botão Fazer Cadastro -->
+                <button type="button" class="btn-cadastro">Fazer Cadastro</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- REUTILIZANDO O RODAPÉ DA PÁGINA INICIAL -->
+    <footer>
+        <div class="footer-map">
+    <h3>Mapa do site</h3>
+    <p>
+        <a href="#" class="footer-link-disabled">Transparência</a> | 
+        <a href="#" class="footer-link-disabled">Calendário</a>
+    </p>
+    <p>
+        <a href="#" class="footer-link-disabled">Serviços</a> | 
+        <a href="login.html" class="footer-link">Minha Conta</a>
+    </p>
+    <p><a href="#" class="footer-link-disabled">Notícias</a></p>
+        </div>
+        <p class="copyright">© 2026 Prefeitura de São Miguel do Tocantins - Secretaria Municipal de Educação</p>
+    </footer>
+</body>
+</html>
