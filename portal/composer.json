@@ -1,0 +1,6 @@
+{
+    "name": "portal/portal",
+    "require": {
+        "php": "^8.1"
+    }
+}
