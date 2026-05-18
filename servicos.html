@@ -1,13 +1,14 @@
-<!<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acesso ao Portal - São Miguel do Tocantins</title>
+    <title>Serviços - SEMED</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- REUTILIZANDO O CABEÇALHO DA PÁGINA INICIAL -->
+
+     <!-- REUTILIZANDO O CABEÇALHO DA PÁGINA INICIAL -->
     <header>
         <!-- No cabeçalho (Header) -->
 <div class="logo">
@@ -27,36 +28,39 @@
         </nav>
     </header>
 
-    <!-- CONTEÚDO PRINCIPAL AJUSTADO -->
-    <main class="login-main-container">
-        <div class="login-card">
-            <h2>Acesso ao Portal</h2>
+    <main class="servicos-container" style="margin-top: 150px;">
+        
+        <section class="servicos-titulo-bloco">
+            <h1>serviços</h1>
+        </section>
+
+        <div class="servicos-grid">
             
-            <form id="login-form">
-                <div class="input-group">
-                    <label for="cpf">CPF:</label>
-                    <input type="text" id="cpf" name="cpf" placeholder="Digite seu CPF" required>
-                </div>
-                
-                <div class="input-group">
-                    <label for="senha">Senha:</label>
-                    <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
-                </div>
-                
-                <!-- Botão Entrar com a cor verde-alface -->
-                <button type="submit" class="btn-entrar">Entrar</button>
-                
-                <a href="recuperar-senha.html" class="link-esqueci">Esqueci minha senha</a>
-                
-                <!-- Botão Fazer Cadastro -->               
-                <a href="cadastro.html" class="btn-fazer-cadastro">Fazer Cadastro</a>
-            </form>
+            <div class="servico-card">
+                <h3>📅 Calendário Escolar</h3>
+                <p>Consulte datas de aulas, reuniões e eventos educacionais.</p>
+                <a href="#" class="btn-servico verde">Acessar</a>
+            </div>
+
+            <div class="servico-card">
+                <h3>📄 Documentos</h3>
+                <p>Baixe portarias, regulamentos e comunicados oficiais.</p>
+                <a href="#" class="btn-servico verde">Consultar</a>
+            </div>
+
+            <div class="servico-card">
+                <h3>💬 Fale Conosco</h3>
+                <p>Entre em contato com a Secretaria para dúvidas e solicitações.</p>
+                <a href="#" class="btn-servico verde">Abrir</a>
+            </div>
+
         </div>
+
     </main>
 
     <!-- REUTILIZANDO O RODAPÉ DA PÁGINA INICIAL -->
     <footer>
-        <div class="footer-content">
+       <div class="footer-content">
             <div class="footer-logo">
     <!-- Certifique-se de que a imagem está na pasta 'img' -->
     <img src="img/logo.png" alt="Logo SEMED" class="logo-footer-img">
@@ -75,5 +79,6 @@
         </div>
         <p class="copyright">© 2026 Prefeitura de São Miguel do Tocantins - Secretaria Municipal de Educação</p>
     </footer>
+
 </body>
 </html>
