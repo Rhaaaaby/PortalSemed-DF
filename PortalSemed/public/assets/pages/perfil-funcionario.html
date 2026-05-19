@@ -1,12 +1,13 @@
-<!<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acesso ao Portal - São Miguel do Tocantins</title>
+    <title>Painel do Funcionário - SEMED</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+
     <!-- REUTILIZANDO O CABEÇALHO DA PÁGINA INICIAL -->
     <header>
         <!-- No cabeçalho (Header) -->
@@ -22,39 +23,35 @@
                 <li><a href="servicos.html">Serviços</a></li>
                 <li><a href="noticias.html">Notícias</a></li>
                 <li><a href="calendario.html">Calendário</a></li>
-                <li><a href="login.html" class="btn-conta" style="text-decoration:none">Minha Conta</a></li>
+                <li><a href="login.html" class="btn-conta" style="text-decoration:none">Sair</a></li>
             </ul>
         </nav>
     </header>
 
-    <!-- CONTEÚDO PRINCIPAL AJUSTADO -->
-    <main class="login-main-container">
-        <div class="login-card">
-            <h2>Acesso ao Portal</h2>
-            
-            <form id="login-form">
-                <div class="input-group">
-                    <label for="cpf">CPF:</label>
-                    <input type="text" id="cpf" name="cpf" placeholder="Digite seu CPF" required>
-                </div>
-                
-                <div class="input-group">
-                    <label for="senha">Senha:</label>
-                    <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
-                </div>
-                
-                <!-- Botão Entrar com a cor verde-alface -->
-                <button type="submit" class="btn-entrar">Entrar</button>
-                
-                <a href="recuperar-senha.html" class="link-esqueci">Esqueci minha senha</a>
-                
-                <!-- Botão Fazer Cadastro -->               
-                <a href="cadastro.html" class="btn-fazer-cadastro">Fazer Cadastro</a>
-            </form>
+    <main class="dashboard-container" style="margin-top: 150px;">
+        
+        <div class="welcome-banner">
+            <h1>Olá, Funcionário!</h1>
         </div>
+
+        <div class="admin-grid">
+            <div class="admin-card">
+                <h3>📁 Fazer Upload</h3>
+                <p>Enviar novos anexos para o sistema</p>
+            </div>
+            <div class="admin-card">
+                <h3>📰 Publicar Conteúdo</h3>
+                <p>Criar e publicar novas matérias</p>
+            </div>
+            <div class="admin-card">
+                <h3>✏️ Editar Conteúdo</h3>
+                <p>Atualizar informações publicadas</p>
+            </div>
+        </div>
+
     </main>
 
-    <!-- REUTILIZANDO O RODAPÉ DA PÁGINA INICIAL -->
+<!-- REUTILIZANDO O RODAPÉ DA PÁGINA INICIAL -->
     <footer>
         <div class="footer-content">
             <div class="footer-logo">
