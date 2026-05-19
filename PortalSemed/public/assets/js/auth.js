@@ -1,5 +1,16 @@
 const API_BASE_URL = `${window.location.origin}/api`;
 
+// Inicializar usuários padrão em LocalStorage se estiver no modo localstorage e a lista estiver vazia
+if (typeof STORAGE_MODE !== 'undefined' && STORAGE_MODE === 'localstorage') {
+    if (!localStorage.getItem('users')) {
+        const defaultUsers = [
+            { id: 1, name: "Administrador SEMED", cpf: "11111111111", password: "123456", role: "servidor" },
+            { id: 2, name: "Funcionário SEMED", cpf: "22222222222", password: "123456", role: "funcionario" }
+        ];
+        localStorage.setItem('users', JSON.stringify(defaultUsers));
+    }
+}
+
 function showMessage(container, message, type = 'success') {
     if (!container) return;
     container.textContent = message;
@@ -64,6 +75,29 @@ function handleRegister(event) {
         return;
     }
 
+    if (typeof STORAGE_MODE !== 'undefined' && STORAGE_MODE === 'localstorage') {
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const userExists = users.some(u => u.cpf === formData.cpf);
+        if (userExists) {
+            showMessage(messageContainer, 'Este CPF já está cadastrado', 'error');
+            return;
+        }
+
+        const newUser = {
+            id: Date.now(),
+            name: formData.name,
+            cpf: formData.cpf,
+            password: formData.password,
+            role: formData.role
+        };
+        users.push(newUser);
+        localStorage.setItem('users', JSON.stringify(users));
+
+        showMessage(messageContainer, 'Cadastro realizado com sucesso! Redirecionando...', 'success');
+        setTimeout(() => window.location.href = 'login.html', 1200);
+        return;
+    }
+
     postJson('cadastrar', formData)
         .then(() => {
             showMessage(messageContainer, 'Cadastro realizado com sucesso! Redirecionando...', 'success');
@@ -86,6 +120,32 @@ function handleLogin(event) {
 
     if (!formData.cpf || !formData.password) {
         showMessage(messageContainer, 'CPF e senha são obrigatórios.', 'error');
+        return;
+    }
+
+    if (typeof STORAGE_MODE !== 'undefined' && STORAGE_MODE === 'localstorage') {
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const user = users.find(u => u.cpf === formData.cpf && u.password === formData.password);
+
+        if (!user) {
+            showMessage(messageContainer, 'Credenciais inválidas.', 'error');
+            return;
+        }
+
+        const mockToken = 'mock-jwt-token-' + Date.now();
+        localStorage.setItem('authToken', mockToken);
+        localStorage.setItem('authUser', JSON.stringify(user));
+        showMessage(messageContainer, 'Login realizado com sucesso! Redirecionando...', 'success');
+        
+        setTimeout(() => {
+            if (user.role === 'servidor' || user.role === 'admin') {
+                window.location.href = 'perfil-admin.html';
+            } else if (user.role === 'funcionario') {
+                window.location.href = 'perfil-funcionario.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+        }, 1000);
         return;
     }
 
@@ -123,3 +183,4 @@ window.addEventListener('DOMContentLoaded', () => {
         loginForm.addEventListener('submit', handleLogin);
     }
 });
+

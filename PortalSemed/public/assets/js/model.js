@@ -1,5 +1,24 @@
 const NoticiaModel = {
     getUltimasNoticias: async function() {
+        if (typeof STORAGE_MODE !== 'undefined' && STORAGE_MODE === 'localstorage') {
+            // Inicializar notícias em LocalStorage se estiver vazio
+            if (!localStorage.getItem('noticias')) {
+                const mockNoticias = [
+                    { id: 1, title: "Volta às aulas 2026", content: "A Secretaria Municipal de Educação divulga o calendário para o início do ano letivo de 2026 em toda a rede municipal de São Miguel do Tocantins.", categoria: "Notícias", created_at: new Date().toISOString() },
+                    { id: 2, title: "Programa de Merenda Escolar", content: "Novos investimentos foram aprovados para a melhoria e ampliação da alimentação dos alunos da rede municipal.", categoria: "Comunicados", created_at: new Date().toISOString() },
+                    { id: 3, title: "Capacitação Docente", content: "Curso de capacitação continuada oferecido para todos os profissionais da educação de São Miguel.", categoria: "Eventos", created_at: new Date().toISOString() }
+                ];
+                localStorage.setItem('noticias', JSON.stringify(mockNoticias));
+            }
+            const noticias = JSON.parse(localStorage.getItem('noticias')) || [];
+            return noticias.map(n => ({
+                id: n.id,
+                titulo: n.title || n.titulo,
+                resumo: n.content ? (n.content.substring(0, 100) + (n.content.length > 100 ? '...' : '')) : '',
+                imagem: n.imagem || null
+            }));
+        }
+
         try {
             const response = await fetch(`${window.location.origin}/api/noticias`);
             if (!response.ok) {
@@ -24,4 +43,4 @@ const NoticiaModel = {
             ];
         }
     }
-};
+};

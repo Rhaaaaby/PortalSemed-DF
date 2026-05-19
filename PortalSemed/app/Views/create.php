@@ -53,6 +53,48 @@
     </main>
 
     <div id="footer"></div>
+    <script src="/js/config.js"></script>
     <script src="/js/include-components.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const useLocalStorage = <?php echo USE_LOCALSTORAGE ? 'true' : 'false'; ?>;
+        if (!useLocalStorage) return;
+
+        const form = document.querySelector('form');
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            
+            const titulo = document.getElementById('titulo').value;
+            const conteudo = document.getElementById('conteudo').value;
+            const categoria = document.getElementById('categoria').value;
+            const fileInput = document.getElementById('imagem');
+            
+            function salvar(imagemBase64) {
+                const noticias = JSON.parse(localStorage.getItem('noticias')) || [];
+                const novaNoticia = {
+                    id: Date.now(),
+                    title: titulo,
+                    content: conteudo,
+                    categoria: categoria,
+                    imagem: imagemBase64,
+                    created_at: new Date().toISOString()
+                };
+                noticias.unshift(novaNoticia); // Adiciona no início
+                localStorage.setItem('noticias', JSON.stringify(noticias));
+                window.location.href = '/noticias';
+            }
+
+            if (fileInput.files.length > 0) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    salvar(e.target.result);
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                salvar(null);
+            }
+        });
+    });
+    </script>
 </body>
 </html>
