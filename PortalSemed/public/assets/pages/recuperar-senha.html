@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Senha - SEMED</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <a href="index.html">
+                <img src="img/logo.png" alt="Logo SEMED São Miguel" class="logo-img">
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="#">Transparência</a></li>
+                <li><a href="servicos.html">Serviços</a></li>
+                <li><a href="noticias.html">Notícias</a></li>
+                <li><a href="#">Calendário</a></li>
+                <li><a href="#" class="btn-conta-link"><button class="btn-conta">Minha Conta</button></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="login-container" style="margin-top: 150px;">
+        
+        <div class="login-card">
+            <h2>Recuperar Senha</h2>
+            
+            <p class="instrucao-recuperar">
+                Digite o seu e-mail cadastrado abaixo. Enviaremos um link seguro para você redefinir a sua senha.
+            </p>
+
+            <form action="#" method="POST">
+                
+                <div class="input-group">
+                    <label for="email">E-mail institucional ou pessoal:</label>
+                    <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
+                </div>
+
+                <button type="submit" class="btn-verde-claro" style="width: 100%; margin-top: 15px;">
+                    Enviar Link de Recuperação
+                </button>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="login.html" class="link-voltar" style="color: #4B5563; text-decoration: underline; font-size: 0.9rem;">
+                        Voltar para o Login
+                    </a>
+                </div>
+
+            </form>
+        </div>
+
+    </main>
+
+     <!-- REUTILIZANDO O RODAPÉ DA PÁGINA INICIAL -->
+    <footer>
+       <div class="footer-content">
+            <div class="footer-logo">
+    <!-- Certifique-se de que a imagem está na pasta 'img' -->
+    <img src="img/logo.png" alt="Logo SEMED" class="logo-footer-img">
+            </div>
+        <div class="footer-map">
+    <h3>Mapa do site</h3>
+    <p>
+        <a href="transparencia.html" class="footer-link">Transparência</a> | 
+        <a href="calendario.html" class="footer-link">Calendário</a>
+    </p>
+    <p>
+        <a href="servicos.html" class="footer-link">Serviços</a> | 
+        <a href="login.html" class="footer-link">Minha Conta</a>
+    </p>
+    <p><a href="noticias.html" class="footer-link">Notícias</a></p>
+        </div>
+        <p class="copyright">© 2026 Prefeitura de São Miguel do Tocantins - Secretaria Municipal de Educação</p>
+    </footer>
+
+</body>
+</html>

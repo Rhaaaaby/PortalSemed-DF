@@ -225,7 +225,7 @@ footer {
 .btn-entrar, .btn-cadastro {
     width: 100%;
     padding: 12px;
-    background-color: #8EB34E; /* Verde alface do seu projeto */
+    background-color: #8EB34E; /* Verde alface do projeto */
     color: white;
     border: none;
     border-radius: 8px;
@@ -401,4 +401,268 @@ footer {
     background-color: #A1A1A1; /* Cinza um pouco mais escuro */
     transform: none;
     cursor: not-allowed;
+}
+/* Cor base do botão verde das imagens */
+.btn-verde-claro {
+    background-color: #8EB34E;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-verde-claro:hover {
+    background-color: #7a9c42; /* Um tom levemente mais escuro ao passar o mouse */
+    transform: scale(1.02);
+}
+
+.radio-group {
+    display: flex;
+    justify-content: space-around;
+    margin: 15px 0;
+    font-size: 0.9rem;
+}
+
+.perfil-selecao p {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+/* --- ESTILO FINAL UNIFICADO --- */
+
+/* 1. Centraliza o card no meio da página */
+.login-container {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-height: 80vh !important;
+    width: 100% !important;
+    background-color: #FDF2F2 !important;
+    padding: 20px !important;
+}
+
+/* 2. Configura a caixa cinza */
+.login-card {
+    background-color: #D1D5DB !important;
+    padding: 30px !important;
+    border-radius: 15px !important;
+    width: 100% !important;
+    max-width: 400px !important;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 15px !important;
+}
+
+/* 3. Centraliza o formulário e os botões */
+.login-card form {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important; /* Isso centraliza o botão 'Criar Cadastro' */
+    width: 100% !important;
+}
+
+/* 4. Padroniza todos os botões verdes */
+.btn-verde-claro, 
+.login-card button {
+    width: 90% !important;
+    max-width: 280px !important;
+    background-color: #8EB34E !important;
+    color: white !important;
+    padding: 12px !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    margin: 10px 0 !important;
+    text-align: center !important;
+}
+
+/* 5. Link 'Entrar' ou 'Fazer Cadastro' centralizado */
+.btn-entrar-link, 
+.login-card a {
+    display: block !important;
+    text-align: center !important;
+    color: #4A632C !important;
+    text-decoration: underline !important;
+    margin-top: 5px !important;
+}
+
+/* --- ESTILIZAÇÃO DA PÁGINA DE SERVIÇOS --- */
+
+.servicos-container {
+    background-color: #FDF2F2 !important; /* Fundo rosa claro padrão do projeto */
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 60vh;
+}
+
+/* Faixa cinza do título principal */
+.servicos-titulo-bloco {
+    width: 100%;
+    max-width: 1100px;
+    background-color: #D1D5DB; /* Cor cinza do protótipo */
+    text-align: center;
+    padding: 60px 20px;
+    border-radius: 8px;
+    margin-bottom: 50px;
+}
+
+.servicos-titulo-bloco h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    color: #111827;
+    text-transform: lowercase; /* Mantém o estilo 'serviços' em minúsculo do protótipo */
+}
+
+/* Alinhamento dos 3 cartões em linha */
+.servicos-grid {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    width: 100%;
+    max-width: 1100px;
+    margin-bottom: 60px;
+    flex-wrap: wrap; /* Permite quebrar linha em telas de telemóvel */
+}
+
+/* Cartão Individual de Serviço */
+.servico-card {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 30px 20px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* Sombra suave */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 220px;
+}
+
+.servico-card h3 {
+    font-size: 1.2rem;
+    color: #111827;
+    margin: 0 0 15px 0;
+}
+
+.servico-card p {
+    font-size: 0.95rem;
+    color: #4B5563;
+    line-height: 1.5;
+    margin: 0 0 25px 0;
+}
+
+/* Botão Verde dos Serviços */
+.btn-servico.verde {
+    background-color: #8EB34E; /* O verde padrão dos seus botões */
+    color: #FFFFFF;
+    text-decoration: none;
+    padding: 10px 35px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 0.95rem;
+    transition: background-color 0.2s;
+    display: inline-block;
+}
+
+.btn-servico.verde:hover {
+    background-color: #76983E;
+}
+
+/* --- ESTILIZAÇÃO DOS PAINÉIS (ADMIN E FUNCIONÁRIO) --- */
+
+.dashboard-container {
+    background-color: #FDF2F2; /* Fundo rosa claro */
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 80vh;
+}
+
+/* Título do Admin */
+.dashboard-header {
+    width: 100%;
+    max-width: 1100px;
+    background-color: #D1D5DB; /* Cinza */
+    padding: 40px;
+    border-radius: 8px;
+    margin-bottom: 40px;
+}
+
+/* Banner de boas-vindas do Funcionário */
+.welcome-banner {
+    width: 100%;
+    max-width: 1100px;
+    background-color: #fce7e7; /* Rosa um pouco mais forte */
+    padding: 80px 40px;
+    border-radius: 8px;
+    margin-bottom: 40px;
+    text-align: left;
+}
+
+.admin-section {
+    width: 100%;
+    max-width: 1100px;
+    margin-bottom: 40px;
+}
+
+.admin-section h2 {
+    font-size: 1.5rem;
+    color: #4B5563;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #D1D5DB;
+    padding-bottom: 10px;
+}
+
+/* Grid de Cards */
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    width: 100%;
+    max-width: 1100px;
+}
+
+/* Card Individual */
+.admin-card {
+    background-color: #E5E7EB; /* Cinza dos cards */
+    padding: 40px 20px;
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    border: 1px solid #D1D5DB;
+}
+
+.admin-card:hover {
+    transform: translateY(-5px);
+    background-color: #D1D5DB;
+}
+
+.admin-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #111827;
+}
+
+.admin-card p {
+    font-size: 0.9rem;
+    color: #6B7280;
+}
+
+/* Texto de instrução da tela de recuperar senha */
+.instrucao-recuperar {
+    font-size: 0.95rem;
+    color: #4B5563;
+    text-align: center;
+    margin-bottom: 25px;
+    line-height: 1.4;
 }
