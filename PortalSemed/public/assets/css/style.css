@@ -167,7 +167,7 @@ footer {
 
 /* Container principal para centralizar o card e dar o fundo rosa claro */
 .login-main-container {
-    background-color: #FDF2F2; /* Fundo rosa bem claro do seu protótipo */
+    background-color: #FDF2F2; /* Fundo rosa bem claro*/
     display: flex;
     justify-content: center;
     align-items: center;
