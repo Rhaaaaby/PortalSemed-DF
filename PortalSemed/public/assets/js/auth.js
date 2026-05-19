@@ -94,7 +94,17 @@ function handleLogin(event) {
             localStorage.setItem('authToken', result.token);
             localStorage.setItem('authUser', JSON.stringify(result.user));
             showMessage(messageContainer, 'Login realizado com sucesso! Redirecionando...', 'success');
-            setTimeout(() => window.location.href = 'index.html', 1000);
+            
+            setTimeout(() => {
+                const user = result.user;
+                if (user.role === 'servidor' || user.role === 'admin') {
+                    window.location.href = 'perfil-admin.html';
+                } else if (user.role === 'funcionario') {
+                    window.location.href = 'perfil-funcionario.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
+            }, 1000);
         })
         .catch(error => {
             const errorText = error.erro || error.message || 'Credenciais inválidas.';

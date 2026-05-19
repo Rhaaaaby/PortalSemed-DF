@@ -14,6 +14,6 @@ async function includeComponent(containerId, componentUrl) {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-    includeComponent('header', '../components/header.html');
-    includeComponent('footer', '../components/footer.html');
+    includeComponent('header', '/components/header.html');
+    includeComponent('footer', '/components/footer.html');
 });

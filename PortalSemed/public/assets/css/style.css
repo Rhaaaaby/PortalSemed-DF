@@ -3,12 +3,14 @@
     --accent-color: #8EB34E;  /* Verde do botão Minha Conta */
     --bg-light: #F4F4F4;
     --text-dark: #333;
+    --background-color: #FDF2F2; /* Fundo rosa bem claro*/
 }
 
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     color: var(--text-dark);
+    background-color: var(--background-color);
 }
 
 header {
