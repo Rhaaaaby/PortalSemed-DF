@@ -75,6 +75,50 @@
     </main>
 
     <div id="footer"></div>
+    <script src="/js/config.js"></script>
     <script src="/js/include-components.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const useLocalStorage = <?php echo USE_LOCALSTORAGE ? 'true' : 'false'; ?>;
+        if (!useLocalStorage) return;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = parseInt(urlParams.get('id'));
+
+        const noticias = JSON.parse(localStorage.getItem('noticias')) || [];
+        const noticia = noticias.find(n => n.id === id);
+
+        if (!noticia) {
+            alert('Notícia não encontrada!');
+            window.location.href = '/';
+            return;
+        }
+
+        // Preencher DOM
+        document.title = `${noticia.title} - SEMED`;
+        document.querySelector('.news-title').textContent = noticia.title;
+        
+        const dataFormatada = new Date(noticia.created_at).toLocaleString('pt-BR');
+        document.querySelector('.news-meta').innerHTML = `
+            <span>Categoria: <strong>${noticia.categoria || 'Geral'}</strong></span>
+            <span style="margin-left: 20px;">Publicado em: <strong>${dataFormatada}</strong></span>
+        `;
+
+        const container = document.querySelector('.news-article-container');
+        const oldImg = container.querySelector('.news-image');
+        if (oldImg) oldImg.remove();
+
+        if (noticia.imagem) {
+            const img = document.createElement('img');
+            img.src = noticia.imagem;
+            img.className = 'news-image';
+            img.alt = noticia.title;
+            const newsContent = container.querySelector('.news-content');
+            container.insertBefore(img, newsContent);
+        }
+
+        document.querySelector('.news-content').textContent = noticia.content;
+    });
+    </script>
 </body>
 </html>

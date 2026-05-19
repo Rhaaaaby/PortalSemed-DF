@@ -99,8 +99,8 @@
                         <th style="width: 180px;">Ações</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <?php if (!empty($noticias) && is_array($noticias)): ?>
+                <tbody id="noticias-tbody">
+                    <?php if (!USE_LOCALSTORAGE && !empty($noticias) && is_array($noticias)): ?>
                         <?php foreach ($noticias as $n): ?>
                             <tr>
                                 <td style="font-weight: 500; color: #111827;"><?php echo htmlspecialchars($n['title']); ?></td>
@@ -114,7 +114,7 @@
                                 </td>
                             </tr>
                         <?php endforeach; ?>
-                    <?php else: ?>
+                    <?php elseif (!USE_LOCALSTORAGE): ?>
                         <tr>
                             <td colspan="4" style="text-align: center; color: #6B7280; padding: 30px;">Nenhuma notícia publicada até o momento.</td>
                         </tr>
@@ -129,6 +129,60 @@
     </main>
 
     <div id="footer"></div>
+    <script src="/js/config.js"></script>
     <script src="/js/include-components.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const useLocalStorage = <?php echo USE_LOCALSTORAGE ? 'true' : 'false'; ?>;
+        if (!useLocalStorage) return;
+
+        const tbody = document.getElementById('noticias-tbody');
+        
+        function renderTable() {
+            // Inicializar notícias em LocalStorage se estiver vazio
+            if (!localStorage.getItem('noticias')) {
+                const mockNoticias = [
+                    { id: 1, title: "Volta às aulas 2026", content: "A Secretaria Municipal de Educação divulga o calendário para o início do ano letivo de 2026 em toda a rede municipal de São Miguel do Tocantins.", categoria: "Notícias", created_at: new Date().toISOString() },
+                    { id: 2, title: "Programa de Merenda Escolar", content: "Novos investimentos foram aprovados para a melhoria e ampliação da alimentação dos alunos da rede municipal.", categoria: "Comunicados", created_at: new Date().toISOString() },
+                    { id: 3, title: "Capacitação Docente", content: "Curso de capacitação continuada oferecido para todos os profissionais da educação de São Miguel.", categoria: "Eventos", created_at: new Date().toISOString() }
+                ];
+                localStorage.setItem('noticias', JSON.stringify(mockNoticias));
+            }
+
+            const noticias = JSON.parse(localStorage.getItem('noticias')) || [];
+            if (noticias.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #6B7280; padding: 30px;">Nenhuma notícia publicada até o momento.</td></tr>`;
+                return;
+            }
+            
+            tbody.innerHTML = noticias.map(n => {
+                const dataFormatada = new Date(n.created_at).toLocaleString('pt-BR');
+                return `
+                    <tr>
+                        <td style="font-weight: 500; color: #111827;">${n.title || n.titulo}</td>
+                        <td><span class="badge-cat">${n.categoria || 'Geral'}</span></td>
+                        <td style="color: #6B7280;">${dataFormatada}</td>
+                        <td>
+                           <div class="action-btns">
+                               <a href="/noticias?action=edit&id=${n.id}" class="btn-action btn-edit">Editar</a>
+                               <button onclick="excluirNoticia(${n.id})" class="btn-action btn-delete" style="border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;">Excluir</button>
+                           </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        window.excluirNoticia = function(id) {
+            if (!confirm('Tem certeza que deseja excluir esta notícia?')) return;
+            let noticias = JSON.parse(localStorage.getItem('noticias')) || [];
+            noticias = noticias.filter(n => n.id !== id);
+            localStorage.setItem('noticias', JSON.stringify(noticias));
+            renderTable();
+        };
+
+        renderTable();
+    });
+    </script>
 </body>
 </html>

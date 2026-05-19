@@ -11,6 +11,9 @@ class Users
 
     public function __construct()
     {
+        if (defined('USE_LOCALSTORAGE') && USE_LOCALSTORAGE) {
+            return;
+        }
         $this->pdo = Connection::connect();
     }
 

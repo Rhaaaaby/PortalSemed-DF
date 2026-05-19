@@ -23,6 +23,7 @@ if (file_exists($envPath)) {
 
 define('APP_ROOT', dirname(__DIR__));
 define('APP_ENV', $_ENV['APP_ENV'] ?? 'production');
+define('USE_LOCALSTORAGE', ($_ENV['STORAGE_MODE'] ?? 'localstorage') === 'localstorage'); //utilizado para testes e apresentação
 
 // 3. Inclui a conexão com o banco
 
