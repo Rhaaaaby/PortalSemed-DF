@@ -11,13 +11,13 @@
     <div id="header"></div>
 
     <main class="login-container">
-    <div class="login-card">
-        <h2>Faça seu Cadastro!</h2>
-                    
-            <form action="#" method="POST">
+        <div class="login-card">
+            <h2>Faça seu Cadastro!</h2>
+            <div id="register-message" class="message" style="display:none"></div>
+            <form id="register-form">
                 <div class="input-group">
                     <label for="nome">Nome completo:</label>
-                    <input type="text" id="nome" name="nome" placeholder="Digite seu Nome" required>
+                    <input type="text" id="nome" name="name" placeholder="Digite seu Nome" required>
                 </div>
 
                 <div class="input-group">
@@ -32,24 +32,28 @@
 
                 <div class="input-group">
                     <label for="senha">Senha:</label>
-                    <input type="password" id="senha" name="senha" placeholder="Digite sua Senha" required>
+                    <input type="password" id="senha" name="password" placeholder="Digite sua Senha" required>
                 </div>
 
                 <div class="perfil-selecao">
                     <p>Você é:</p>
                     <div class="radio-group">
-                        <label><input type="radio" name="perfil" value="servidor"> Administrador</label>
-                        <label><input type="radio" name="perfil" value="pai-responsavel"> Funcionário SEMED</label>
+                        <label><input type="radio" name="role" value="servidor"> Administrador</label>
+                        <label><input type="radio" name="role" value="funcionario"> Funcionário SEMED</label>
                     </div>
-                <button type="submit" class="btn-verde-claro">Criar Cadastro</button>
-        
-            <div style="text-align: center; margin-top: 10px;">
-            <a href="login.html" class="btn-verde-claro" style="display: inline-block; width: 80%; background-color: #8EB34E; text-decoration: none; color: white; padding: 10px; border-radius: 5px;">Entrar</a>
-        </div>
+                </div>
 
-    </form> </div> </main>
+                <button type="submit" class="btn-verde-claro">Criar Cadastro</button>
+
+                <div style="text-align: center; margin-top: 10px;">
+                    <a href="login.html" class="btn-verde-claro" style="display: inline-block; width: 80%; background-color: #8EB34E; text-decoration: none; color: white; padding: 10px; border-radius: 5px;">Entrar</a>
+                </div>
+            </form>
+        </div>
+    </main>
     <div id="footer"></div>
     <script src="../js/include-components.js"></script>
+    <script src="../js/auth.js"></script>
 
 </body>
 </html>
