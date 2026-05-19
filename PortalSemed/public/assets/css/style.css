@@ -236,8 +236,47 @@ footer {
     transition: background-color 0.3s;
 }
 
-.btn-entrar:hover, .btn-cadastro:hover {
+..btn-entrar:hover, .btn-cadastro:hover {
     background-color: #7A9B42; /* Tom um pouco mais escuro para o hover */
+}
+
+.message {
+    display: none;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+}
+
+.message-success {
+    background-color: #ECFDF5;
+    color: #166534;
+    border: 1px solid #D1FAE5;
+}
+
+.message-error {
+    background-color: #FEF2F2;
+    color: #991B1B;
+    border: 1px solid #FECACA;
+}
+
+.perfil-selecao {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.radio-group {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.radio-group label {
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 /* Link Esqueci minha senha */
