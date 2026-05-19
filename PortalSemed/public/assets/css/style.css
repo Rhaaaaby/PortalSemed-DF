@@ -236,7 +236,7 @@ footer {
     transition: background-color 0.3s;
 }
 
-..btn-entrar:hover, .btn-cadastro:hover {
+.btn-entrar:hover, .btn-cadastro:hover {
     background-color: #7A9B42; /* Tom um pouco mais escuro para o hover */
 }
 
