@@ -60,6 +60,21 @@ if ($uri === 'login' && $method === 'POST') {
     $userCtrl->login(get_json_input());
 }
 
+if ($uri === 'noticias' && $method === 'GET') {
+    require_once __DIR__ . '/../../app/Models/Noticia.php';
+    json_response(Noticia::all());
+}
+
+if (preg_match('/^noticias\/(\d+)$/', $uri, $matches) && $method === 'GET') {
+    require_once __DIR__ . '/../../app/Models/Noticia.php';
+    $post = Noticia::find((int) $matches[1]);
+    if ($post) {
+        json_response($post);
+    } else {
+        json_response(['erro' => 'Notícia não encontrada'], 404);
+    }
+}
+
 // -------- USUÁRIO --------
 if ($uri === 'perfil' && $method === 'GET') {
     $user_id = auth();

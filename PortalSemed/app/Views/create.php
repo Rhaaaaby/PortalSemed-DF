@@ -1,30 +1,58 @@
-<form method="POST" enctype="multipart/form-data">
-    <h2>Nova Notícia</h2>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Notícia - SEMED</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div id="header"></div>
 
-    <input type="text" name="titulo" placeholder="Título" required><br><br>
+    <main class="login-main-container" style="padding: 40px 20px;">
+        <div class="login-card" style="max-width: 500px !important;">
+            <h2>Publicar Nova Notícia</h2>
+            
+            <form method="POST" enctype="multipart/form-data" style="align-items: stretch !important; gap: 15px;">
+                <div class="input-group">
+                    <label for="titulo">Título da Notícia:</label>
+                    <input type="text" id="titulo" name="titulo" placeholder="Digite o título" required>
+                </div>
 
-    <textarea name="conteudo" placeholder="Conteúdo"></textarea><br><br>
+                <div class="input-group">
+                    <label for="conteudo">Conteúdo:</label>
+                    <textarea id="conteudo" name="conteudo" placeholder="Digite o conteúdo da notícia..." rows="6" style="width: 100%; padding: 12px; border: 1px solid #C4C4C4; border-radius: 8px; box-sizing: border-box; background-color: white; font-family: inherit; font-size: 0.95rem; resize: vertical;"></textarea>
+                </div>
 
-    <input type="file" name="imagem"><br><br>
+                <div class="input-group">
+                    <label for="categoria">Categoria:</label>
+                    <select name="categoria" id="categoria" style="width: 100%; padding: 12px; border: 1px solid #C4C4C4; border-radius: 8px; box-sizing: border-box; background-color: white; font-size: 0.95rem;">
+                        <?php if (!empty($categorias) && is_array($categorias)): ?>
+                            <?php foreach ($categorias as $c): ?>
+                                <option value="<?php echo $c; ?>"><?php echo $c; ?></option>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <option value="">Sem categorias</option>
+                        <?php endif; ?>
+                    </select>
+                </div>
 
+                <div class="input-group">
+                    <label for="imagem">Imagem de Destaque:</label>
+                    <input type="file" id="imagem" name="imagem" accept="image/*" style="padding: 8px 0;">
+                </div>
 
-    <!-- <input type="hidden" name="author_id" value="<?php echo isset($id) ? $id : ''; ?>"> -->
+                <input type="hidden" name="author_id" value="1">
 
-    <input type="hidden" name="author_id" value="1"> <!-- Substitua '1' pelo ID do autor real -->
+                <div style="display: flex; gap: 15px; justify-content: center; width: 100%; margin-top: 15px;">
+                    <button type="submit" class="btn-verde-claro" style="margin: 0 !important; width: 48% !important;">Publicar</button>
+                    <a href="/noticias" class="btn-verde-claro" style="background-color: #6B7280 !important; text-decoration: none; color: white !important; margin: 0 !important; width: 48% !important; display: flex; align-items: center; justify-content: center;">Voltar</a>
+                </div>
+            </form>
+        </div>
+    </main>
 
-    <label for="categoria">Categoria:</label><br>
-    <select name="categoria" id="categoria">
-        <?php if (!empty($categorias) && is_array($categorias)): ?>
-            <?php foreach ($categorias as $c): ?>
-                <option value="<?php echo $c; ?>"><?php echo $c; ?></option>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <option value="">Sem categorias</option>
-        <?php endif; ?>
-    </select>
-    <br><br>
-
-    <button type="submit">Salvar</button>
-</form>
-
-<a href="index.php">Voltar</a>
+    <div id="footer"></div>
+    <script src="/js/include-components.js"></script>
+</body>
+</html>

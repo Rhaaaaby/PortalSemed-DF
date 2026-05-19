@@ -9,44 +9,53 @@
 <body>
     <div id="header"></div>
 
-    <main class="dashboard-container" style="margin-top: 150px;">
+    <main class="dashboard-container">
         
-        <div class="dashboard-header">
+        <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
             <h1>Painel do Administrador</h1>
+            <button onclick="localStorage.clear(); window.location.href='login.html';" class="btn-verde-claro" style="background-color: #dc2626 !important; max-width: 120px; margin: 0 !important; border-radius: 6px;">Sair</button>
         </div>
 
         <section class="admin-section">
             <h2>Gestão de Conteúdos</h2>
             <div class="admin-grid">
-                <div class="admin-card">
-                    <h3>📁 Fazer Upload</h3>
-                    <p>Enviar novos anexos para o sistema</p>
-                </div>
-                <div class="admin-card">
-                    <h3>📰 Publicar Conteúdo</h3>
-                    <p>Criar e publicar novas matérias</p>
-                </div>
-                <div class="admin-card">
-                    <h3>✏️ Editar Conteúdo</h3>
-                    <p>Atualizar ou informações publicadas</p>
-                </div>
+                <a href="documentos.html" style="text-decoration: none; color: inherit;">
+                    <div class="admin-card">
+                        <h3>📁 Fazer Upload</h3>
+                        <p>Enviar novos anexos para o sistema</p>
+                    </div>
+                </a>
+                <a href="/noticias?action=create" style="text-decoration: none; color: inherit;">
+                    <div class="admin-card">
+                        <h3>📰 Publicar Conteúdo</h3>
+                        <p>Criar e publicar novas matérias</p>
+                    </div>
+                </a>
+                <a href="/noticias?action=index" style="text-decoration: none; color: inherit;">
+                    <div class="admin-card">
+                        <h3>✏️ Editar Conteúdo</h3>
+                        <p>Atualizar ou informações publicadas</p>
+                    </div>
+                </a>
             </div>
         </section>
 
         <section class="admin-section">
             <h2>Gestão de Usuários/Geral</h2>
             <div class="admin-grid">
-                <div class="admin-card">
-                    <h3>👤 Cadastrar Usuário</h3>
-                    <p>Adicionar novo usuário ao sistema</p>
-                </div>
+                <a href="cadastro.html" style="text-decoration: none; color: inherit;">
+                    <div class="admin-card">
+                        <h3>👤 Cadastrar Usuário</h3>
+                        <p>Adicionar novo usuário ao sistema</p>
+                    </div>
+                </a>
                 <div class="admin-card">
                     <h3>⚙️ Editar Usuário</h3>
-                    <p>Atualizar dados ou permissões de acesso</p>
+                    <p>Atualizar dados ou permissões de acesso (Em breve)</p>
                 </div>
                 <div class="admin-card">
                     <h3>📊 Gerar Relatórios</h3>
-                    <p>Relatórios Administrativos</p>
+                    <p>Relatórios Administrativos (Em breve)</p>
                 </div>
             </div>
         </section>

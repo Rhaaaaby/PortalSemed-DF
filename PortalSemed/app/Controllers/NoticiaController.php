@@ -1,11 +1,11 @@
 <?php
-require_once __DIR__ . '/../models/Noticia.php';
+require_once __DIR__ . '/../Models/Noticia.php';
 
 class NoticiaController {
 
     public function index() {
         $noticias = Noticia::all();
-        require __DIR__ . '/../views/noticias/index.php';
+        require __DIR__ . '/../Views/index.php';
     }
 
     public function create() {
@@ -30,7 +30,7 @@ class NoticiaController {
                     'imagem' => $imagem
                 ]);
 
-                header("Location: index.php");
+                header("Location: /noticias");
                 exit;
             } catch (Exception $e) {
                 echo "Erro ao salvar notícia: " . $e->getMessage();
@@ -45,12 +45,12 @@ class NoticiaController {
             'Comunicados'
         ];
 
-        require __DIR__ . '/../views/noticias/create.php';
+        require __DIR__ . '/../Views/create.php';
     }
 
     public function view() {
         $noticia = Noticia::find($_GET['id']);
-        require __DIR__ . '/../views/noticias/view.php';
+        require __DIR__ . '/../Views/view.php';
     }
 
     public function edit() {
@@ -76,7 +76,7 @@ class NoticiaController {
                     'imagem' => $imagem
                 ]);
 
-                header("Location: index.php");
+                header("Location: /noticias");
                 exit;
             } catch (Exception $e) {
                 echo "Erro ao atualizar notícia: " . $e->getMessage();
@@ -93,11 +93,11 @@ class NoticiaController {
             'Comunicados'
         ];
 
-        require __DIR__ . '/../views/noticias/edit.php';
+        require __DIR__ . '/../Views/edit.php';
     }
 
     public function delete() {
         Noticia::delete($_GET['id']);
-        header("Location: index.php");
+        header("Location: /noticias");
     }
 }

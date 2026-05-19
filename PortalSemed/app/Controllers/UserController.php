@@ -80,7 +80,8 @@ class UserController
             'token'    => $jwt,
             'user'  => [
                 'id'           => $usuario['id'],
-                'name' => $usuario['name']
+                'name' => $usuario['name'],
+                'role' => $usuario['role'] ?? 'user'
             ]
         ]);
     }

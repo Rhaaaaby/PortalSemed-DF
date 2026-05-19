@@ -1,5 +1,5 @@
 <?php
-//require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 // 1. Carrega as variáveis de ambiente do arquivo .env
 $envPath = __DIR__ . '/../.env';
@@ -30,5 +30,5 @@ use App\Database\Connection;
 
 // 4. Outras inicializações importantes 
 
-// session_start();                  // ← quando for usar sessões
+session_start();                  // ← quando for usar sessões
 // require_once __DIR__ . '/config/config.php';  // ← se criar um config.php depois

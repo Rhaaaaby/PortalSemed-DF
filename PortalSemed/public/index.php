@@ -1,7 +1,14 @@
 <?php
 
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+require_once __DIR__ . '/../app/bootstrap.php';
+
+if (defined('APP_ENV') && APP_ENV === 'production') {
+    ini_set('display_errors', 0);
+    error_reporting(0);
+} else {
+    ini_set('display_errors', 1);
+    error_reporting(E_ALL);
+}
 
 function serve_static_file(string $path): bool {
     if (!file_exists($path)) {
@@ -52,6 +59,29 @@ function serve_static_file(string $path): bool {
 $request = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '/';
 $requestFile = __DIR__ . $request;
 
+// Rota raiz (/) mapeada para a homepage estática
+if ($request === '/' && !isset($_GET['action'])) {
+    if (serve_static_file(__DIR__ . '/assets/pages/index.html')) {
+        exit;
+    }
+}
+
+// Antonio - rotas de noticias (seja via query param action ou rota /noticias)
+if (isset($_GET['action']) || $request === '/noticias') {
+    require_once __DIR__ . '/../app/Controllers/NoticiaController.php';
+    $controller = new NoticiaController();
+    $action = $_GET['action'] ?? 'index';
+
+    switch ($action) {
+        case 'create': $controller->create(); break;
+        case 'view': $controller->view(); break;
+        case 'edit': $controller->edit(); break;
+        case 'delete': $controller->delete(); break;
+        default: $controller->index(); break;
+    }
+    exit;
+}
+
 // Rotas de API
 if (strpos($request, '/api/') !== false || $request === '/api' || strpos($request, '/api') === 0) {
     require_once __DIR__ . '/api/router.php';
@@ -96,21 +126,5 @@ if (preg_match('#^/(css|js|img|images|components|assets|resources)/(.*)$#', $req
     }
 }
 
-// Caso não tenha encontrado nada, cai no router para responder com 404 ou API.
+// Se nada acima serviu e não era uma rota mapeada, cai no API router para responder com 404
 require_once __DIR__ . '/api/router.php';
-
-//Antonio - rotas de noticias
-
-require_once __DIR__ . '/../app/controllers/NoticiaController.php';
-
-$controller = new NoticiaController();
-
-$action = $_GET['action'] ?? 'index';
-
-switch ($action) {
-    case 'create': $controller->create(); break;
-    case 'view': $controller->view(); break;
-    case 'edit': $controller->edit(); break;
-    case 'delete': $controller->delete(); break;
-    default: $controller->index(); break;
-}
