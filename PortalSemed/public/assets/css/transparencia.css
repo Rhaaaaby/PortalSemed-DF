@@ -1,0 +1,327 @@
+
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ── VARIÁVEIS (mesmas do projeto) ── */
+:root {
+    --primary-color: #2D4F43;
+    --accent-color:  #8EB34E;
+    --bg-light:      #F4F4F4;
+    --pink-bg:       #FDF2F2;
+    --grey-bg:       #EAEAEA;
+    --text-dark:     #333;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    color: var(--text-dark);
+    background: #fff;
+}
+
+/* ── HEADER ── */
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0 5%;
+    height: 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.logo-img {
+    height: 60px;
+    width: auto;
+    display: block;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+
+nav a:hover {
+    color: var(--accent-color);
+}
+
+nav a.active {
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+.btn-conta {
+    background-color: var(--accent-color);
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    color: white !important;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.btn-conta:hover {
+    background-color: #7A9B42;
+}
+
+/* ── HERO ── */
+.hero {
+    text-align: center;
+    width: 100%;
+    height: 500px;
+    background-color: var(--grey-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--text-dark);
+    letter-spacing: 1px;
+}
+
+/* ── CONTEÚDO PRINCIPAL ── */
+.transp-main {
+    background-color: var(--pink-bg);
+    padding: 40px 5%;
+    min-height: 400px;
+}
+
+.transp-card {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 30px 30px 40px;
+    max-width: 800px;
+    margin: 0 auto;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.transp-card h2 {
+    font-size: 1.4rem;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+}
+
+.transp-card p.descricao {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 24px;
+}
+
+/* ── FILTROS ── */
+.filtros {
+    background-color: var(--bg-light);
+    border-radius: 6px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    font-size: 0.88rem;
+    color: #444;
+}
+
+.filtros label {
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+.filtros select,
+.filtros input[type="text"] {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-size: 0.88rem;
+    color: var(--text-dark);
+    background: #fff;
+    cursor: pointer;
+}
+
+.filtros select:focus,
+.filtros input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+/* ── TABELA ── */
+.transp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    margin-bottom: 28px;
+}
+
+.transp-table thead tr {
+    background-color: var(--bg-light);
+}
+
+.transp-table th {
+    text-align: left;
+    padding: 10px 12px;
+    font-weight: bold;
+    color: var(--text-dark);
+    border: 1px solid #ddd;
+}
+
+.transp-table td {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    color: #444;
+    vertical-align: middle;
+}
+
+.transp-table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Botão Download */
+.btn-download {
+    display: inline-block;
+    background-color: var(--accent-color);
+    color: white;
+    font-size: 0.78rem;
+    font-weight: bold;
+    padding: 5px 12px;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+}
+
+.btn-download:hover {
+    background-color: #7A9B42;
+}
+
+/* ── PAGINAÇÃO ── */
+.paginacao {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.paginacao a,
+.paginacao span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    text-decoration: none;
+    color: var(--text-dark);
+    background: #fff;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.paginacao a:hover {
+    background: var(--bg-light);
+}
+
+.paginacao .ativo {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* ── FOOTER ── */
+footer {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 30px 5% 16px;
+}
+
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+.footer-info {
+    max-width: 280px;
+}
+
+.logo-footer-img {
+    height: 45px;
+    width: auto;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.footer-info p {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+}
+
+/* Mapa do site */
+.footer-map h4 {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 12px;
+}
+
+.footer-map-links {
+    display: grid;
+    grid-template-columns: repeat(2, 130px);
+    gap: 6px 20px;
+}
+
+.footer-link {
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.2s;
+}
+
+.footer-link:hover {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+.footer-link-disabled {
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    font-size: 0.85rem;
+    cursor: default;
+}
+
+/* Linha de copyright */
+.footer-copy {
+    border-top: 1px solid rgba(255,255,255,0.15);
+    padding-top: 14px;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+}

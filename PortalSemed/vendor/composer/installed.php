@@ -3,7 +3,7 @@
         'name' => 'peii/portalsemed',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '2be846c25d3237ae3d02a15cb3fce221060a8f57',
+        'reference' => '0a60ac52903dec165bf6e008bcd07a6684523cf6',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -22,7 +22,7 @@
         'peii/portalsemed' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '2be846c25d3237ae3d02a15cb3fce221060a8f57',
+            'reference' => '0a60ac52903dec165bf6e008bcd07a6684523cf6',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

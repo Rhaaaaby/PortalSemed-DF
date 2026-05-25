@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Documentos - SEMED</title>
+  <link rel="stylesheet" href="../css/documentos.css" />
+</head>
+<body>
+
+<div id="header"></div>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <h1>documentos</h1>
+</div>
+
+<!-- ── CONTEÚDO PRINCIPAL ── -->
+<main class="docs-main">
+  <div class="docs-card">
+
+    <h2>Documentos Oficiais</h2>
+
+    <!-- FILTROS -->
+    <div class="filtros">
+      <div>
+        <label for="filtro-ano">Ano</label>
+        <input type="text" id="filtro-ano" placeholder="Ano" maxlength="4" oninput="filtrar()" />
+      </div>
+      <div>
+        <label for="filtro-tipo">Tipo de documento</label>
+        <select id="filtro-tipo" onchange="filtrar()">
+          <option value="">Todos</option>
+          <option value="Relatório">Relatório</option>
+          <option value="Lei">Lei</option>
+          <option value="Portaria">Portaria</option>
+          <option value="Edital">Edital</option>
+          <option value="Ata">Ata</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- TABELA -->
+    <table class="docs-table">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Título</th>
+          <th>Ano</th>
+          <th>Tipo</th>
+          <th>Ação</th>
+        </tr>
+      </thead>
+      <tbody id="tbody-docs">
+
+        <tr data-ano="2025" data-tipo="Relatório">
+          <td>DOC 001</td>
+          <td>Relatório de Gestão Anual</td>
+          <td>2025</td>
+          <td>Relatório</td>
+          <td>
+            <a href="resources/documentos/DOC001-Relatorio-Gestao-Anual.pdf"
+               download class="btn-baixar">Baixar</a>
+          </td>
+        </tr>
+
+        <tr data-ano="2023" data-tipo="Lei">
+          <td>DOC002</td>
+          <td>Lei Municipal nº 123/2024</td>
+          <td>2023</td>
+          <td>Lei</td>
+          <td>
+            <a href="../assets/documentos/DOC002-Lei-Municipal-123-2024.pdf"
+               download class="btn-baixar">Baixar</a>
+          </td>
+        </tr>
+
+        <tr data-ano="2024" data-tipo="Portaria">
+          <td>DOC003</td>
+          <td>Portaria nº 45/2023</td>
+          <td>2024</td>
+          <td>Portaria</td>
+          <td>
+            <a href="../assets/documentos/DOC003-Portaria-45-2023.pdf"
+               download class="btn-baixar">Baixar</a>
+          </td>
+        </tr>
+
+        <tr data-ano="2025" data-tipo="Edital">
+          <td>DOC004</td>
+          <td>Edital de Seleção de Professores</td>
+          <td>2025</td>
+          <td>Edital</td>
+          <td>
+            <a href="resources/documentos/Edital-Selecao-Professores.pdf"
+               download class="btn-baixar">Baixar</a>
+          </td>
+        </tr>
+
+        <tr data-ano="2024" data-tipo="Ata">
+          <td>DOC005</td>
+          <td>Ata de Reunião Ordinária</td>
+          <td>2024</td>
+          <td>Ata</td>
+          <td>
+            <a href="resources/documentos/Ata-Reuniao-Ordinaria.pdf"
+               download class="btn-baixar">Baixar</a>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <!-- Mensagem quando nenhum resultado -->
+    <p class="sem-resultados" id="sem-resultados">
+      Nenhum documento encontrado para os filtros selecionados.
+    </p>
+
+  </div>
+</main>
+
+<div id="footer"></div>
+
+<!-- ── FILTRO JS ── -->
+<script>
+  function filtrar() {
+    const ano  = document.getElementById('filtro-ano').value.trim();
+    const tipo = document.getElementById('filtro-tipo').value;
+    const rows = document.querySelectorAll('#tbody-docs tr');
+    let visiveis = 0;
+
+    rows.forEach(row => {
+      const anoOk  = ano  === '' || row.dataset.ano  === ano;
+      const tipoOk = tipo === '' || row.dataset.tipo === tipo;
+      const mostrar = anoOk && tipoOk;
+      row.style.display = mostrar ? '' : 'none';
+      if (mostrar) visiveis++;
+    });
+
+    document.getElementById('sem-resultados').style.display =
+      visiveis === 0 ? 'block' : 'none';
+  }
+</script>
+
+<script src="../js/include-components.js"></script>
+</body>
+</html>

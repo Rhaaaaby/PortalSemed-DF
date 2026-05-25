@@ -1,0 +1,320 @@
+
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --primary-color: #2D4F43;
+    --accent-color:  #8EB34E;
+    --bg-light:      #F4F4F4;
+    --pink-bg:       #FDF2F2;
+    --grey-bg:       #EAEAEA;
+    --text-dark:     #333;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    color: var(--text-dark);
+    background: #fff;
+}
+
+/* ── HEADER ── */
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0 5%;
+    height: 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.logo-img {
+    height: 60px;
+    width: auto;
+    display: block;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+
+nav a:hover { color: var(--accent-color); }
+
+nav a.active {
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+.btn-conta {
+    background-color: var(--accent-color);
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    color: white !important;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.btn-conta:hover { background-color: #7A9B42; }
+
+/* ── HERO ── */
+.hero {
+    text-align: center;
+    width: 100%;
+    height: 500px;
+    background-color: var(--grey-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--text-dark);
+    letter-spacing: 1px;
+}
+
+/* ── CONTEÚDO PRINCIPAL ── */
+.docs-main {
+    background-color: var(--pink-bg);
+    padding: 40px 5%;
+    min-height: 420px;
+}
+
+/* Card branco */
+.docs-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 28px 28px 40px;
+    max-width: 760px;
+    margin: 0 auto;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.docs-card h2 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--text-dark);
+    margin-bottom: 16px;
+}
+
+/* ── FILTROS ── */
+.filtros {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.filtros input[type="text"],
+.filtros select {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-size: 0.85rem;
+    color: var(--text-dark);
+    background: #fff;
+    cursor: pointer;
+    height: 32px;
+}
+
+.filtros input[type="text"] {
+    width: 80px;
+}
+
+.filtros input:focus,
+.filtros select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.filtros label {
+    font-size: 0.85rem;
+    color: #555;
+    margin-right: 4px;
+}
+
+/* ── TABELA ── */
+.docs-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+
+/* Cabeçalho verde */
+.docs-table thead tr {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.docs-table th {
+    text-align: left;
+    padding: 10px 14px;
+    font-weight: bold;
+    font-size: 0.88rem;
+    border: none;
+}
+
+/* Linhas do corpo */
+.docs-table tbody tr {
+    border-bottom: 1px solid #eee;
+    transition: background 0.15s;
+}
+
+.docs-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.docs-table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+.docs-table td {
+    padding: 10px 14px;
+    color: #444;
+    vertical-align: middle;
+    border: 1px solid #e5e5e5;
+}
+
+/* Coluna Código — levemente mais estreita */
+.docs-table td:first-child,
+.docs-table th:first-child {
+    width: 110px;
+}
+
+/* Coluna Ano */
+.docs-table td:nth-child(3),
+.docs-table th:nth-child(3) {
+    width: 70px;
+}
+
+/* Coluna Tipo */
+.docs-table td:nth-child(4),
+.docs-table th:nth-child(4) {
+    width: 100px;
+}
+
+/* Coluna Ação */
+.docs-table td:last-child,
+.docs-table th:last-child {
+    width: 90px;
+    text-align: center;
+}
+
+/* Botão Baixar */
+.btn-baixar {
+    display: inline-block;
+    background-color: var(--accent-color);
+    color: white;
+    font-size: 0.78rem;
+    font-weight: bold;
+    padding: 5px 14px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.25s;
+    white-space: nowrap;
+}
+
+.btn-baixar:hover { background-color: #7A9B42; }
+
+/* Mensagem sem resultados */
+.sem-resultados {
+    text-align: center;
+    color: #aaa;
+    font-size: 0.85rem;
+    padding: 20px 0;
+    display: none;
+}
+
+/* ── FOOTER ── */
+footer {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 30px 5% 16px;
+}
+
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+.footer-info { max-width: 280px; }
+
+.logo-footer-img {
+    height: 45px;
+    width: auto;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.footer-info p {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+}
+
+.footer-map h4 {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 12px;
+}
+
+.footer-map-links {
+    display: grid;
+    grid-template-columns: repeat(2, 130px);
+    gap: 6px 20px;
+}
+
+.footer-link {
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.2s;
+}
+
+.footer-link:hover {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+.footer-link-disabled {
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    font-size: 0.85rem;
+    cursor: default;
+}
+
+.footer-copy {
+    border-top: 1px solid rgba(255,255,255,0.15);
+    padding-top: 14px;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+}
