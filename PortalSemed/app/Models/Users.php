@@ -11,6 +11,9 @@ class Users
 
     public function __construct()
     {
+        if (defined('USE_LOCALSTORAGE') && USE_LOCALSTORAGE) {
+            return;
+        }
         $this->pdo = Connection::connect();
     }
 
@@ -35,7 +38,7 @@ class Users
     // READ - Buscar por cpf (usado no login)
     public function buscarPorCpf(string $cpf)
     {
-        $stmt = $this->pdo->prepare("SELECT id, name, cpf, password FROM users WHERE cpf = :cpf");
+        $stmt = $this->pdo->prepare("SELECT id, name, cpf, role, password FROM users WHERE cpf = :cpf");
         $stmt->execute([':cpf' => $cpf]);
         return $stmt->fetch();
     }
@@ -43,7 +46,7 @@ class Users
     //READ - Buscar por nome (usado no login)
     public function buscarPorNome(string $name)
     {
-        $stmt = $this->pdo->prepare("SELECT id, name, cpf, password FROM users WHERE name = :name");
+        $stmt = $this->pdo->prepare("SELECT id, name, cpf, role, password FROM users WHERE name = :name");
         $stmt->execute([':name' => $name]);
         return $stmt->fetch();
     }
@@ -51,7 +54,7 @@ class Users
     // READ - Buscar por ID (perfil)
     public function buscarPorId(int $id)
     {
-        $stmt = $this->pdo->prepare("SELECT id, name, cpf, password FROM users WHERE id = :id");
+        $stmt = $this->pdo->prepare("SELECT id, name, cpf, role, password FROM users WHERE id = :id");
         $stmt->execute([':id' => $id]);
         return $stmt->fetch();
     }

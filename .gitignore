@@ -1,0 +1,8 @@
+.vscode/
+Thumbs.db
+Desktop.ini
+.env
+.env.production
+health.php
+.htaccess
+docker-compose.yml

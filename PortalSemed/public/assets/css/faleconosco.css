@@ -1,0 +1,294 @@
+
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --primary-color: #2D4F43;
+    --accent-color:  #8EB34E;
+    --bg-light:      #F4F4F4;
+    --pink-bg:       #FDF2F2;
+    --grey-bg:       #EAEAEA;
+    --text-dark:     #333;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    color: var(--text-dark);
+    background: #fff;
+}
+
+/* ── HEADER ── */
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0 5%;
+    height: 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.logo-img {
+    height: 60px;
+    width: auto;
+    display: block;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+
+nav a:hover { color: var(--accent-color); }
+
+nav a.active {
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+.btn-conta {
+    background-color: var(--accent-color);
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    color: white !important;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.btn-conta:hover { background-color: #7A9B42; }
+
+/* ── HERO ── */
+.hero {
+    text-align: center;
+    width: 100%;
+    height: 500px;
+    background-color: var(--grey-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--text-dark);
+    letter-spacing: 1px;
+}
+
+/* ── CONTEÚDO PRINCIPAL ── */
+.contato-main {
+    background-color: var(--pink-bg);
+    padding: 40px 5%;
+    min-height: 420px;
+}
+
+/* Card branco principal */
+.contato-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 32px;
+    max-width: 820px;
+    margin: 0 auto;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.contato-card h2 {
+    font-size: 1.25rem;
+    color: var(--accent-color);
+    margin-bottom: 24px;
+    font-weight: bold;
+}
+
+/* Layout de 2 colunas */
+.contato-grid {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    gap: 24px;
+    align-items: start;
+}
+
+/* ── FORMULÁRIO ── */
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: bold;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    color: #555;
+    background: #fafafa;
+    transition: border-color 0.2s;
+    font-family: Arial, sans-serif;
+    resize: none;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #bbb;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    background: #fff;
+}
+
+.form-group textarea {
+    height: 120px;
+}
+
+/* Botão Enviar */
+.btn-enviar {
+    display: inline-block;
+    background-color: var(--accent-color);
+    color: white;
+    font-size: 0.9rem;
+    font-weight: bold;
+    padding: 11px 32px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 4px;
+    width: 100%;
+    text-align: center;
+}
+
+.btn-enviar:hover { background-color: #7A9B42; }
+
+/* ── CARD DE INFORMAÇÕES ── */
+.info-card {
+    background-color: #f5f5f5;
+    border-left: 3px solid var(--accent-color);
+    border-radius: 8px;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.info-card h3 {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--text-dark);
+    margin-bottom: 4px;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.83rem;
+    color: #444;
+    line-height: 1.5;
+}
+
+.info-item .icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+/* ── FOOTER ── */
+footer {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 30px 5% 16px;
+}
+
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+.footer-info { max-width: 280px; }
+
+.logo-footer-img {
+    height: 45px;
+    width: auto;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.footer-info p {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+}
+
+.footer-map h4 {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 12px;
+}
+
+.footer-map-links {
+    display: grid;
+    grid-template-columns: repeat(2, 130px);
+    gap: 6px 20px;
+}
+
+.footer-link {
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.2s;
+}
+
+.footer-link:hover {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+.footer-link-disabled {
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    font-size: 0.85rem;
+    cursor: default;
+}
+
+.footer-copy {
+    border-top: 1px solid rgba(255,255,255,0.15);
+    padding-top: 14px;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+}

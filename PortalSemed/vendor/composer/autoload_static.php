@@ -13,7 +13,6 @@ class ComposerStaticInit075707911e5ed50549149c4a914a10ab
         ),
         'A' =>
         array (
-            'App\\Database\\' => 13,
             'App\\' => 4,
         ),
     );
@@ -22,10 +21,6 @@ class ComposerStaticInit075707911e5ed50549149c4a914a10ab
         'Firebase\\JWT\\' =>
         array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
-        ),
-        'App\\Database\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/Database',
         ),
         'App\\' =>
         array (
