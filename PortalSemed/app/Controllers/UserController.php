@@ -11,10 +11,6 @@ class UserController
 
 {
     private Users $model;
-
-    public function index() {
-        echo "controller funcionando";
-    }
     
     public function __construct()
     {
