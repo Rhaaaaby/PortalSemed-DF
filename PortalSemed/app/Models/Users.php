@@ -46,7 +46,7 @@ class Users
             ':name' => trim($data['name']),
             ':cpf' => trim($data['cpf']),
             ':password' => $senhaHash,
-            ':role' => $data['role'] ?? 'user',
+            ':role' => $data['role'] ?? 'funcionario',
             ':status' => $data['status'] ?? true,
         ]);
     }
@@ -65,6 +65,26 @@ class Users
         WHERE cpf = :cpf");
 
         $stmt->execute([':cpf' => $cpf]);
+        return $stmt->fetch();
+    }
+
+    // READ - Buscar credenciais para autenticação
+    public function buscarCredenciaisPorCpf(string $cpf)
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT
+                id,
+                name,
+                cpf,
+                password,
+                role,
+                status
+            FROM users
+            WHERE cpf = :cpf"
+        );
+
+        $stmt->execute([':cpf' => $cpf]);
+
         return $stmt->fetch();
     }
 
@@ -155,5 +175,22 @@ class Users
         return $stmt->execute([
             ':id' => $id
         ]);
+    }
+
+    // Listar todos os funcionários
+    public function listarFuncionarios(): array
+    {
+        $stmt = $this->pdo->query(
+            "SELECT
+                id,
+                name,
+                cpf,
+                role,
+                status
+
+            FROM users
+            WHERE role = 'funcionario'"
+        );
+        return $stmt->fetchAll();
     }
 }
