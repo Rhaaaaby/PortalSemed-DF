@@ -96,7 +96,7 @@ class UserController
             ], 400);
         }
 
-        $usuario = $this->model->buscarParaLogin($cpf);
+        $usuario = $this->model->buscarCredenciaisPorCpf($data['cpf']);
 
         // Verifica se o usuário existe, se a senha está correta e se o usuário está ativo
         if (
@@ -192,5 +192,11 @@ class UserController
         } else {
             json_response(['erro' => 'Erro ao deletar conta'], 500);
         }
+    }
+
+    public function listarFuncionarios()
+    {
+        $funcionarios = $this->model->listarFuncionarios();
+        json_response(['funcionarios' => $funcionarios]);    
     }
 }

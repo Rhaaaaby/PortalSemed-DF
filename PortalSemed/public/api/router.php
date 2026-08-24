@@ -99,10 +99,15 @@ $userCtrl = new UserController();
 // 1. -------- ADMIN --------
 // Rota para registrar um novo usuário (somente admin)
 //Outros usuários não podem registrar novos usuários,
-//  apenas o admin pode fazer isso.
+
 if ($uri === 'admin/usuarios' && $method === 'POST') {
     requireAdmin();
     $userCtrl->registrar(get_json_input());
+}
+
+if($uri === 'admin/usuarios' && $method === 'GET') {
+    requireAdmin();
+    $userCtrl->listarFuncionarios();
 }
 
 
