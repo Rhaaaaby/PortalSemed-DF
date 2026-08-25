@@ -1,0 +1,125 @@
+# ============================================================
+# PORTAL SEMED — REQUISITOS DE AMBIENTE
+# ============================================================
+
+# ------------------------------------------------------------
+# SISTEMA OPERACIONAL
+# ------------------------------------------------------------
+
+Windows 10/11
+Linux (Ubuntu 22.04+ recomendado)
+macOS 12+
+
+# ------------------------------------------------------------
+# NAVEGADOR
+# ------------------------------------------------------------
+
+Google Chrome (versão atual)
+Mozilla Firefox (versão atual)
+Microsoft Edge (versão atual)
+
+# ------------------------------------------------------------
+# DESENVOLVIMENTO BACKEND
+# ------------------------------------------------------------
+
+PHP 8.1 ou superior
+Extensão PDO
+Extensão PDO_PGSQL
+Extensão OpenSSL
+Extensão JSON
+Extensão Fileinfo
+Extensão Mbstring
+
+# ------------------------------------------------------------
+# GERENCIAMENTO DE DEPENDÊNCIAS PHP
+# ------------------------------------------------------------
+
+Composer 2.x
+
+# Dependências do projeto são definidas em:
+# composer.json
+# composer.lock
+
+# ------------------------------------------------------------
+# BANCO DE DADOS
+# ------------------------------------------------------------
+
+PostgreSQL 14 ou superior
+
+# O banco utilizado pelo projeto deve possuir:
+# - usuário de banco configurado
+# - senha configurada
+# - banco de dados criado
+# - schema.sql executado
+
+# ------------------------------------------------------------
+# SERVIDOR WEB
+# ------------------------------------------------------------
+
+Nginx
+
+# OU
+
+Apache 2.4+
+
+# ------------------------------------------------------------
+# CONTAINERIZAÇÃO
+# ------------------------------------------------------------
+
+Docker 24 ou superior
+Docker Compose v2 ou superior
+
+# O projeto possui:
+# docker-compose.yml
+# docker/nginx/
+# docker/php/
+
+# ------------------------------------------------------------
+# FRONTEND
+# ------------------------------------------------------------
+
+HTML5
+CSS3
+JavaScript ES6+
+
+# ------------------------------------------------------------
+# FERRAMENTAS DE DESENVOLVIMENTO
+# ------------------------------------------------------------
+
+Git
+Git Bash (Windows — opcional)
+
+# Editor recomendado:
+Visual Studio Code
+
+# ------------------------------------------------------------
+# TESTES E DEBUG
+# ------------------------------------------------------------
+
+PHPUnit (caso configurado no composer.json)
+Postman ou Insomnia (opcional)
+cURL (opcional, mas recomendado)
+
+# ------------------------------------------------------------
+# CONFIGURAÇÃO
+# ------------------------------------------------------------
+
+Arquivo .env configurado conforme .env.example
+
+# Nunca utilizar:
+# .env
+# .env.production
+# com credenciais de terceiros sem revisar os valores.
+
+# ------------------------------------------------------------
+# ACESSO AO PORTAL
+# ------------------------------------------------------------
+
+O usuário final necessita apenas de:
+
+# - navegador moderno
+# - conexão com o servidor do Portal SEMED
+
+# PHP, PostgreSQL, Composer, Docker e Nginx são
+# requisitos do ambiente servidor/desenvolvimento,
+# não do computador do usuário final.
