@@ -1,103 +1,186 @@
 <?php
-require_once __DIR__ . '/../Models/Noticia.php';
 
-class NoticiaController {
+namespace App\Controllers;
 
-    public function index() {
-        $noticias = Noticia::all();
-        require __DIR__ . '/../Views/index.php';
+use App\Models\Noticia;
+
+class NoticiaController
+{
+    private Noticia $model;
+
+    public function __construct()
+    {
+        $this->model = new Noticia();
     }
 
-    public function create() {
-        if ($_POST) {
+    // LISTAR NOTÍCIAS
+    public function index()
+    {
+        $noticias = $this->model->all();
+
+        require __DIR__ . '/../Views/noticias/index.php';
+    }
+
+    // CRIAR NOTÍCIA
+    public function create()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $imagem = null;
 
-            if (!empty($_FILES['imagem']['name'])) {
-                $nome = time() . "_" . $_FILES['imagem']['name'];
-                move_uploaded_file($_FILES['imagem']['tmp_name'], "uploads/" . $nome);
-                $imagem = $nome;
+            if (
+                isset($_FILES['imagem']) &&
+                $_FILES['imagem']['error'] === UPLOAD_ERR_OK
+            ) {
+                $nome = time() . '_' . basename($_FILES['imagem']['name']);
+
+                $diretorio = APP_ROOT . '/public/assets/images/uploads/';
+
+                if (!is_dir($diretorio)) {
+                    mkdir($diretorio, 0755, true);
+                }
+
+                if (move_uploaded_file(
+                    $_FILES['imagem']['tmp_name'],
+                    $diretorio . $nome
+                )) {
+                    $imagem = $nome;
+                }
             }
 
-            $author_id = !empty($_POST['author_id']) ? $_POST['author_id'] : 1;
+            $author_id = !empty($_POST['author_id'])
+                ? (int) $_POST['author_id']
+                : null;
 
             try {
-                Noticia::create([
-                    'title' => $_POST['titulo'],
-                    'content' => $_POST['conteudo'],
+
+                $this->model->create([
+                    'title' => $_POST['titulo'] ?? '',
+                    'content' => $_POST['conteudo'] ?? '',
                     'author_id' => $author_id,
-                    'categoria' => $_POST['categoria'],
+                    'categoria' => $_POST['categoria'] ?? null,
                     'imagem' => $imagem
                 ]);
 
-                header("Location: /noticias");
+                header('Location: /noticias');
                 exit;
-            } catch (Exception $e) {
-                echo "Erro ao salvar notícia: " . $e->getMessage();
+
+            } catch (\Exception $e) {
+
+                echo 'Erro ao salvar notícia: ' . $e->getMessage();
                 exit;
             }
         }
 
-        // Lista de categorias disponível para a view
         $categorias = [
             'Notícias',
             'Eventos',
             'Comunicados'
         ];
 
-        require __DIR__ . '/../Views/create.php';
+        require __DIR__ . '/../Views/noticias/create.php';
     }
 
-    public function view() {
-        $noticia = Noticia::find($_GET['id']);
-        require __DIR__ . '/../Views/view.php';
+    // VISUALIZAR NOTÍCIA
+    public function view()
+    {
+        $id = isset($_GET['id'])
+            ? (int) $_GET['id']
+            : 0;
+
+        $noticia = $this->model->find($id);
+
+        if (!$noticia) {
+            http_response_code(404);
+            echo 'Notícia não encontrada.';
+            exit;
+        }
+
+        require __DIR__ . '/../Views/noticias/view.php';
     }
 
-    public function edit() {
-        $id = $_GET['id'];
+    // EDITAR NOTÍCIA
+    public function edit()
+    {
+        $id = isset($_GET['id'])
+            ? (int) $_GET['id']
+            : 0;
 
-        if ($_POST) {
-            $imagem = $_POST['imagem_atual'];
+        $noticia = $this->model->find($id);
 
-            if (!empty($_FILES['imagem']['name'])) {
-                $nome = time() . "_" . $_FILES['imagem']['name'];
-                move_uploaded_file($_FILES['imagem']['tmp_name'], "uploads/" . $nome);
-                $imagem = $nome;
+        if (!$noticia) {
+            http_response_code(404);
+            echo 'Notícia não encontrada.';
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            $imagem = $_POST['imagem_atual'] ?? $noticia['imagem'] ?? null;
+
+            if (
+                isset($_FILES['imagem']) &&
+                $_FILES['imagem']['error'] === UPLOAD_ERR_OK
+            ) {
+                $nome = time() . '_' . basename($_FILES['imagem']['name']);
+
+                $diretorio = APP_ROOT . '/public/assets/images/uploads/';
+
+                if (!is_dir($diretorio)) {
+                    mkdir($diretorio, 0755, true);
+                }
+
+                if (move_uploaded_file(
+                    $_FILES['imagem']['tmp_name'],
+                    $diretorio . $nome
+                )) {
+                    $imagem = $nome;
+                }
             }
 
-            $author_id = !empty($_POST['author_id']) ? $_POST['author_id'] : 1;
+            $author_id = !empty($_POST['author_id'])
+                ? (int) $_POST['author_id']
+                : null;
 
             try {
-                Noticia::update($id, [
-                    'title' => $_POST['titulo'],
-                    'content' => $_POST['conteudo'],
+
+                $this->model->update($id, [
+                    'title' => $_POST['titulo'] ?? '',
+                    'content' => $_POST['conteudo'] ?? '',
                     'author_id' => $author_id,
-                    'categoria' => $_POST['categoria'],
+                    'categoria' => $_POST['categoria'] ?? null,
                     'imagem' => $imagem
                 ]);
 
-                header("Location: /noticias");
+                header('Location: /noticias');
                 exit;
-            } catch (Exception $e) {
-                echo "Erro ao atualizar notícia: " . $e->getMessage();
+
+            } catch (\Exception $e) {
+
+                echo 'Erro ao atualizar notícia: ' . $e->getMessage();
                 exit;
             }
         }
 
-        $noticia = Noticia::find($id);
-
-        // Lista de categorias disponível para a view de edição
         $categorias = [
             'Notícias',
             'Eventos',
             'Comunicados'
         ];
 
-        require __DIR__ . '/../Views/edit.php';
+        require __DIR__ . '/../Views/noticias/edit.php';
     }
 
-    public function delete() {
-        Noticia::delete($_GET['id']);
-        header("Location: /noticias");
+    // DELETAR NOTÍCIA
+    public function delete()
+    {
+        $id = isset($_GET['id'])
+            ? (int) $_GET['id']
+            : 0;
+
+        $this->model->delete($id);
+
+        header('Location: /noticias');
+        exit;
     }
 }
