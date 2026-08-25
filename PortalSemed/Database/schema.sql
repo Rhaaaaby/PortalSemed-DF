@@ -14,9 +14,11 @@ CREATE TABLE users (
     role VARCHAR(20) NOT NULL DEFAULT 'user',
     status BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    categoria VARCHAR(50),
+    imagem VARCHAR(255),
 
     CONSTRAINT chk_user_role
-        CHECK (role IN ('admin', 'user'))
+        CHECK (role IN ('admin', 'funcionario'))
 );
 
 

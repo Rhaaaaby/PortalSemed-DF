@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../../app/bootstrap.php';
 
+use App\Models\Noticia;
 use App\Controllers\UserController;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -88,7 +89,7 @@ $uri = strtolower(trim($uri, '/'));
 
 // ================== CONTROLLERS ==================
 $userCtrl = new UserController();
-
+$noticiaModel = new Noticia();
 
 // As rotas são definidas abaixo, 
 // cada rota corresponde a uma função no UserController
@@ -117,18 +118,17 @@ if ($uri === 'login' && $method === 'POST') {
 }
 
 if ($uri === 'noticias' && $method === 'GET') {
-    require_once __DIR__ . '/../../app/Models/Noticia.php';
-    json_response(Noticia::all());
+    json_response($noticiaModel->all());
 }
 
 if (preg_match('/^noticias\/(\d+)$/', $uri, $matches) && $method === 'GET') {
-    require_once __DIR__ . '/../../app/Models/Noticia.php';
-    $post = Noticia::find((int) $matches[1]);
+    $post = $noticiaModel->find((int) $matches[1]);
+
     if ($post) {
         json_response($post);
-    } else {
-        json_response(['erro' => 'Notícia não encontrada'], 404);
     }
+
+    json_response(['erro' => 'Notícia não encontrada'], 404);
 }
 
 // -------- USUÁRIO --------
