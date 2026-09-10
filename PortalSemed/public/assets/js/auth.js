@@ -1,16 +1,5 @@
 const API_BASE_URL = `${window.location.origin}/api`;
 
-// Inicializar usuários padrão em LocalStorage se estiver no modo localstorage e a lista estiver vazia
-if (typeof STORAGE_MODE !== 'undefined' && STORAGE_MODE === 'localstorage') {
-    if (!localStorage.getItem('users')) {
-        const defaultUsers = [
-            { id: 1, name: "Administrador SEMED", cpf: "11111111111", password: "123456", role: "servidor" },
-            { id: 2, name: "Funcionário SEMED", cpf: "22222222222", password: "123456", role: "funcionario" }
-        ];
-        localStorage.setItem('users', JSON.stringify(defaultUsers));
-    }
-}
-
 function showMessage(container, message, type = 'success') {
     if (!container) return;
     container.textContent = message;
@@ -34,10 +23,26 @@ async function postJson(endpoint, data) {
         body: JSON.stringify(data),
     });
 
-    const payload = await response.json();
+    const text = await response.text();
+
+    console.log('Status:', response.status);
+    console.log('Resposta do servidor:', text);
+
+    let payload;
+
+    try {
+        payload = JSON.parse(text);
+    } catch (error) {
+        throw {
+            erro: `O servidor retornou uma resposta inválida. Status: ${response.status}`,
+            resposta: text
+        };
+    }
+
     if (!response.ok) {
         throw payload;
     }
+
     return payload;
 }
 

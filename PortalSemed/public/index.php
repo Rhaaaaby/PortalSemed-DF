@@ -40,9 +40,6 @@ function serve_static_file(string $path): bool {
     if (function_exists('finfo_open')) {
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mime = $finfo ? finfo_file($finfo, $path) : null;
-        if ($finfo) {
-            finfo_close($finfo);
-        }
     } else {
         $mime = null;
     }
@@ -57,6 +54,7 @@ function serve_static_file(string $path): bool {
 }
 
 $request = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '/';
+
 $requestFile = __DIR__ . $request;
 
 // Rota raiz (/) mapeada para a homepage estática
@@ -67,20 +65,40 @@ if ($request === '/' && !isset($_GET['action'])) {
 }
 
 // Antonio - rotas de noticias (seja via query param action ou rota /noticias)
+
 if (isset($_GET['action']) || $request === '/noticias') {
+
     require_once __DIR__ . '/../app/Controllers/NoticiaController.php';
-    $controller = new NoticiaController();
+
+    $controller = new \App\Controllers\NoticiaController();
+
     $action = $_GET['action'] ?? 'index';
 
     switch ($action) {
-        case 'create': $controller->create(); break;
-        case 'view': $controller->view(); break;
-        case 'edit': $controller->edit(); break;
-        case 'delete': $controller->delete(); break;
-        default: $controller->index(); break;
+        case 'create':
+            $controller->create();
+            break;
+
+        case 'view':
+            $controller->view();
+            break;
+
+        case 'edit':
+            $controller->edit();
+            break;
+
+        case 'delete':
+            $controller->delete();
+            break;
+
+        default:
+            $controller->index();
+            break;
     }
+
     exit;
 }
+
 
 // Rotas de API
 if (strpos($request, '/api/') !== false || $request === '/api' || strpos($request, '/api') === 0) {
