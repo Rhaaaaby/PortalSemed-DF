@@ -22,7 +22,7 @@ class NoticiaController
     }
 
     // CRIAR NOTÍCIA
-    public function create()
+    public function create(? int $author_id = null)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -48,22 +48,19 @@ class NoticiaController
                 }
             }
 
-            $author_id = !empty($_POST['author_id'])
-                ? (int) $_POST['author_id']
-                : null;
-
             try {
 
                 $this->model->create([
                     'title' => $_POST['titulo'] ?? '',
                     'content' => $_POST['conteudo'] ?? '',
-                    'author_id' => $author_id,
+                    'author_id' => $user_id,
                     'categoria' => $_POST['categoria'] ?? null,
                     'imagem' => $imagem
                 ]);
 
-                header('Location: /noticias');
-                exit;
+                json_response([
+                    'mensagem' => 'Notícia criada com sucesso!'
+                ], 201);
 
             } catch (\Exception $e) {
 

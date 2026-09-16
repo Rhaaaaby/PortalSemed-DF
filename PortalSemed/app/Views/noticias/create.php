@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nova Notícia - SEMED</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
     <div id="header"></div>
@@ -13,7 +13,7 @@
         <div class="login-card" style="max-width: 500px !important;">
             <h2>Publicar Nova Notícia</h2>
             
-            <form method="POST" enctype="multipart/form-data" style="align-items: stretch !important; gap: 15px;">
+            <form id="noticia-form" method="POST" enctype="multipart/form-data" style="align-items: stretch !important; gap: 15px;">
                 <div class="input-group">
                     <label for="titulo">Título da Notícia:</label>
                     <input type="text" id="titulo" name="titulo" placeholder="Digite o título" required>
@@ -42,7 +42,9 @@
                     <input type="file" id="imagem" name="imagem" accept="image/*" style="padding: 8px 0;">
                 </div>
 
-                <input type="hidden" name="author_id" value="<?php echo $author_id; ?>">
+                <!--<input type="hidden" name="author_id" value="
+                //(<)?php echo $author_id; ?>
+                ">-->
 
                 <div style="display: flex; gap: 15px; justify-content: center; width: 100%; margin-top: 15px;">
                     <button type="submit" class="btn-verde-claro" style="margin: 0 !important; width: 48% !important;">Publicar</button>
@@ -53,7 +55,8 @@
     </main>
 
     <div id="footer"></div>
-    <script src="/js/config.js"></script>
-    <script src="/js/include-components.js"></script>
+    <script src="/assets/js/config.js"></script>
+    <script src="/assets/js/include-components.js"></script>
+    <script src="/assets/js/noticia-create.js"></script>
 </body>
 </html>
