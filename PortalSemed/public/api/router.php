@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../../app/bootstrap.php';
 
 use App\Models\Noticia;
+use App\Controllers\NoticiaController;
 use App\Controllers\UserController;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -90,6 +91,7 @@ $uri = strtolower(trim($uri, '/'));
 // ================== CONTROLLERS ==================
 $userCtrl = new UserController();
 $noticiaModel = new Noticia();
+$noticiaCtrl = new NoticiaController();
 
 // As rotas são definidas abaixo, 
 // cada rota corresponde a uma função no UserController
@@ -113,12 +115,18 @@ if($uri === 'admin/usuarios' && $method === 'GET') {
 
 
 // -------- PÚBLICAS --------
+if ($uri === 'cadastrar' && $method === 'POST') {
+    $userCtrl->registrar(get_json_input());
+}
+
 if ($uri === 'login' && $method === 'POST') {
     $userCtrl->login(get_json_input());
 }
 
 if ($uri === 'noticias' && $method === 'GET') {
     json_response($noticiaModel->all());
+    $user_id = auth();
+    $noticiaCtrl->create($user_id);
 }
 
 if (preg_match('/^noticias\/(\d+)$/', $uri, $matches) && $method === 'GET') {
@@ -145,6 +153,11 @@ if ($uri === 'atualizar' && $method === 'PUT') {
 if ($uri === 'deletar' && $method === 'DELETE') {
     $user_id = auth();
     $userCtrl->deletar($user_id);
+}
+
+if ($uri === 'noticias' && $method === 'POST') {
+    $user_id = auth();
+    $noticiaCtrl->create($user_id);
 }
 
 // -------- 404 --------

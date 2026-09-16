@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciamento de Notícias - SEMED</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
     <style>
         .admin-table-container {
             max-width: 1000px;
@@ -100,7 +100,7 @@
                     </tr>
                 </thead>
                 <tbody id="noticias-tbody">
-                    <?php if (!USE_LOCALSTORAGE && !empty($noticias) && is_array($noticias)): ?>
+                    <?php if ($noticias): ?>
                         <?php foreach ($noticias as $n): ?>
                             <tr>
                                 <td style="font-weight: 500; color: #111827;"><?php echo htmlspecialchars($n['title']); ?></td>
@@ -114,7 +114,7 @@
                                 </td>
                             </tr>
                         <?php endforeach; ?>
-                    <?php elseif (!USE_LOCALSTORAGE): ?>
+                    <?php else: ?>
                         <tr>
                             <td colspan="4" style="text-align: center; color: #6B7280; padding: 30px;">Nenhuma notícia publicada até o momento.</td>
                         </tr>
@@ -129,7 +129,7 @@
     </main>
 
     <div id="footer"></div>
-    <script src="/js/config.js"></script>
-    <script src="/js/include-components.js"></script>
+    <script src="/assets/js/config.js"></script>
+    <script src="/assets/js/include-components.js"></script>
 </body>
 </html>

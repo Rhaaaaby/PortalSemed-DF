@@ -188,4 +188,3 @@ window.addEventListener('DOMContentLoaded', () => {
         loginForm.addEventListener('submit', handleLogin);
     }
 });
-
