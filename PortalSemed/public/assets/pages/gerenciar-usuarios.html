@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Usuários - SEMED</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/responsive.css">
+</head>
+<body data-required-role="admin">
+    <div id="header"></div>
+
+    <main class="portal-admin-container">
+        <div class="portal-admin-heading">
+            <div>
+                <p class="portal-admin-eyebrow">Acesso exclusivo de administrador</p>
+                <h1>Gerenciar usuários</h1>
+                <p>Administradores têm permissões equivalentes. Funcionários mantêm as permissões de conteúdo.</p>
+            </div>
+            <a class="portal-admin-back" href="/perfil-admin.html">Voltar ao painel</a>
+        </div>
+
+        <div id="users-admin-message" class="message" role="status" aria-live="polite"></div>
+
+        <section class="portal-admin-section">
+            <div class="portal-admin-section-heading">
+                <div>
+                    <h2>Criar uma conta interna</h2>
+                    <p>Não há cadastro público. Use uma senha com pelo menos 12 caracteres.</p>
+                </div>
+                <span class="portal-edit-badge">Somente admin</span>
+            </div>
+            <form id="create-user-form" class="portal-user-form">
+                <label>
+                    Nome completo
+                    <input name="name" type="text" maxlength="100" autocomplete="name" required>
+                </label>
+                <label>
+                    CPF
+                    <input name="cpf" type="text" inputmode="numeric" maxlength="14" autocomplete="off" required>
+                </label>
+                <label>
+                    Senha inicial
+                    <input name="password" type="password" minlength="12" autocomplete="new-password" required>
+                </label>
+                <label>
+                    Perfil
+                    <select name="role" required>
+                        <option value="funcionario">Funcionário</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </label>
+                <button type="submit" class="portal-admin-button">Criar usuário</button>
+            </form>
+        </section>
+
+        <section class="portal-admin-section">
+            <div class="portal-admin-section-heading">
+                <div>
+                    <h2>Contas cadastradas</h2>
+                    <p>Desativar uma conta encerra o acesso atual dela.</p>
+                </div>
+            </div>
+            <div id="users-admin-list" class="portal-admin-services"></div>
+        </section>
+    </main>
+
+    <div id="footer"></div>
+    <script src="/assets/js/include-components.js"></script>
+    <script src="/assets/js/users-admin.js"></script>
+</body>
+</html>

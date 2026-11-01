@@ -329,14 +329,21 @@ database/schema.sql
 
 é executado automaticamente.
 
-O banco contém atualmente as tabelas:
+O banco contém as tabelas:
 
 ```text
 users
 posts
 files
 documents
+site_settings
+site_services
+site_carousel
 ```
+
+As tabelas `site_settings`, `site_services` e `site_carousel` armazenam a aparência, os serviços publicados e as imagens em destaque da página inicial.
+
+As cores institucionais são alteradas no painel por variáveis visuais controladas; não há campo para inserir CSS livre.
 
 ### Importante
 
@@ -347,6 +354,24 @@ Como existe um volume persistente:
 ```text
 postgres_data
 ```
+
+Em uma instalação que já possui banco de dados, aplique uma vez a migração `database/migrations/20261015_portal_customization.sql` no banco configurado antes de acessar a personalização visual.
+
+O painel fica em `personalizacao.html`, acessível pelo painel de administrador. As operações de gravação exigem um usuário autenticado com a função `admin`; as imagens enviadas aceitam JPG, PNG, WEBP ou GIF e têm limite de 5 MB.
+
+## Contas e acesso administrativo
+
+O cadastro público está desativado. As únicas funções internas são `admin` e `funcionario`: administradores podem criar contas de ambos os tipos em `gerenciar-usuarios.html`; funcionários mantêm as permissões de conteúdo. O acesso usa sessão PHP em cookie `HttpOnly`, valida função e status no banco em cada requisição e encerra por inatividade após 30 minutos ou ao completar 8 horas. Alterações autenticadas exigem token CSRF.
+
+Em produção, publique o portal exclusivamente por HTTPS para que o cookie de sessão seja marcado como `Secure` e protegido durante o transporte.
+
+Para provisionar o primeiro administrador, adicione temporariamente `FIRST_ADMIN_NAME`, `FIRST_ADMIN_CPF` e `FIRST_ADMIN_PASSWORD` (mínimo de 12 caracteres) ao arquivo `.env` e execute dentro do container PHP:
+
+```bash
+docker compose exec app php scripts/create-first-admin.php
+```
+
+O comando só cria o primeiro administrador quando ainda não existe nenhum; ele nunca fica exposto como rota web. Remova as três variáveis do ambiente depois da execução. Contas antigas que usavam token JWT precisarão fazer login novamente.
 
 alterações posteriores no `schema.sql` não serão necessariamente aplicadas automaticamente ao banco existente.
 

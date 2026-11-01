@@ -26,8 +26,9 @@ class Connection
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 ]);
             } catch (PDOException $e) {
+                error_log('Database connection failed: ' . $e->getMessage());
                 http_response_code(500);
-                die(json_encode(['erro' => 'Erro ao conectar ao banco de dados: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE));
+                die(json_encode(['erro' => 'Erro interno ao conectar ao banco de dados.'], JSON_UNESCAPED_UNICODE));
             }
         }
 

@@ -46,6 +46,7 @@
             padding-top: 20px;
         }
     </style>
+    <link rel="stylesheet" href="/assets/css/responsive.css">
 </head>
 <body>
     <div id="header"></div>

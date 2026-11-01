@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nova Notícia - SEMED</title>
     <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/responsive.css">
 </head>
 <body>
     <div id="header"></div>
@@ -14,6 +15,7 @@
             <h2>Publicar Nova Notícia</h2>
             
             <form id="noticia-form" method="POST" enctype="multipart/form-data" style="align-items: stretch !important; gap: 15px;">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
                 <div class="input-group">
                     <label for="titulo">Título da Notícia:</label>
                     <input type="text" id="titulo" name="titulo" placeholder="Digite o título" required>

@@ -133,6 +133,7 @@ portalSemed/
 │       │   ├── documentos.css
 │       │   ├── faleconosco.css
 │       │   ├── noticias.css
+│       │   ├── responsive.css
 │       │   ├── style.css
 │       │   └── transparencia.css
 │       │
@@ -588,10 +589,11 @@ calendario.css
 documentos.css
 faleconosco.css
 noticias.css
+responsive.css
 transparencia.css
 ```
 
-A estratégia atual permite que estilos gerais sejam centralizados e estilos específicos permaneçam isolados.
+O `responsive.css` é carregado após os estilos da página e define ajustes comuns para desktops, tablets e celulares, incluindo a navegação compacta. Os estilos específicos permanecem isolados por página.
 
 ---
 

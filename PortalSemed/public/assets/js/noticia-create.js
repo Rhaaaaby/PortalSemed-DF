@@ -8,23 +8,24 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        const token = localStorage.getItem('authToken');
-
-        if (!token) {
-            alert('Você precisa estar logado para publicar uma notícia.');
-            window.location.href = '/assets/pages/login.html';
-            return;
-        }
-
         const formData = new FormData(form);
 
         try {
+            const sessionResponse = await fetch('/api/auth/me', {
+                credentials: 'same-origin',
+            });
+            const session = await sessionResponse.json();
+            if (!sessionResponse.ok) {
+                throw new Error(session.erro || 'Faça login para publicar uma notícia.');
+            }
+
             const response = await fetch('/api/noticias', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'X-CSRF-Token': session.csrf_token
                 },
-                body: formData
+                body: formData,
+                credentials: 'same-origin',
             });
 
             const text = await response.text();
@@ -46,10 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             alert(data.mensagem || 'Notícia criada com sucesso!');
-
             window.location.href = '/noticias';
-
-            alert(data.mensagem);
 
         } catch (error) {
             console.error('Erro ao publicar notícia:', error);

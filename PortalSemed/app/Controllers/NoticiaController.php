@@ -53,7 +53,7 @@ class NoticiaController
                 $this->model->create([
                     'title' => $_POST['titulo'] ?? '',
                     'content' => $_POST['conteudo'] ?? '',
-                    'author_id' => $user_id,
+                    'author_id' => $author_id,
                     'categoria' => $_POST['categoria'] ?? null,
                     'imagem' => $imagem
                 ]);
