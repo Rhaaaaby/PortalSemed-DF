@@ -14,47 +14,11 @@ function clearMessage(container) {
     container.style.display = 'none';
 }
 
-async function postJson(endpoint, data) {
-    const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    });
-
-    const text = await response.text();
-
-    console.log('Status:', response.status);
-    console.log('Resposta do servidor:', text);
-
-    let payload;
-
-    try {
-        payload = JSON.parse(text);
-    } catch (error) {
-        throw {
-            erro: `O servidor retornou uma resposta inválida. Status: ${response.status}`,
-            resposta: text
-        };
-    }
-
-    if (!response.ok) {
-        throw payload;
-    }
-
-    return payload;
-}
-
 function getFormData(form) {
     return Array.from(form.elements)
-        .filter(el => el.name && !el.disabled)
+        .filter(field => field.name && !field.disabled)
         .reduce((data, field) => {
-            if (field.type === 'radio') {
-                if (field.checked) {
-                    data[field.name] = field.value;
-                }
-            } else {
+            if (field.type !== 'radio' || field.checked) {
                 data[field.name] = field.value;
             }
             return data;
@@ -65,126 +29,107 @@ function normalizeCpf(value) {
     return String(value).replace(/\D/g, '');
 }
 
-function handleRegister(event) {
+async function login(event) {
     event.preventDefault();
-    const form = event.target;
-    const messageContainer = document.getElementById('register-message');
-    clearMessage(messageContainer);
+    const form = event.currentTarget;
+    const message = document.getElementById('login-message');
+    clearMessage(message);
 
-    const formData = getFormData(form);
-    formData.cpf = normalizeCpf(formData.cpf);
-    formData.role = formData.role || 'user';
-
-    if (!formData.name || !formData.cpf || !formData.password) {
-        showMessage(messageContainer, 'Preencha todos os campos obrigatórios.', 'error');
+    const credentials = getFormData(form);
+    credentials.cpf = normalizeCpf(credentials.cpf || '');
+    if (!credentials.cpf || !credentials.password) {
+        showMessage(message, 'CPF e senha são obrigatórios.', 'error');
         return;
     }
 
-    if (typeof STORAGE_MODE !== 'undefined' && STORAGE_MODE === 'localstorage') {
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const userExists = users.some(u => u.cpf === formData.cpf);
-        if (userExists) {
-            showMessage(messageContainer, 'Este CPF já está cadastrado', 'error');
-            return;
+    try {
+        const response = await fetch(`${API_BASE_URL}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify(credentials),
+        });
+        const payload = await response.json();
+        if (!response.ok) {
+            throw new Error(payload.erro || 'Não foi possível entrar.');
         }
 
-        const newUser = {
-            id: Date.now(),
-            name: formData.name,
-            cpf: formData.cpf,
-            password: formData.password,
-            role: formData.role
-        };
-        users.push(newUser);
-        localStorage.setItem('users', JSON.stringify(users));
-
-        showMessage(messageContainer, 'Cadastro realizado com sucesso! Redirecionando...', 'success');
-        setTimeout(() => window.location.href = 'login.html', 1200);
-        return;
+        showMessage(message, 'Login realizado com sucesso. Redirecionando...', 'success');
+        const destination = payload.user.role === 'admin'
+            ? 'perfil-admin.html'
+            : 'perfil-funcionario.html';
+        window.setTimeout(() => {
+            window.location.href = destination;
+        }, 400);
+    } catch (error) {
+        showMessage(message, error.message || 'Não foi possível entrar.', 'error');
     }
-
-    postJson('cadastrar', formData)
-        .then(() => {
-            showMessage(messageContainer, 'Cadastro realizado com sucesso! Redirecionando...', 'success');
-            setTimeout(() => window.location.href = 'login.html', 1200);
-        })
-        .catch(error => {
-            const errorText = error.erro || error.message || 'Erro ao registrar usuário.';
-            showMessage(messageContainer, errorText, 'error');
-        });
-}
-
-function handleLogin(event) {
-    event.preventDefault();
-    const form = event.target;
-    const messageContainer = document.getElementById('login-message');
-    clearMessage(messageContainer);
-
-    const formData = getFormData(form);
-    formData.cpf = normalizeCpf(formData.cpf);
-
-    if (!formData.cpf || !formData.password) {
-        showMessage(messageContainer, 'CPF e senha são obrigatórios.', 'error');
-        return;
-    }
-
-    if (typeof STORAGE_MODE !== 'undefined' && STORAGE_MODE === 'localstorage') {
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const user = users.find(u => u.cpf === formData.cpf && u.password === formData.password);
-
-        if (!user) {
-            showMessage(messageContainer, 'Credenciais inválidas.', 'error');
-            return;
-        }
-
-        const mockToken = 'mock-jwt-token-' + Date.now();
-        localStorage.setItem('authToken', mockToken);
-        localStorage.setItem('authUser', JSON.stringify(user));
-        showMessage(messageContainer, 'Login realizado com sucesso! Redirecionando...', 'success');
-        
-        setTimeout(() => {
-            if (user.role === 'servidor' || user.role === 'admin') {
-                window.location.href = 'perfil-admin.html';
-            } else if (user.role === 'funcionario') {
-                window.location.href = 'perfil-funcionario.html';
-            } else {
-                window.location.href = 'index.html';
-            }
-        }, 1000);
-        return;
-    }
-
-    postJson('login', formData)
-        .then(result => {
-            localStorage.setItem('authToken', result.token);
-            localStorage.setItem('authUser', JSON.stringify(result.user));
-            showMessage(messageContainer, 'Login realizado com sucesso! Redirecionando...', 'success');
-            
-            setTimeout(() => {
-                const user = result.user;
-                if (user.role === 'servidor' || user.role === 'admin') {
-                    window.location.href = 'perfil-admin.html';
-                } else if (user.role === 'funcionario') {
-                    window.location.href = 'perfil-funcionario.html';
-                } else {
-                    window.location.href = 'index.html';
-                }
-            }, 1000);
-        })
-        .catch(error => {
-            const errorText = error.erro || error.message || 'Credenciais inválidas.';
-            showMessage(messageContainer, errorText, 'error');
-        });
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-    const registerForm = document.getElementById('register-form');
-    if (registerForm) {
-        registerForm.addEventListener('submit', handleRegister);
-    }
-
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
-        loginForm.addEventListener('submit', handleLogin);
+        loginForm.addEventListener('submit', login);
     }
+});
+
+// Função para lidar com a troca de senha
+document.addEventListener('DOMContentLoaded', function() {
+    const formTrocaSenha = document.getElementById('formTrocaSenha');
+
+    if (!formTrocaSenha) return;
+
+    formTrocaSenha.addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const inputAtual = document.getElementById('senhaAtual');
+        const inputNova = document.getElementById('novaSenha');
+        const inputConfirmar = document.getElementById('confirmarSenha');
+
+        if (!inputAtual || !inputNova || !inputConfirmar) {
+            alert('Erro: Campos de senha não foram encontrados na página.');
+            return;
+        }
+
+        const senhaAtual = inputAtual.value;
+        const novaSenha = inputNova.value;
+        const confirmarSenha = inputConfirmar.value;
+
+        if (novaSenha !== confirmarSenha) {
+            alert('A nova senha e a confirmação não coincidem!');
+            return;
+        }
+
+        // Alterarei de getItem('token') para getItem('authToken'):
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            alert('Sessão expirada. Faça login novamente.');
+            window.location.href = '/login.html';
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/router.php?action=alterar-senha', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({ senhaAtual, novaSenha })
+            });
+
+            const resultado = await response.json();
+
+            if (response.ok) {
+                alert(resultado.mensagem || 'Senha alterada com sucesso!');
+                formTrocaSenha.reset();
+                document.getElementById('containerTrocaSenha').style.display = 'none';
+            } else {
+                alert(resultado.mensagem || 'Erro ao alterar a senha.');
+            }
+        } catch (error) {
+            console.error('Erro na requisição:', error);
+            alert('Erro de conexão com o servidor.');
+        }
+    });
 });

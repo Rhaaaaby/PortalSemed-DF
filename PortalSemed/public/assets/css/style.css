@@ -4,6 +4,8 @@
     --bg-light: #F4F4F4;
     --text-dark: #333;
     --background-color: #FDF2F2; /* Fundo rosa bem claro*/
+    --portal-surface: #FFFFFF;
+    --portal-border: #D1D5DB;
 }
 
 body {
@@ -169,7 +171,7 @@ footer {
 
 /* Container principal para centralizar o card e dar o fundo rosa claro */
 .login-main-container {
-    background-color: #FDF2F2; /* Fundo rosa bem claro*/
+    background-color: var(--background-color);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -193,6 +195,12 @@ footer {
     margin-bottom: 25px;
     font-size: 1.5rem;
     color: #333;
+}
+
+.login-access-note {
+    margin: 16px 0 0;
+    color: #4B5563;
+    font-size: 0.9rem;
 }
 
 /* Estilização dos campos de input e labels */
@@ -227,7 +235,7 @@ footer {
 .btn-entrar, .btn-cadastro {
     width: 100%;
     padding: 12px;
-    background-color: #8EB34E; /* Verde alface do projeto */
+    background-color: var(--accent-color);
     color: white;
     border: none;
     border-radius: 8px;
@@ -302,7 +310,7 @@ footer {
 /* --- ESTILOS DO PAINEL ADMINISTRADOR --- */
 
 .admin-main {
-    background-color: #FDF2F2; /* Fundo rosa claro do projeto */
+    background-color: var(--background-color);
     min-height: 80vh;
     padding: 60px 0;
 }
@@ -314,7 +322,7 @@ footer {
 }
 
 .admin-container h1 {
-    color: #2D4F43; /* Verde escuro institucional */
+    color: var(--primary-color);
     font-size: 2rem;
     margin-bottom: 30px;
 }
@@ -388,7 +396,7 @@ footer {
 }
 
 .footer-link:hover {
-    color: #8EB34E; /* Verde alface ao passar o mouse */
+    color: var(--accent-color);
     text-decoration: underline;
 }
 
@@ -430,7 +438,7 @@ footer {
 
 /* Efeito de interatividade: O card brilha quando passa o mouse */
 .card-servico:hover {
-    background-color: #8EB34E; /* Cor verde-alface do seu projeto */
+    background-color: var(--accent-color);
     color: white;
     transform: translateY(-5px); /* Ele sobe de leve */
     transition: 0.3s;
@@ -445,7 +453,7 @@ footer {
 }
 /* Cor base do botão verde das imagens */
 .btn-verde-claro {
-    background-color: #8EB34E;
+    background-color: var(--accent-color);
     color: white;
     border: none;
     border-radius: 8px;
@@ -481,7 +489,7 @@ footer {
     align-items: center !important;
     min-height: 80vh !important;
     width: 100% !important;
-    background-color: #FDF2F2 !important;
+    background-color: var(--background-color) !important;
     padding: 20px !important;
 }
 
@@ -511,7 +519,7 @@ footer {
 .login-card button {
     width: 90% !important;
     max-width: 280px !important;
-    background-color: #8EB34E !important;
+    background-color: var(--accent-color) !important;
     color: white !important;
     padding: 12px !important;
     border: none !important;
@@ -535,7 +543,7 @@ footer {
 /* --- ESTILIZAÇÃO DA PÁGINA DE SERVIÇOS --- */
 
 .servicos-container {
-    background-color: #FDF2F2 !important; /* Fundo rosa claro padrão do projeto */
+    background-color: var(--background-color) !important;
     padding: 40px 20px;
     display: flex;
     flex-direction: column;
@@ -574,7 +582,7 @@ footer {
 
 /* Cartão Individual de Serviço */
 .servico-card {
-    background-color: #FFFFFF;
+    background-color: var(--portal-surface);
     border-radius: 12px;
     padding: 30px 20px;
     width: 320px;
@@ -600,9 +608,307 @@ footer {
     margin: 0 0 25px 0;
 }
 
+.portal-carousel-section {
+    padding: 24px 10%;
+}
+
+.portal-carousel:empty {
+    display: none;
+}
+
+.portal-carousel {
+    position: relative;
+    max-width: 1100px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 12px;
+    background: var(--portal-surface);
+}
+
+.portal-carousel-image {
+    display: block;
+    width: 100%;
+    max-height: 460px;
+    object-fit: cover;
+}
+
+.portal-carousel-caption {
+    margin: 0;
+    padding: 12px 18px;
+    color: var(--text-dark);
+}
+
+.portal-carousel-control {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 0;
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    font-size: 30px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.portal-carousel-previous { left: 14px; }
+.portal-carousel-next { right: 14px; }
+
+.portal-services-link {
+    display: inline-block;
+    margin-top: 22px;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.portal-service-card-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.portal-service-card {
+    width: 190px;
+    min-height: 110px;
+    padding: 20px;
+    border-radius: 8px;
+    background: var(--portal-surface);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.portal-service-card h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+}
+
+.portal-service-card p {
+    line-height: 1.45;
+}
+
+.portal-service-link {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.portal-admin-container {
+    min-height: 70vh;
+    padding: 40px 20px 60px;
+    background: var(--background-color);
+    color: var(--text-dark);
+}
+
+.portal-admin-heading,
+.portal-admin-section {
+    box-sizing: border-box;
+    width: min(100%, 1000px);
+    margin: 0 auto 24px;
+}
+
+.portal-admin-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 24px;
+    border-radius: 12px;
+    background: var(--portal-surface);
+}
+
+.portal-admin-heading h1,
+.portal-admin-section h2 {
+    margin: 0 0 8px;
+    color: var(--primary-color);
+}
+
+.portal-admin-heading p,
+.portal-admin-section-heading p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+.portal-admin-eyebrow {
+    margin-bottom: 8px !important;
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+.portal-admin-back,
+.portal-admin-button {
+    display: inline-block;
+    border: 0;
+    border-radius: 6px;
+    padding: 11px 16px;
+    background: var(--primary-color);
+    color: #fff;
+    font: inherit;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.portal-admin-button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.portal-admin-button-danger {
+    background: #9B2C2C;
+}
+
+.portal-admin-section {
+    padding: 24px;
+    border-radius: 12px;
+    background: var(--portal-surface);
+}
+
+.portal-admin-section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.portal-edit-badge {
+    flex: 0 0 auto;
+    padding: 7px 10px;
+    border-radius: 20px;
+    background: #E9F4DF;
+    color: var(--primary-color);
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.portal-theme-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 18px;
+    align-items: end;
+}
+
+.portal-theme-grid label,
+.portal-upload-form,
+.portal-carousel-form label {
+    display: grid;
+    gap: 8px;
+    font-weight: bold;
+}
+
+.portal-theme-grid input[type="color"] {
+    width: 100%;
+    height: 44px;
+    border: 1px solid var(--portal-border);
+    border-radius: 6px;
+    padding: 3px;
+    background: #fff;
+}
+
+.portal-upload-form {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+}
+
+.portal-carousel-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px;
+    align-items: end;
+}
+
+.portal-carousel-form input[type="text"],
+.portal-carousel-form input[type="file"],
+.portal-user-form input,
+.portal-user-form select {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 42px;
+    border: 1px solid var(--portal-border);
+    border-radius: 6px;
+    padding: 8px;
+    font: inherit;
+}
+
+.portal-user-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px;
+    align-items: end;
+}
+
+.portal-user-form label {
+    display: grid;
+    gap: 8px;
+    font-weight: bold;
+}
+
+.portal-admin-carousel-grid,
+.portal-admin-services {
+    display: grid;
+    gap: 14px;
+    margin-top: 20px;
+}
+
+.portal-admin-carousel-grid {
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+
+.portal-admin-carousel-card {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+    padding: 12px;
+    border: 1px solid var(--portal-border);
+    border-radius: 8px;
+}
+
+.portal-admin-carousel-card img {
+    width: 100%;
+    height: 150px;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
+.portal-admin-carousel-card p,
+.portal-admin-service-row p {
+    margin: 0;
+}
+
+.portal-admin-service-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    padding: 16px;
+    border: 1px solid var(--portal-border);
+    border-radius: 8px;
+}
+
+.portal-admin-service-row h3 {
+    margin: 0 0 6px;
+    color: var(--primary-color);
+}
+
+@media (max-width: 640px) {
+    .portal-admin-heading,
+    .portal-admin-section-heading,
+    .portal-admin-service-row {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .portal-admin-heading {
+        display: flex;
+    }
+
+    .portal-upload-form {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* Botão Verde dos Serviços */
 .btn-servico.verde {
-    background-color: #8EB34E; /* O verde padrão dos seus botões */
+    background-color: var(--accent-color);
     color: #FFFFFF;
     text-decoration: none;
     padding: 10px 35px;
@@ -620,7 +926,7 @@ footer {
 /* --- ESTILIZAÇÃO DOS PAINÉIS (ADMIN E FUNCIONÁRIO) --- */
 
 .dashboard-container {
-    background-color: #FDF2F2; /* Fundo rosa claro */
+    background-color: var(--background-color);
     padding: 40px 20px;
     display: flex;
     flex-direction: column;

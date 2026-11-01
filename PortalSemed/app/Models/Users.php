@@ -17,6 +17,10 @@ class Users
     // CREATE
     public function criar(array $data): bool
     {
+        if (!in_array($data['role'] ?? null, ['admin', 'funcionario'], true)) {
+            throw new \InvalidArgumentException('Perfil de usuário inválido.');
+        }
+
         $senhaHash = password_hash($data['password'], PASSWORD_ARGON2ID);
 
         $sql = 
@@ -59,13 +63,15 @@ class Users
         role,
         status
         FROM users 
-        WHERE cpf = :cpf");
+        WHERE regexp_replace(cpf, '[^0-9]', '', 'g') = :cpf
+        ORDER BY id
+        LIMIT 1");
 
-        $stmt->execute([':cpf' => $cpf]);
+        $stmt->execute([':cpf' => preg_replace('/\D/', '', $cpf)]);
         return $stmt->fetch();
     }
 
-    // READ - Buscar credenciais para autenticação
+    // READ - Buscar todas as contas associadas ao CPF normalizado
     public function buscarCredenciaisPorCpf(string $cpf)
     {
         $stmt = $this->pdo->prepare(
@@ -77,12 +83,13 @@ class Users
                 role,
                 status
             FROM users
-            WHERE cpf = :cpf"
+            WHERE regexp_replace(cpf, '[^0-9]', '', 'g') = :cpf
+            ORDER BY id"
         );
 
-        $stmt->execute([':cpf' => $cpf]);
+        $stmt->execute([':cpf' => preg_replace('/\D/', '', $cpf)]);
 
-        return $stmt->fetch();
+        return $stmt->fetchAll();
     }
 
     //READ - Buscar por nome (usado no login)
@@ -186,8 +193,83 @@ class Users
                 status
 
             FROM users
-            WHERE role = 'funcionario'"
+            WHERE role IN ('admin', 'funcionario')
+            ORDER BY role, name"
         );
         return $stmt->fetchAll();
+    }
+
+    public function contarAdministradoresAtivos(): int
+    {
+        $stmt = $this->pdo->query(
+            "SELECT COUNT(*) FROM users WHERE role = 'admin' AND status = TRUE"
+        );
+
+        return (int) $stmt->fetchColumn();
+    }
+
+    public function contarAdministradores(): int
+    {
+        $stmt = $this->pdo->query("SELECT COUNT(*) FROM users WHERE role = 'admin'");
+
+        return (int) $stmt->fetchColumn();
+    }
+
+    public function criarPrimeiroAdministrador(array $data): bool
+    {
+        $this->pdo->beginTransaction();
+        try {
+            $this->pdo->exec('LOCK TABLE users IN EXCLUSIVE MODE');
+            if ($this->contarAdministradores() > 0 || $this->buscarPorCpf($data['cpf'])) {
+                $this->pdo->rollBack();
+                return false;
+            }
+
+            $created = $this->criar([
+                'name' => $data['name'],
+                'cpf' => $data['cpf'],
+                'password' => $data['password'],
+                'role' => 'admin',
+                'status' => true,
+            ]);
+
+            if (!$created) {
+                $this->pdo->rollBack();
+                return false;
+            }
+
+            $this->pdo->commit();
+            return true;
+        } catch (\Throwable $error) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            throw $error;
+        }
+    }
+
+    public function atualizarStatus(int $id, bool $status): bool
+    {
+        $stmt = $this->pdo->prepare(
+            'UPDATE users SET status = :status WHERE id = :id'
+        );
+
+        $stmt->execute([
+            ':id' => $id,
+            ':status' => $status,
+        ]);
+
+        return $stmt->rowCount() > 0;
+    }
+
+    // Atualiza o hash da senha de um usuário específico
+    public function atualizarSenha($id, $novoHash)
+    {
+        $sql = "UPDATE users SET password = :password WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            ':password' => $novoHash,
+            ':id'       => $id
+        ]);
     }
 }

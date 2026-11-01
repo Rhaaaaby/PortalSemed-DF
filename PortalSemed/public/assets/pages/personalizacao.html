@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalizar Portal - SEMED</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/responsive.css">
+</head>
+<body data-required-role="admin">
+    <div id="header"></div>
+
+    <main class="portal-admin-container">
+        <div class="portal-admin-heading">
+            <div>
+                <p class="portal-admin-eyebrow">Área exclusiva de administrador</p>
+                <h1>Personalização do portal</h1>
+                <p>Edite cores, identidade visual, destaques e serviços públicos.</p>
+            </div>
+            <a class="portal-admin-back" href="perfil-admin.html">Voltar ao painel</a>
+        </div>
+
+        <div id="portal-admin-message" class="message" role="status" aria-live="polite"></div>
+
+        <section class="portal-admin-section">
+            <div class="portal-admin-section-heading">
+                <div>
+                    <h2>Aparência</h2>
+                    <p>Escolha as cores usadas no cabeçalho, nos botões, no fundo e nos textos.</p>
+                </div>
+                <span class="portal-edit-badge">Você pode editar</span>
+            </div>
+            <form id="theme-form" class="portal-theme-grid">
+                <label>
+                    Cor principal
+                    <input type="color" name="primary_color" required>
+                </label>
+                <label>
+                    Cor de destaque
+                    <input type="color" name="accent_color" required>
+                </label>
+                <label>
+                    Cor de fundo
+                    <input type="color" name="background_color" required>
+                </label>
+                <label>
+                    Cor do texto
+                    <input type="color" name="text_color" required>
+                </label>
+                <button type="submit" class="portal-admin-button">Salvar cores</button>
+            </form>
+        </section>
+
+        <section class="portal-admin-section">
+            <div class="portal-admin-section-heading">
+                <div>
+                    <h2>Logo do portal</h2>
+                    <p>Envie uma imagem JPG, PNG, WEBP ou GIF de até 5 MB.</p>
+                </div>
+                <span class="portal-edit-badge">Você pode editar</span>
+            </div>
+            <form id="logo-form" class="portal-upload-form">
+                <input type="file" name="logo" accept="image/jpeg,image/png,image/webp,image/gif" required>
+                <button type="submit" class="portal-admin-button">Trocar logo</button>
+            </form>
+        </section>
+
+        <section class="portal-admin-section">
+            <div class="portal-admin-section-heading">
+                <div>
+                    <h2>Imagens em destaque</h2>
+                    <p>Adicione imagens ao carrossel da página inicial ou remova as atuais.</p>
+                </div>
+                <span class="portal-edit-badge">Você pode editar</span>
+            </div>
+            <form id="carousel-form" class="portal-carousel-form">
+                <label>
+                    Imagem
+                    <input type="file" name="image" accept="image/jpeg,image/png,image/webp,image/gif" required>
+                </label>
+                <label>
+                    Texto alternativo
+                    <input type="text" name="alt_text" maxlength="180" required>
+                </label>
+                <label>
+                    Legenda (opcional)
+                    <input type="text" name="caption" maxlength="180">
+                </label>
+                <button type="submit" class="portal-admin-button">Adicionar imagem</button>
+            </form>
+            <div id="portal-admin-carousel" class="portal-admin-carousel-grid"></div>
+        </section>
+
+        <section class="portal-admin-section">
+            <div class="portal-admin-section-heading">
+                <div>
+                    <h2>Serviços do portal</h2>
+                    <p>Escolha quais serviços aparecem publicamente nas páginas inicial e de serviços.</p>
+                </div>
+                <span class="portal-edit-badge">Você pode editar</span>
+            </div>
+            <div id="portal-admin-services" class="portal-admin-services"></div>
+        </section>
+    </main>
+
+    <div id="footer"></div>
+    <script src="/assets/js/include-components.js"></script>
+    <script src="/assets/js/portal-admin.js"></script>
+</body>
+</html>
