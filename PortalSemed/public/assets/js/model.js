@@ -32,7 +32,7 @@ const NoticiaModel = {
                 id: n.id,
                 titulo: n.title,
                 resumo: n.content ? (n.content.substring(0, 100) + (n.content.length > 100 ? '...' : '')) : '',
-                imagem: n.imagem ? `${window.location.origin}/uploads/${n.imagem}` : null
+                imagem: n.imagem ? `${window.location.origin}/images/uploads/${encodeURIComponent(n.imagem)}` : null
             }));
         } catch (error) {
             console.warn("Usando notícias mockadas (motivo: " + error.message + ")");
@@ -43,4 +43,4 @@ const NoticiaModel = {
             ];
         }
     }
-};
+};

@@ -341,7 +341,7 @@ site_services
 site_carousel
 ```
 
-As tabelas `site_settings`, `site_services` e `site_carousel` armazenam a aparência, os serviços publicados e as imagens em destaque da página inicial.
+As tabelas `site_settings`, `site_services` e `site_carousel` armazenam a aparência, os destinos e a visibilidade dos botões da página inicial e as imagens em destaque.
 
 As cores institucionais são alteradas no painel por variáveis visuais controladas; não há campo para inserir CSS livre.
 
@@ -355,9 +355,17 @@ Como existe um volume persistente:
 postgres_data
 ```
 
-Em uma instalação que já possui banco de dados, aplique uma vez a migração `database/migrations/20261015_portal_customization.sql` no banco configurado antes de acessar a personalização visual.
+Em uma instalação que já possui banco de dados, aplique uma vez as migrações em `database/migrations/` no banco configurado antes de usar os recursos correspondentes. A migração `20261106_user_email.sql` deve ser aplicada antes de acessar o login de bancos criados antes da inclusão do e-mail.
 
-O painel fica em `personalizacao.html`, acessível pelo painel de administrador. As operações de gravação exigem um usuário autenticado com a função `admin`; as imagens enviadas aceitam JPG, PNG, WEBP ou GIF e têm limite de 5 MB.
+Com os serviços Docker em execução, aplique-as na ordem indicada:
+
+```bash
+docker compose exec -T app php -r 'require "app/bootstrap.php"; App\Database\Connection::connect()->exec(file_get_contents("database/migrations/20261015_portal_customization.sql"));'
+docker compose exec -T app php -r 'require "app/bootstrap.php"; App\Database\Connection::connect()->exec(file_get_contents("database/migrations/20261101_homepage_links_and_socials.sql"));'
+docker compose exec -T app php -r 'require "app/bootstrap.php"; App\Database\Connection::connect()->exec(file_get_contents("database/migrations/20261106_user_email.sql"));'
+```
+
+O painel fica em `personalizacao.html`, acessível pelo painel de administrador. Além do tema, da logo e do carrossel, ele permite editar os links e a visibilidade dos serviços existentes e os links HTTPS das redes sociais. Em `gerenciar-servicos.html`, administradores e funcionários podem criar serviços (nome, descrição, ícone e link) e editar ou ocultar os cadastrados. Serviços ativos com destino configurado aparecem nas páginas Início e Serviços. Botões sem destino e links sociais vazios não são exibidos. Configure o destino externo de Transparência antes de publicar esse botão. As alterações de tema, logo, carrossel e redes sociais continuam exclusivas de administradores; imagens enviadas aceitam JPG, PNG, WEBP ou GIF e têm limite de 5 MB.
 
 ## Contas e acesso administrativo
 
@@ -365,13 +373,13 @@ O cadastro público está desativado. As únicas funções internas são `admin`
 
 Em produção, publique o portal exclusivamente por HTTPS para que o cookie de sessão seja marcado como `Secure` e protegido durante o transporte.
 
-Para provisionar o primeiro administrador, adicione temporariamente `FIRST_ADMIN_NAME`, `FIRST_ADMIN_CPF` e `FIRST_ADMIN_PASSWORD` (mínimo de 12 caracteres) ao arquivo `.env` e execute dentro do container PHP:
+Para provisionar o primeiro administrador, adicione temporariamente `FIRST_ADMIN_NAME`, `FIRST_ADMIN_CPF`, `FIRST_ADMIN_EMAIL` e `FIRST_ADMIN_PASSWORD` (mínimo de 12 caracteres) ao arquivo `.env` e execute dentro do container PHP:
 
 ```bash
 docker compose exec app php scripts/create-first-admin.php
 ```
 
-O comando só cria o primeiro administrador quando ainda não existe nenhum; ele nunca fica exposto como rota web. Remova as três variáveis do ambiente depois da execução. Contas antigas que usavam token JWT precisarão fazer login novamente.
+O comando só cria o primeiro administrador quando ainda não existe nenhum; ele nunca fica exposto como rota web. Remova as quatro variáveis do ambiente depois da execução. Contas antigas que usavam token JWT precisarão fazer login novamente.
 
 alterações posteriores no `schema.sql` não serão necessariamente aplicadas automaticamente ao banco existente.
 
@@ -578,6 +586,8 @@ public/assets/images/uploads/
 ```
 
 Durante o desenvolvimento, é necessário garantir que o processo PHP possua permissão para gravar nesse diretório.
+
+Imagens de notícias aceitam JPG, PNG, WEBP ou GIF e têm limite de 5 MB. O container PHP configura esses limites de upload; após alterar o `Dockerfile`, reconstrua o serviço com `docker compose up -d --build app`.
 
 O diretório faz parte do volume:
 

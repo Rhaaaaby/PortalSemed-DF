@@ -27,6 +27,7 @@ class Users
         "INSERT INTO users (
         name, 
         cpf, 
+        email,
         password, 
         role, 
         status, 
@@ -35,6 +36,7 @@ class Users
         VALUES (
         :name, 
         :cpf, 
+        :email,
         :password, 
         :role, 
         :status, 
@@ -49,6 +51,7 @@ class Users
             ':password' => $senhaHash,
             ':role' => $data['role'] ?? 'funcionario',
             ':status' => $data['status'] ?? true,
+            ':email' => trim($data['email']),
         ]);
     }
 
@@ -60,6 +63,7 @@ class Users
         id, 
         name, 
         cpf, 
+        email,
         role,
         status
         FROM users 
@@ -71,6 +75,37 @@ class Users
         return $stmt->fetch();
     }
 
+    public function cpfEmUso(string $cpf, ?int $exceptId = null): bool
+    {
+        $sql = "SELECT 1 FROM users
+                WHERE regexp_replace(cpf, '[^0-9]', '', 'g') = :cpf";
+        $params = [':cpf' => preg_replace('/\D/', '', $cpf)];
+        if ($exceptId !== null) {
+            $sql .= ' AND id <> :except_id';
+            $params[':except_id'] = $exceptId;
+        }
+        $sql .= ' LIMIT 1';
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return (bool) $stmt->fetchColumn();
+    }
+
+    public function emailEmUso(string $email, ?int $exceptId = null): bool
+    {
+        $sql = 'SELECT 1 FROM users WHERE LOWER(email) = LOWER(:email)';
+        $params = [':email' => trim($email)];
+        if ($exceptId !== null) {
+            $sql .= ' AND id <> :except_id';
+            $params[':except_id'] = $exceptId;
+        }
+        $sql .= ' LIMIT 1';
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return (bool) $stmt->fetchColumn();
+    }
+
     // READ - Buscar todas as contas associadas ao CPF normalizado
     public function buscarCredenciaisPorCpf(string $cpf)
     {
@@ -79,6 +114,7 @@ class Users
                 id,
                 name,
                 cpf,
+                email,
                 password,
                 role,
                 status
@@ -100,6 +136,7 @@ class Users
         id, 
         name, 
         cpf, 
+        email,
         role,
         status
         FROM users 
@@ -116,12 +153,21 @@ class Users
         id, 
         name, 
         cpf, 
+        email,
         role,
         status
         FROM users 
         WHERE id = :id");
         $stmt->execute([':id' => $id]);
         return $stmt->fetch();
+    }
+
+    public function buscarHashSenhaPorId(int $id): ?string
+    {
+        $stmt = $this->pdo->prepare('SELECT password FROM users WHERE id = :id');
+        $stmt->execute([':id' => $id]);
+        $password = $stmt->fetchColumn();
+        return is_string($password) ? $password : null;
     }
 
     // UPDATE
@@ -153,6 +199,11 @@ class Users
                 $data['password'], 
                 PASSWORD_ARGON2ID
             );
+        }
+
+        if (isset($data['email'])) {
+            $campos[] = 'email = :email';
+            $params[':email'] = trim($data['email']);
         }
 
         if(empty($campos)) {
@@ -189,6 +240,7 @@ class Users
                 id,
                 name,
                 cpf,
+                email,
                 role,
                 status
 
@@ -215,6 +267,7 @@ class Users
         return (int) $stmt->fetchColumn();
     }
 
+    // cria o primeiro administrador do sistema, caso não exista nenhum
     public function criarPrimeiroAdministrador(array $data): bool
     {
         $this->pdo->beginTransaction();
@@ -228,6 +281,7 @@ class Users
             $created = $this->criar([
                 'name' => $data['name'],
                 'cpf' => $data['cpf'],
+                'email' => $data['email'],
                 'password' => $data['password'],
                 'role' => 'admin',
                 'status' => true,
@@ -254,19 +308,17 @@ class Users
             'UPDATE users SET status = :status WHERE id = :id'
         );
 
-        $stmt->execute([
-            ':id' => $id,
-            ':status' => $status,
-        ]);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':status', $status, PDO::PARAM_BOOL);
 
-        return $stmt->rowCount() > 0;
+        return $stmt->execute();
     }
 
     // Atualiza o hash da senha de um usuário específico
     public function atualizarSenha($id, $novoHash)
     {
         $sql = "UPDATE users SET password = :password WHERE id = :id";
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             ':password' => $novoHash,
             ':id'       => $id

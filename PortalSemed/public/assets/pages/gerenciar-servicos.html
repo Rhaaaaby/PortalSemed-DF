@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Serviços - SEMED</title>
+    <link rel="stylesheet" href="/assets/css/style.css?v=20261105-services">
+    <link rel="stylesheet" href="/assets/css/responsive.css">
+</head>
+<body>
+    <div id="header"></div>
+
+    <main class="portal-admin-container">
+        <div class="portal-admin-heading">
+            <div>
+                <p class="portal-admin-eyebrow">Acesso para administradores e funcionários</p>
+                <h1>Gerenciar serviços</h1>
+                <p>Crie serviços e edite os botões exibidos nas páginas Início e Serviços.</p>
+            </div>
+            <a id="services-admin-back" class="portal-admin-back" href="/">Voltar ao portal</a>
+        </div>
+
+        <div id="services-admin-message" class="message" role="status" aria-live="polite"></div>
+
+        <section class="portal-admin-section">
+            <div class="portal-admin-section-heading">
+                <div>
+                    <h2>Adicionar serviço</h2>
+                    <p>Informe o endereço interno ou um link HTTPS. O serviço novo será publicado nas duas páginas.</p>
+                </div>
+            </div>
+            <form id="create-service-form" class="portal-user-form">
+                <label>
+                    Nome
+                    <input name="title" type="text" maxlength="100" required>
+                </label>
+                <label>
+                    Descrição
+                    <input name="description" type="text" maxlength="300" required>
+                </label>
+                <label>
+                    Ícone (opcional)
+                    <input name="icon" type="text" maxlength="16" value="🔗">
+                </label>
+                <label>
+                    Link
+                    <input name="href" type="text" maxlength="255" placeholder="contate-me.html ou https://..." required>
+                </label>
+                <button type="submit" class="portal-admin-button">Adicionar serviço</button>
+            </form>
+        </section>
+
+        <section class="portal-admin-section">
+            <div class="portal-admin-section-heading">
+                <div>
+                    <h2>Serviços cadastrados</h2>
+                    <p>Edite os dados ou oculte/exiba um serviço sem removê-lo do cadastro.</p>
+                </div>
+            </div>
+            <div id="services-admin-list" class="portal-admin-services"></div>
+        </section>
+    </main>
+
+    <div id="footer"></div>
+    <script src="/assets/js/include-components.js"></script>
+    <script src="/assets/js/services-admin.js"></script>
+</body>
+</html>

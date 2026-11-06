@@ -20,17 +20,24 @@ class UserController
     {
         $name = $data['name'] ?? null;
         $cpfInput = $data['cpf'] ?? null;
+        $email = $data['email'] ?? null;
         $password = $data['password'] ?? null;
 
-        if (!is_string($name) || !is_string($cpfInput) || !is_string($password) ||
-            trim($name) === '' || $cpfInput === '' || $password === '') {
-            json_response(['erro' => 'Nome, CPF e senha são obrigatórios.'], 400);
+        if (!is_string($name) || !is_string($cpfInput) || !is_string($email) ||
+            !is_string($password) || trim($name) === '' || $cpfInput === '' ||
+            trim($email) === '' || $password === '') {
+            json_response(['erro' => 'Nome, CPF, e-mail e senha são obrigatórios.'], 400);
         }
 
         $name = trim($name);
         $cpf = preg_replace('/\D/', '', $cpfInput);
+        $email = trim($email);
         if (strlen($name) > 100 || !preg_match('/^\d{11}$/', $cpf)) {
             json_response(['erro' => 'Informe um nome de até 100 caracteres e um CPF válido.'], 400);
+        }
+
+        if (strlen($email) > 100 || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            json_response(['erro' => 'Informe um e-mail válido de até 100 caracteres.'], 400);
         }
 
         if (strlen($password) < 12) {
@@ -41,6 +48,10 @@ class UserController
             json_response(['erro' => 'Este CPF já está cadastrado.'], 409);
         }
 
+        if ($this->model->emailEmUso($email)) {
+            json_response(['erro' => 'Este e-mail já está cadastrado.'], 409);
+        }
+
         $role = $adminCreation ? ($data['role'] ?? null) : 'funcionario';
         if (!in_array($role, ['admin', 'funcionario'], true)) {
             json_response(['erro' => 'Perfil de usuário inválido.'], 400);
@@ -49,6 +60,7 @@ class UserController
         $sucesso = $this->model->criar([
             'name' => $name,
             'cpf' => $cpf,
+            'email' => $email,
             'password' => $password,
             'role' => $role,
             'status' => true,
@@ -177,11 +189,60 @@ class UserController
     //4. Função para atualizar o perfil do usuário 
     public function atualizar(int $user_id, array $data)
     {
-        $sucesso = $this->model->atualizar($user_id, $data);
+        $name = $data['name'] ?? null;
+        $cpfInput = $data['cpf'] ?? null;
+        $email = $data['email'] ?? null;
+        $password = $data['password'] ?? '';
+        $currentPassword = $data['current_password'] ?? '';
+
+        if (!is_string($name) || !is_string($cpfInput) || !is_string($email) ||
+            !is_string($password) || !is_string($currentPassword) ||
+            trim($name) === '' || $cpfInput === '' || trim($email) === '') {
+            json_response(['erro' => 'Nome, CPF e e-mail são obrigatórios.'], 400);
+        }
+
+        $name = trim($name);
+        $cpf = preg_replace('/\D/', '', $cpfInput);
+        $email = trim($email);
+        if (strlen($name) > 100 || !preg_match('/^\d{11}$/', $cpf)) {
+            json_response(['erro' => 'Informe um nome de até 100 caracteres e um CPF válido.'], 400);
+        }
+
+        if (strlen($email) > 100 || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            json_response(['erro' => 'Informe um e-mail válido de até 100 caracteres.'], 400);
+        }
+
+        if ($this->model->cpfEmUso($cpf, $user_id)) {
+            json_response(['erro' => 'Este CPF já está cadastrado.'], 409);
+        }
+
+        if ($this->model->emailEmUso($email, $user_id)) {
+            json_response(['erro' => 'Este e-mail já está cadastrado.'], 409);
+        }
+
+        $updateData = [
+            'name' => $name,
+            'cpf' => $cpf,
+            'email' => $email,
+        ];
+        if ($password !== '') {
+            if (strlen($password) < 12) {
+                json_response(['erro' => 'A nova senha deve ter no mínimo 12 caracteres.'], 400);
+            }
+
+            $storedPassword = $this->model->buscarHashSenhaPorId($user_id);
+            if (!$storedPassword || $currentPassword === '' ||
+                !password_verify($currentPassword, $storedPassword)) {
+                json_response(['erro' => 'Informe a senha atual correta para alterá-la.'], 400);
+            }
+            $updateData['password'] = $password;
+        }
+
+        $sucesso = $this->model->atualizar($user_id, $updateData);
         if ($sucesso) {
-            json_response(['mensagem' => 'Perfil atualizado com sucesso']);
+            json_response(['mensagem' => 'Perfil atualizado com sucesso.']);
         } else {
-            json_response(['erro' => 'Erro ao atualizar perfil'], 500);
+            json_response(['erro' => 'Não foi possível atualizar o perfil.'], 500);
         }
     }
 
@@ -234,64 +295,24 @@ class UserController
         json_response(['mensagem' => 'Status do usuário atualizado.']);
     }
 
-    // Função para alterar a senha do usuário logado
-    public function alterarSenha(array $data)
+    public function alterarSenha(int $userId, array $data): void
     {
-        // 1. Capturar o token JWT enviado no cabeçalho HTTP Authorization
-        $headers = getallheaders();
-        $authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';
-
-        if (!$authHeader || !preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-            http_response_code(401);
-            echo json_encode(['mensagem' => 'Acesso não autorizado. Token ausente.']);
-            return;
+        $currentPassword = $data['current_password'] ?? null;
+        $newPassword = $data['password'] ?? null;
+        if (!is_string($currentPassword) || !is_string($newPassword) ||
+            $currentPassword === '' || strlen($newPassword) < 12) {
+            json_response(['erro' => 'Informe a senha atual e uma nova senha com no mínimo 12 caracteres.'], 400);
         }
 
-        $jwt = $matches[1];
-
-        try {
-            // 2. Decodificar e validar o token JWT
-            $secretKey = $_ENV['JWT_SECRET'] ?? 'sua_chave_secreta_aqui';
-            $decoded = \Firebase\JWT\JWT::decode($jwt, new \Firebase\JWT\Key($secretKey, 'HS256'));
-            $userId = $decoded->sub ?? $decoded->id; // ID do usuário do token
-        } catch (\Exception $e) {
-            http_response_code(401);
-            echo json_encode(['mensagem' => 'Token inválido ou expirado.']);
-            return;
+        $storedPassword = $this->model->buscarHashSenhaPorId($userId);
+        if (!$storedPassword || !password_verify($currentPassword, $storedPassword)) {
+            json_response(['erro' => 'A senha atual está incorreta.'], 400);
         }
 
-        // 3. Validar se os campos do formulário foram preenchidos
-        $senhaAtual = $data['senhaAtual'] ?? '';
-        $novaSenha = $data['novaSenha'] ?? '';
-
-        if (empty($senhaAtual) || empty($novaSenha)) {
-            http_response_code(400);
-            echo json_encode(['mensagem' => 'Preencha a senha atual e a nova senha.']);
-            return;
+        if (!$this->model->atualizar($userId, ['password' => $newPassword])) {
+            json_response(['erro' => 'Não foi possível atualizar a senha.'], 500);
         }
 
-        // 4. Buscar a senha atual do usuário no banco de dados
-        $usuario = $this->model->buscarPorId($userId); // Certifique-se que o Model possui essa busca
-
-        if (!$usuario || !password_verify($senhaAtual, $usuario['password'])) {
-            http_response_code(400);
-            echo json_encode(['mensagem' => 'A senha atual está incorreta.']);
-            return;
-        }
-
-    
-
-        // 5. Gerar o hash seguro da nova senha com BCRYPT
-        $novoHash = password_hash($novaSenha, PASSWORD_BCRYPT);
-
-        // 6. Atualizar a senha no banco de dados via Model
-        $atualizou = $this->model->atualizarSenha($userId, $novoHash);
-
-        if ($atualizou) {
-            echo json_encode(['mensagem' => 'Senha alterada com sucesso!']);
-        } else {
-            http_response_code(500);
-            echo json_encode(['mensagem' => 'Erro ao atualizar a senha no banco de dados.']);
-        }
+        json_response(['mensagem' => 'Senha alterada com sucesso.']);
     }
 }

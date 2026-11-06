@@ -24,7 +24,14 @@ async function portalAdminRequest(endpoint, options = {}) {
         credentials: 'same-origin',
     });
 
-    const payload = await response.json();
+    const responseText = await response.text();
+    let payload;
+    try {
+        payload = JSON.parse(responseText);
+    } catch {
+        throw new Error(`O servidor retornou uma resposta inválida (HTTP ${response.status}). Consulte os logs.`);
+    }
+
     if (response.status === 401) {
         window.location.href = '/login.html';
     }
@@ -37,9 +44,12 @@ async function portalAdminRequest(endpoint, options = {}) {
 
 function applyPortalAdminSettings(settings) {
     const form = document.getElementById('theme-form');
+    const socialForm = document.getElementById('social-form');
     for (const [field, value] of Object.entries(settings)) {
         const input = form.elements.namedItem(field);
         if (input) input.value = value;
+        const socialInput = socialForm.elements.namedItem(field);
+        if (socialInput) socialInput.value = value;
     }
 
     const root = document.documentElement;
@@ -94,27 +104,56 @@ function makeAdminServiceRow(service) {
     description.textContent = service.description;
     details.append(title, description);
 
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = service.is_public ? 'portal-admin-button portal-admin-button-danger' : 'portal-admin-button';
-    button.textContent = service.is_public ? 'Esconder serviço' : 'Tornar público';
-    button.setAttribute('aria-pressed', String(service.is_public));
-    button.addEventListener('click', async () => {
-        button.disabled = true;
+    const controls = document.createElement('div');
+    controls.className = 'portal-admin-service-controls';
+
+    const hrefInput = document.createElement('input');
+    hrefInput.type = 'text';
+    hrefInput.maxLength = 255;
+    hrefInput.value = service.href;
+    hrefInput.setAttribute('aria-label', `Link de destino de ${service.title}`);
+
+    const saveHref = document.createElement('button');
+    saveHref.type = 'button';
+    saveHref.className = 'portal-admin-button';
+    saveHref.textContent = 'Salvar link';
+    saveHref.addEventListener('click', async () => {
+        saveHref.disabled = true;
+        try {
+            await portalAdminRequest(`admin/portal/services/${encodeURIComponent(service.slug)}`, {
+                method: 'PATCH',
+                body: JSON.stringify({ is_public: service.is_public, href: hrefInput.value }),
+            });
+            await loadPortalAdminContent();
+            showPortalAdminMessage('Link atualizado com sucesso.');
+        } catch (error) {
+            saveHref.disabled = false;
+            showPortalAdminMessage(error.message, 'error');
+        }
+    });
+
+    const visibilityButton = document.createElement('button');
+    visibilityButton.type = 'button';
+    visibilityButton.className = service.is_public ? 'portal-admin-button portal-admin-button-danger' : 'portal-admin-button';
+    visibilityButton.textContent = service.is_public ? 'Ocultar botão' : 'Exibir botão';
+    visibilityButton.setAttribute('aria-pressed', String(service.is_public));
+    visibilityButton.addEventListener('click', async () => {
+        visibilityButton.disabled = true;
         try {
             await portalAdminRequest(`admin/portal/services/${encodeURIComponent(service.slug)}`, {
                 method: 'PATCH',
                 body: JSON.stringify({ is_public: !service.is_public }),
             });
             await loadPortalAdminContent();
-            showPortalAdminMessage('Visibilidade do serviço atualizada.');
+            showPortalAdminMessage('Visibilidade do botão atualizada.');
         } catch (error) {
-            button.disabled = false;
+            visibilityButton.disabled = false;
             showPortalAdminMessage(error.message, 'error');
         }
     });
 
-    row.append(details, button);
+    controls.append(hrefInput, saveHref, visibilityButton);
+    row.append(details, controls);
     return row;
 }
 
@@ -183,6 +222,21 @@ window.addEventListener('DOMContentLoaded', async () => {
             event.currentTarget.reset();
             await loadPortalAdminContent();
             showPortalAdminMessage('Imagem adicionada ao carrossel.');
+        } catch (error) {
+            showPortalAdminMessage(error.message, 'error');
+        }
+    });
+
+    document.getElementById('social-form').addEventListener('submit', async event => {
+        event.preventDefault();
+        const links = Object.fromEntries(new FormData(event.currentTarget));
+        try {
+            await portalAdminRequest('admin/portal/social-links', {
+                method: 'PUT',
+                body: JSON.stringify(links),
+            });
+            await loadPortalAdminContent();
+            showPortalAdminMessage('Links das redes sociais atualizados.');
         } catch (error) {
             showPortalAdminMessage(error.message, 'error');
         }

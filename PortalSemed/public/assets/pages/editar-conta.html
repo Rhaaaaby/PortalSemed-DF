@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar minha conta - SEMED</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/responsive.css">
+</head>
+<body>
+    <div id="header"></div>
+
+    <main class="portal-admin-container">
+        <div class="portal-admin-heading">
+            <div>
+                <p class="portal-admin-eyebrow">Configurações pessoais</p>
+                <h1>Editar minha conta</h1>
+                <p>Atualize seus dados pessoais. Para trocar a senha, informe a senha atual.</p>
+            </div>
+            <a class="portal-admin-back" href="#" data-dashboard-link>Voltar ao painel</a>
+        </div>
+
+        <section class="portal-admin-section">
+            <div id="profile-message" class="message" role="status" aria-live="polite"></div>
+            <form id="profile-form" class="portal-user-form">
+                <label>Nome completo<input name="name" type="text" maxlength="100" autocomplete="name" required></label>
+                <label>CPF<input name="cpf" type="text" inputmode="numeric" maxlength="14" autocomplete="off" required></label>
+                <label>E-mail<input name="email" type="email" maxlength="100" autocomplete="email" required></label>
+                <label>Senha atual (necessária para trocar a senha)<input name="current_password" type="password" autocomplete="current-password"></label>
+                <label>Nova senha (mínimo de 12 caracteres)<input name="password" type="password" minlength="12" autocomplete="new-password"></label>
+                <label>Confirmar nova senha<input name="confirm_password" type="password" minlength="12" autocomplete="new-password"></label>
+                <button type="submit" class="portal-admin-button">Salvar dados da conta</button>
+            </form>
+        </section>
+    </main>
+
+    <div id="footer"></div>
+    <script src="/assets/js/include-components.js"></script>
+    <script src="/assets/js/profile.js"></script>
+</body>
+</html>

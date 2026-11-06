@@ -18,57 +18,15 @@
         <div class="welcome-banner"
             style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
             <h1>Olá, <span data-user-name>Funcionário</span>!</h1>
-
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <button type="button" id="btnAbrirTrocaSenha"
-                    onclick="document.getElementById('containerTrocaSenha').style.display='block';"
-                    style="background-color: #2c5282; color: #fff; border: none; border-radius: 6px; cursor: pointer; padding: 10px 18px; font-size: 14px; white-space: nowrap;">
-                    Alterar Senha
-                </button>
-
-                <button onclick="localStorage.clear(); window.location.href='login.html';" class="btn-verde-claro"
-                    style="background-color: #dc2626 !important; max-width: 120px; margin: 0 !important; border-radius: 6px;">
-                    Sair
-                </button>
-            </div>
-
-
-            <!-- Caixa/Modal de alteração de senha -->
-            <div id="containerTrocaSenha"
-                style="display: none; background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ccc; max-width: 400px; margin-bottom: 20px;">
-                <h3>Alterar Senha</h3>
-                <form id="formTrocaSenha">
-                    <div style="margin-bottom: 10px;">
-                        <label for="senhaAtual">Senha Atual:</label><br>
-                        <input type="password" id="senhaAtual" required
-                            style="width: 100%; padding: 8px; margin-top: 5px;">
-                    </div>
-                    <div style="margin-bottom: 10px;">
-                        <label for="novaSenha">Nova Senha:</label><br>
-                        <input type="password" id="novaSenha" required
-                            style="width: 100%; padding: 8px; margin-top: 5px;">
-                    </div>
-                    <div style="margin-bottom: 10px;">
-                        <label for="confirmarSenha">Confirmar Nova Senha:</label><br>
-                        <input type="password" id="confirmarSenha" required
-                            style="width: 100%; padding: 8px; margin-top: 5px;">
-                    </div>
-                    <div style="margin-top: 15px;">
-                        <button type="submit"
-                            style="padding: 8px 15px; background-color: #2b8a3e; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                            Salvar Nova Senha
-                        </button>
-                        <button type="button" id="btnCancelarTrocaSenha"
-                            onclick="document.getElementById('containerTrocaSenha').style.display='none';"
-                            style="padding: 8px 15px; background-color: #a0aec0; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 5px;">
-                            Cancelar
-                        </button>
-                    </div>
-                </form>
-            </div>
         </div>
 
         <div class="admin-grid">
+            <a href="/editar-conta.html" style="text-decoration: none; color: inherit;">
+                <div class="admin-card">
+                    <h3>👤 Editar minha conta</h3>
+                    <p>Atualizar seus dados pessoais e senha</p>
+                </div>
+            </a>
             <a href="documentos.html" style="text-decoration: none; color: inherit;">
                 <div class="admin-card">
                     <h3>📁 Fazer Upload</h3>
@@ -87,12 +45,17 @@
                     <p>Atualizar informações publicadas</p>
                 </div>
             </a>
+            <a href="gerenciar-servicos.html" style="text-decoration: none; color: inherit;">
+                <div class="admin-card">
+                    <h3>🔗 Gerenciar serviços</h3>
+                    <p>Criar serviços e editar os botões da página inicial</p>
+                </div>
+            </a>
         </div>
 
     </main>
     <div id="footer"></div>
     <script src="/assets/js/include-components.js"></script>
-    <script src="/assets/js/auth.js"></script>
 </body>
 
 </html>

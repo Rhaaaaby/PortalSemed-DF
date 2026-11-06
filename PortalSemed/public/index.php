@@ -75,15 +75,21 @@ function requirePageCsrf(): void
     }
 }
 
-if (preg_match('#^/assets/pages/(perfil-admin|personalizacao|gerenciar-usuarios|perfil-funcionario)\.html$#', $request, $privateAlias)) {
-    $requiredRole = in_array($privateAlias[1], ['perfil-admin', 'personalizacao', 'gerenciar-usuarios'], true)
-        ? 'admin'
-        : 'funcionario';
+$privatePageRoles = [
+    'perfil-admin' => ['admin'],
+    'personalizacao' => ['admin'],
+    'gerenciar-usuarios' => ['admin'],
+    'perfil-funcionario' => ['funcionario'],
+    'gerenciar-servicos' => ['admin', 'funcionario'],
+    'editar-conta' => ['admin', 'funcionario'],
+];
+
+if (preg_match('#^/assets/pages/(perfil-admin|personalizacao|gerenciar-usuarios|perfil-funcionario|gerenciar-servicos|editar-conta)\.html$#', $request, $privateAlias)) {
     $user = \App\Security\Auth::currentUser();
     if (!$user) {
         redirectToLogin();
     }
-    if ($user['role'] !== $requiredRole) {
+    if (!in_array($user['role'], $privatePageRoles[$privateAlias[1]], true)) {
         header('Location: ' . ($user['role'] === 'admin' ? '/perfil-admin.html' : '/perfil-funcionario.html'));
         exit;
     }
@@ -168,6 +174,8 @@ if (preg_match('#^/([^/]+\.html)$#', $request, $matches)) {
         'personalizacao.html' => 'admin',
         'gerenciar-usuarios.html' => 'admin',
         'perfil-funcionario.html' => 'funcionario',
+        'gerenciar-servicos.html' => ['admin', 'funcionario'],
+        'editar-conta.html' => ['admin', 'funcionario'],
     ];
 
     if (isset($privatePages[$matches[1]])) {
@@ -176,7 +184,10 @@ if (preg_match('#^/([^/]+\.html)$#', $request, $matches)) {
             redirectToLogin();
         }
 
-        if ($user['role'] !== $privatePages[$matches[1]]) {
+        $allowedRoles = is_array($privatePages[$matches[1]])
+            ? $privatePages[$matches[1]]
+            : [$privatePages[$matches[1]]];
+        if (!in_array($user['role'], $allowedRoles, true)) {
             header('Location: ' . ($user['role'] === 'admin' ? '/perfil-admin.html' : '/perfil-funcionario.html'));
             exit;
         }
@@ -200,22 +211,26 @@ if (preg_match('#^/(css|js|img|images|components|assets|resources)/(.*)$#', $req
     } elseif ($prefix === 'js') {
         $mapped = __DIR__ . '/assets/js/' . $rest;
     } elseif ($prefix === 'img' || $prefix === 'images') {
+        $segments = array_map('rawurldecode', explode('/', $rest));
+        foreach ($segments as $segment) {
+            if ($segment === '' || $segment === '.' || $segment === '..' ||
+                str_contains($segment, '/') || str_contains($segment, '\\') ||
+                str_contains($segment, "\0")) {
+                http_response_code(404);
+                exit;
+            }
+        }
+        $rest = implode('/', $segments);
         $mapped = __DIR__ . '/assets/images/' . $rest;
     } elseif ($prefix === 'components') {
         $mapped = __DIR__ . '/assets/components/' . $rest;
     } elseif ($prefix === 'assets') {
-        if (preg_match('#^pages/(perfil-admin|personalizacao|gerenciar-usuarios|perfil-funcionario)\.html$#', $rest, $pageMatch)) {
-            $roles = [
-                'perfil-admin' => 'admin',
-                'personalizacao' => 'admin',
-                'gerenciar-usuarios' => 'admin',
-                'perfil-funcionario' => 'funcionario',
-            ];
+        if (preg_match('#^pages/(perfil-admin|personalizacao|gerenciar-usuarios|perfil-funcionario|gerenciar-servicos|editar-conta)\.html$#', $rest, $pageMatch)) {
             $user = \App\Security\Auth::currentUser();
             if (!$user) {
                 redirectToLogin();
             }
-            if ($user['role'] !== $roles[$pageMatch[1]]) {
+            if (!in_array($user['role'], $privatePageRoles[$pageMatch[1]], true)) {
                 header('Location: ' . ($user['role'] === 'admin' ? '/perfil-admin.html' : '/perfil-funcionario.html'));
                 exit;
             }
