@@ -15,6 +15,10 @@ function createPortalService(service, isServicePage = false) {
         link.className = 'btn-servico verde';
         link.href = service.href;
         link.textContent = 'Acessar';
+        if (/^https:\/\//i.test(service.href)) {
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+        }
         card.appendChild(link);
         return card;
     }
@@ -22,6 +26,10 @@ function createPortalService(service, isServicePage = false) {
     const wrapper = document.createElement('a');
     wrapper.className = 'portal-service-card-link';
     wrapper.href = service.href;
+    if (/^https:\/\//i.test(service.href)) {
+        wrapper.target = '_blank';
+        wrapper.rel = 'noopener noreferrer';
+    }
     wrapper.setAttribute('aria-label', `Acessar ${service.title}`);
     wrapper.appendChild(card);
     return wrapper;

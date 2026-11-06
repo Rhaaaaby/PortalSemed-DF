@@ -7,4 +7,6 @@ RUN apk add --no-cache \
     pdo_pgsql \
     pgsql
 
+RUN printf 'upload_max_filesize=5M\npost_max_size=10M\n' > /usr/local/etc/php/conf.d/uploads.ini
+
 WORKDIR /var/www/portalsemed

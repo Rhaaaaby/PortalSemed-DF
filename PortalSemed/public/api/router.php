@@ -16,6 +16,17 @@ if (APP_ENV === 'production') {
     error_reporting(E_ALL);
 }
 
+set_exception_handler(static function (Throwable $exception): void {
+    error_log((string) $exception);
+    http_response_code(500);
+    header('Content-Type: application/json; charset=utf-8');
+    header('Cache-Control: no-store, private');
+    echo json_encode(
+        ['erro' => 'Erro interno ao processar a requisição. Consulte os logs do servidor.'],
+        JSON_UNESCAPED_UNICODE
+    );
+});
+
 // ================== HELPERS ==================
 // 1. Função para enviar resposta JSON
 function json_response($data, $status = 200) {
@@ -123,6 +134,11 @@ if ($uri === 'admin/portal/settings' && $method === 'PUT') {
     $portalCtrl->updateSettings(get_json_input());
 }
 
+if ($uri === 'admin/portal/social-links' && $method === 'PUT') {
+    requireAdmin();
+    $portalCtrl->updateSocialLinks(get_json_input());
+}
+
 if ($uri === 'admin/portal/logo' && $method === 'POST') {
     requireAdmin();
     $portalCtrl->uploadLogo();
@@ -140,6 +156,21 @@ if (preg_match('/^admin\/portal\/carousel\/(\d+)$/', $uri, $matches) && $method 
 
 if (preg_match('/^admin\/portal\/services\/([a-z0-9-]+)$/', $uri, $matches) && $method === 'PATCH') {
     requireAdmin();
+    $portalCtrl->updateService($matches[1], get_json_input());
+}
+
+if ($uri === 'portal/services' && $method === 'GET') {
+    auth();
+    $portalCtrl->manageServices();
+}
+
+if ($uri === 'portal/services' && $method === 'POST') {
+    auth();
+    $portalCtrl->createService(get_json_input());
+}
+
+if (preg_match('/^portal\/services\/([a-z0-9-]+)$/', $uri, $matches) && $method === 'PATCH') {
+    auth();
     $portalCtrl->updateService($matches[1], get_json_input());
 }
 
@@ -201,10 +232,8 @@ if ($uri === 'noticias' && $method === 'POST') {
 }
 
 if ($uri === 'alterar-senha' && $method === 'POST') {
-    $controller = new \App\Controllers\UserController();
-    $input = json_decode(file_get_contents('php://input'), true);
-    $controller->alterarSenha($input);
-    exit;
+    $user = auth();
+    $userCtrl->alterarSenha((int) $user['id'], get_json_input());
 }
 
 // -------- 404 --------

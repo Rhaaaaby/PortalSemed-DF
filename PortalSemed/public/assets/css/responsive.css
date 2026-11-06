@@ -155,9 +155,8 @@ header nav a:focus-visible,
 
 @media (max-width: 760px) {
     .hero {
-        height: auto;
-        min-height: 220px;
-        padding: 48px 20px;
+        height: 220px;
+        padding: 0;
     }
 
     .hero h1 {

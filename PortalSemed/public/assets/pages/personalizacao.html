@@ -94,12 +94,37 @@
         <section class="portal-admin-section">
             <div class="portal-admin-section-heading">
                 <div>
-                    <h2>Serviços do portal</h2>
-                    <p>Escolha quais serviços aparecem publicamente nas páginas inicial e de serviços.</p>
+                    <h2>Links da página inicial</h2>
+                    <p>Edite os destinos de Calendário, Documentos e Transparência e escolha quais botões ficam visíveis. Um botão sem destino configurado não aparece no portal.</p>
                 </div>
                 <span class="portal-edit-badge">Você pode editar</span>
             </div>
             <div id="portal-admin-services" class="portal-admin-services"></div>
+        </section>
+
+        <section class="portal-admin-section">
+            <div class="portal-admin-section-heading">
+                <div>
+                    <h2>Redes sociais</h2>
+                    <p>Configure os links HTTPS dos botões flutuantes. Deixe um campo vazio para ocultar o botão correspondente.</p>
+                </div>
+                <span class="portal-edit-badge">Você pode editar</span>
+            </div>
+            <form id="social-form" class="portal-carousel-form">
+                <label>
+                    WhatsApp
+                    <input type="url" name="whatsapp_url" maxlength="255" placeholder="https://wa.me/..." >
+                </label>
+                <label>
+                    Instagram
+                    <input type="url" name="instagram_url" maxlength="255" placeholder="https://instagram.com/..." >
+                </label>
+                <label>
+                    Facebook
+                    <input type="url" name="facebook_url" maxlength="255" placeholder="https://facebook.com/..." >
+                </label>
+                <button type="submit" class="portal-admin-button">Salvar links sociais</button>
+            </form>
         </section>
     </main>
 

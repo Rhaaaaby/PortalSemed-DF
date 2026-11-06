@@ -10,7 +10,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
+    margin: auto;
     color: var(--text-dark);
     background-color: var(--background-color);
 }
@@ -33,6 +33,19 @@ nav ul {
 
 nav a { color: white; text-decoration: none; font-size: 0.9rem; }
 
+h1 {
+    font-size: 2rem;
+    margin: 20px;
+    display: flex;
+    align-items: center;
+    align-content: center;
+}
+
+.home-title {
+    justify-content: center;
+    text-align: center;
+}
+
 .btn-conta {
     background-color: var(--accent-color);
     border: none;
@@ -43,9 +56,37 @@ nav a { color: white; text-decoration: none; font-size: 0.9rem; }
 }
 
 .hero {
+    position: relative;
+    display: grid;
+    height: 650px;
+    place-items: center;
+    overflow: hidden;
     text-align: center;
-    padding: 60px 20px;
-    background-color: #EAEAEA;
+    padding: 0;
+}
+
+.hero::after {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(20, 45, 37, 0.62), rgba(20, 45, 37, 0.22));
+    content: "";
+}
+
+.hero-image {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 100%;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
 }
 
 .mais-acessados, .ultimas-noticias {
@@ -85,6 +126,8 @@ nav a { color: white; text-decoration: none; font-size: 0.9rem; }
 }
 
 .img-placeholder { height: 150px; background: #C4C4C4; }
+
+.img-placeholder img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
 .card-noticia-content { padding: 15px; text-align: left; }
 
@@ -663,6 +706,32 @@ footer {
     font-weight: bold;
 }
 
+.portal-social-links {
+    position: fixed;
+    z-index: 1000;
+    right: 18px;
+    bottom: 24px;
+    display: grid;
+    gap: 10px;
+}
+
+.portal-social-link {
+    display: grid;
+    width: 48px;
+    height: 48px;
+    place-items: center;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 15px;
+    font-weight: bold;
+    text-decoration: none;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.24);
+}
+
+.portal-social-link-whatsapp { background: #25D366; }
+.portal-social-link-instagram { background: #C13584; }
+.portal-social-link-facebook { background: #1877F2; font-size: 24px; }
+
 .portal-service-card-link {
     color: inherit;
     text-decoration: none;
@@ -889,6 +958,44 @@ footer {
     color: var(--primary-color);
 }
 
+.portal-admin-service-controls {
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) auto auto;
+    gap: 10px;
+    align-items: center;
+}
+
+.portal-admin-service-controls input {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 42px;
+    border: 1px solid var(--portal-border);
+    border-radius: 6px;
+    padding: 8px;
+    font: inherit;
+}
+
+.portal-admin-service-editor {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    align-items: center;
+}
+
+.portal-admin-service-editor input {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 42px;
+    border: 1px solid var(--portal-border);
+    border-radius: 6px;
+    padding: 8px;
+    font: inherit;
+}
+
+.portal-admin-service-editor button {
+    justify-self: start;
+}
+
 @media (max-width: 640px) {
     .portal-admin-heading,
     .portal-admin-section-heading,
@@ -903,6 +1010,18 @@ footer {
 
     .portal-upload-form {
         grid-template-columns: 1fr;
+    }
+
+    .portal-admin-service-controls {
+        grid-template-columns: 1fr;
+    }
+
+    .portal-admin-service-editor {
+        grid-template-columns: 1fr;
+    }
+
+    .hero {
+        height: 250px;
     }
 }
 

@@ -10,6 +10,7 @@ CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     cpf VARCHAR(14) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     role VARCHAR(20) NOT NULL DEFAULT 'user',
     status BOOLEAN NOT NULL DEFAULT TRUE,
@@ -82,6 +83,9 @@ CREATE TABLE site_settings (
     background_color CHAR(7) NOT NULL DEFAULT '#FDF2F2',
     text_color CHAR(7) NOT NULL DEFAULT '#333333',
     logo_path VARCHAR(255) NOT NULL DEFAULT '/images/logo.png',
+    whatsapp_url VARCHAR(255) NOT NULL DEFAULT '',
+    instagram_url VARCHAR(255) NOT NULL DEFAULT '',
+    facebook_url VARCHAR(255) NOT NULL DEFAULT '',
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -101,7 +105,8 @@ CREATE TABLE site_services (
 INSERT INTO site_services (slug, title, description, href, icon, sort_order) VALUES
     ('calendario', 'Calendário Escolar', 'Consulte datas de aulas, reuniões e eventos educacionais.', 'calendario.html', '📅', 1),
     ('documentos', 'Documentos', 'Baixe portarias, regulamentos e comunicados oficiais.', 'documentos.html', '📄', 2),
-    ('fale-conosco', 'Fale Conosco', 'Entre em contato com a Secretaria para dúvidas e solicitações.', 'faleconosco.html', '💬', 3)
+    ('transparencia', 'Transparência', 'Acesse os documentos públicos e informações de transparência.', '', '🔎', 3),
+    ('fale-conosco', 'Fale Conosco', 'Entre em contato com a Secretaria para dúvidas e solicitações.', 'faleconosco.html', '💬', 4)
 ON CONFLICT (slug) DO NOTHING;
 
 CREATE TABLE site_carousel (

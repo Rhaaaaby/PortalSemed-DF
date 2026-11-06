@@ -40,9 +40,38 @@ async function loadPortalAppearance() {
         if (logo && settings.logo_path) {
             logo.src = settings.logo_path;
         }
+        renderSocialLinks(settings);
     } catch (error) {
         console.error('Não foi possível aplicar a aparência salva do portal:', error);
     }
+}
+
+function renderSocialLinks(settings) {
+    const links = [
+        { name: 'WhatsApp', url: settings.whatsapp_url, label: 'WA', className: 'whatsapp' },
+        { name: 'Instagram', url: settings.instagram_url, label: 'IG', className: 'instagram' },
+        { name: 'Facebook', url: settings.facebook_url, label: 'f', className: 'facebook' },
+    ].filter(link => link.url);
+
+    if (links.length === 0) return;
+
+    const container = document.createElement('nav');
+    container.className = 'portal-social-links';
+    container.setAttribute('aria-label', 'Redes sociais');
+
+    for (const link of links) {
+        const anchor = document.createElement('a');
+        anchor.className = `portal-social-link portal-social-link-${link.className}`;
+        anchor.href = link.url;
+        anchor.target = '_blank';
+        anchor.rel = 'noopener noreferrer';
+        anchor.setAttribute('aria-label', link.name);
+        anchor.title = link.name;
+        anchor.textContent = link.label;
+        container.appendChild(anchor);
+    }
+
+    document.body.appendChild(container);
 }
 
 async function updateAccountNavigation() {

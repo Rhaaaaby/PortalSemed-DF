@@ -43,7 +43,7 @@ function renderUser(user) {
     const summary = document.createElement('p');
     const role = user.role === 'admin' ? 'Administrador' : 'Funcionário';
     const active = user.status === true || ['1', 't', 'true'].includes(String(user.status).toLowerCase());
-    summary.textContent = `${role} · CPF ${user.cpf} · ${active ? 'Ativo' : 'Desativado'}`;
+    summary.textContent = `${role} · CPF ${user.cpf} · ${user.email || 'Sem e-mail'} · ${active ? 'Ativo' : 'Desativado'}`;
     details.append(title, summary);
 
     const button = document.createElement('button');
