@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Users;
+use App\Services\Mailer;
 use App\Security\Auth;
 
 class UserController
@@ -212,7 +213,13 @@ class UserController
             json_response(['erro' => 'Informe um e-mail válido de até 100 caracteres.'], 400);
         }
 
-        if ($this->model->cpfEmUso($cpf, $user_id)) {
+        $currentUser = $this->model->buscarPorId($user_id);
+        if (!$currentUser) {
+            json_response(['erro' => 'Usuário não encontrado.'], 404);
+        }
+
+        $currentCpf = preg_replace('/\D/', '', (string) $currentUser['cpf']);
+        if ($cpf !== $currentCpf && $this->model->cpfEmUso($cpf, $user_id)) {
             json_response(['erro' => 'Este CPF já está cadastrado.'], 409);
         }
 
@@ -222,9 +229,11 @@ class UserController
 
         $updateData = [
             'name' => $name,
-            'cpf' => $cpf,
             'email' => $email,
         ];
+        if ($cpf !== $currentCpf) {
+            $updateData['cpf'] = $cpf;
+        }
         if ($password !== '') {
             if (strlen($password) < 12) {
                 json_response(['erro' => 'A nova senha deve ter no mínimo 12 caracteres.'], 400);
@@ -314,5 +323,48 @@ class UserController
         }
 
         json_response(['mensagem' => 'Senha alterada com sucesso.']);
+    }
+
+    public function requestPasswordReset(array $data): void
+    {
+        $email = $data['email'] ?? null;
+        if (!is_string($email) || !filter_var(trim($email), FILTER_VALIDATE_EMAIL)) {
+            json_response(['erro' => 'Informe um e-mail válido.'], 400);
+        }
+        $mailConfigurationError = Mailer::configurationError();
+        if ($mailConfigurationError !== null) {
+            json_response(['erro' => $mailConfigurationError], 503);
+        }
+
+        $token = bin2hex(random_bytes(32));
+        $user = $this->model->createPasswordResetToken(trim($email), hash('sha256', $token));
+        if ($user) {
+            try {
+                Mailer::sendPasswordReset($user['email'], $user['name'], $token);
+            } catch (\Throwable $error) {
+                $this->model->removePasswordResetTokens((int) $user['id']);
+                error_log('Falha ao enviar e-mail de recuperação de senha: ' . $error->getMessage());
+            }
+        }
+
+        json_response([
+            'mensagem' => 'Se o e-mail estiver cadastrado, você receberá um link para redefinir sua senha.',
+        ]);
+    }
+
+    public function resetPassword(array $data): void
+    {
+        $token = $data['token'] ?? null;
+        $password = $data['password'] ?? null;
+        if (!is_string($token) || !preg_match('/^[a-f0-9]{64}$/', $token) ||
+            !is_string($password) || strlen($password) < 12) {
+            json_response(['erro' => 'O link é inválido ou expirou. Informe uma nova senha com no mínimo 12 caracteres.'], 400);
+        }
+
+        if (!$this->model->resetPassword(hash('sha256', $token), $password)) {
+            json_response(['erro' => 'O link de recuperação é inválido ou expirou. Solicite um novo link.'], 400);
+        }
+
+        json_response(['mensagem' => 'Senha redefinida com sucesso.']);
     }
 }

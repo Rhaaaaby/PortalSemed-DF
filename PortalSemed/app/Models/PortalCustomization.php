@@ -19,7 +19,8 @@ class PortalCustomization
     {
         $stmt = $this->pdo->query(
             'SELECT primary_color, accent_color, background_color, text_color, logo_path,
-                    whatsapp_url, instagram_url, facebook_url
+                    whatsapp_url, instagram_url, facebook_url,
+                    contact_title, contact_address, contact_phone, contact_email, contact_hours
              FROM site_settings
              WHERE id = 1'
         );
@@ -35,6 +36,11 @@ class PortalCustomization
             'whatsapp_url' => '',
             'instagram_url' => '',
             'facebook_url' => '',
+            'contact_title' => 'Secretaria Municipal de Educação',
+            'contact_address' => 'Rua Principal, nº 123 – São Miguel do Tocantins',
+            'contact_phone' => '(63) 99999-9999',
+            'contact_email' => 'educacao@saomiguel.to.gov.br',
+            'contact_hours' => 'Seg - Sex | 08h às 17h',
         ];
     }
 
@@ -172,6 +178,28 @@ class PortalCustomization
             ':whatsapp_url' => $links['whatsapp_url'],
             ':instagram_url' => $links['instagram_url'],
             ':facebook_url' => $links['facebook_url'],
+        ]);
+    }
+
+    public function updateContactInfo(array $contact): bool
+    {
+        $stmt = $this->pdo->prepare(
+            'UPDATE site_settings
+             SET contact_title = :contact_title,
+                 contact_address = :contact_address,
+                 contact_phone = :contact_phone,
+                 contact_email = :contact_email,
+                 contact_hours = :contact_hours,
+                 updated_at = CURRENT_TIMESTAMP
+             WHERE id = 1'
+        );
+
+        return $stmt->execute([
+            ':contact_title' => $contact['contact_title'],
+            ':contact_address' => $contact['contact_address'],
+            ':contact_phone' => $contact['contact_phone'],
+            ':contact_email' => $contact['contact_email'],
+            ':contact_hours' => $contact['contact_hours'],
         ]);
     }
 

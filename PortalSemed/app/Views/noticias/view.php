@@ -45,19 +45,9 @@
 
             <?php if (!empty($noticia['imagem'])): ?>
 
-                <img src="/images/uploads/
-                
-                <?php 
-                    echo rawurlencode(basename($noticia['imagem'])); 
-                ?>" 
-                
-                alt="<?php 
-                        echo htmlspecialchars($noticia['title'], 
-                        ENT_QUOTES, 
-                        'UTF-8'); 
-                    ?>" 
-
-                class="news-image">
+                <img src="<?php echo '/images/uploads/' . rawurlencode(basename($noticia['imagem'])); ?>"
+                     alt="<?php echo htmlspecialchars($noticia['title'], ENT_QUOTES, 'UTF-8'); ?>"
+                     class="news-image">
 
             <?php endif; ?>
 

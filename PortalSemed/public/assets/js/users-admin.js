@@ -3,10 +3,7 @@ let usersAdminCsrfToken = '';
 let currentAdminId = 0;
 
 function showUsersAdminMessage(message, type = 'success') {
-    const container = document.getElementById('users-admin-message');
-    container.textContent = message;
-    container.className = `message message-${type}`;
-    container.style.display = 'block';
+    window.portalNotify(message, type);
 }
 
 async function usersAdminRequest(endpoint, options = {}) {

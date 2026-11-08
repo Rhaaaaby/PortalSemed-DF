@@ -105,8 +105,26 @@
         <section class="portal-admin-section">
             <div class="portal-admin-section-heading">
                 <div>
+                    <h2>Informações de contato</h2>
+                    <p>Edite os dados exibidos em Fale Conosco e no final da página inicial.</p>
+                </div>
+                <span class="portal-edit-badge">Você pode editar</span>
+            </div>
+            <form id="contact-form" class="portal-carousel-form">
+                <label>Nome da secretaria<input type="text" name="contact_title" maxlength="150" required></label>
+                <label>Endereço<input type="text" name="contact_address" maxlength="255"></label>
+                <label>Telefone<input type="text" name="contact_phone" maxlength="40"></label>
+                <label>E-mail<input type="email" name="contact_email" maxlength="100"></label>
+                <label>Horário de atendimento<input type="text" name="contact_hours" maxlength="120"></label>
+                <button type="submit" class="portal-admin-button">Salvar informações de contato</button>
+            </form>
+        </section>
+
+        <section class="portal-admin-section">
+            <div class="portal-admin-section-heading">
+                <div>
                     <h2>Redes sociais</h2>
-                    <p>Configure os links HTTPS dos botões flutuantes. Deixe um campo vazio para ocultar o botão correspondente.</p>
+                    <p>Configure os links HTTPS exibidos em Fale Conosco e no final da página inicial. Deixe um campo vazio para ocultar o botão correspondente.</p>
                 </div>
                 <span class="portal-edit-badge">Você pode editar</span>
             </div>

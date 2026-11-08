@@ -1,0 +1,52 @@
+.portal-notifications {
+    position: fixed;
+    z-index: 2000;
+    top: 16px;
+    left: 50%;
+    display: flex;
+    width: min(92vw, 560px);
+    flex-direction: column;
+    gap: 10px;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.portal-notification {
+    padding: 14px 18px;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 600;
+    line-height: 1.45;
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.2);
+    pointer-events: auto;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.portal-notification.is-leaving {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.portal-notification-success {
+    background: #246b3d;
+}
+
+.portal-notification-error {
+    background: #a52828;
+}
+
+.portal-notification-warning {
+    background: #8a5a00;
+}
+
+.portal-notification-info {
+    background: #24577a;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .portal-notification {
+        transition: none;
+    }
+}

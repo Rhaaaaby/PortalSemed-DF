@@ -2,10 +2,7 @@ const PORTAL_ADMIN_API = `${window.location.origin}/api`;
 let portalAdminCsrfToken = '';
 
 function showPortalAdminMessage(message, type = 'success') {
-    const container = document.getElementById('portal-admin-message');
-    container.textContent = message;
-    container.className = `message message-${type}`;
-    container.style.display = 'block';
+    window.portalNotify(message, type);
 }
 
 async function portalAdminRequest(endpoint, options = {}) {
@@ -45,11 +42,14 @@ async function portalAdminRequest(endpoint, options = {}) {
 function applyPortalAdminSettings(settings) {
     const form = document.getElementById('theme-form');
     const socialForm = document.getElementById('social-form');
+    const contactForm = document.getElementById('contact-form');
     for (const [field, value] of Object.entries(settings)) {
         const input = form.elements.namedItem(field);
         if (input) input.value = value;
         const socialInput = socialForm.elements.namedItem(field);
         if (socialInput) socialInput.value = value;
+        const contactInput = contactForm.elements.namedItem(field);
+        if (contactInput) contactInput.value = value;
     }
 
     const root = document.documentElement;
@@ -237,6 +237,21 @@ window.addEventListener('DOMContentLoaded', async () => {
             });
             await loadPortalAdminContent();
             showPortalAdminMessage('Links das redes sociais atualizados.');
+        } catch (error) {
+            showPortalAdminMessage(error.message, 'error');
+        }
+    });
+
+    document.getElementById('contact-form').addEventListener('submit', async event => {
+        event.preventDefault();
+        const contact = Object.fromEntries(new FormData(event.currentTarget));
+        try {
+            await portalAdminRequest('admin/portal/contact', {
+                method: 'PUT',
+                body: JSON.stringify(contact),
+            });
+            await loadPortalAdminContent();
+            showPortalAdminMessage('Informações de contato atualizadas.');
         } catch (error) {
             showPortalAdminMessage(error.message, 'error');
         }

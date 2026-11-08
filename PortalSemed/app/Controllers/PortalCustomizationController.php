@@ -241,6 +241,42 @@ class PortalCustomizationController
         json_response(['mensagem' => 'Links das redes sociais atualizados.']);
     }
 
+    public function updateContactInfo(array $data): void
+    {
+        $limits = [
+            'contact_title' => 150,
+            'contact_address' => 255,
+            'contact_phone' => 40,
+            'contact_email' => 100,
+            'contact_hours' => 120,
+        ];
+        $contact = [];
+
+        foreach ($limits as $field => $limit) {
+            $value = $data[$field] ?? null;
+            if (!is_string($value) ||
+                ($length = preg_match_all('/./us', trim($value))) === false ||
+                $length > $limit) {
+                json_response(['erro' => 'Preencha as informações de contato com valores válidos.'], 400);
+            }
+            $contact[$field] = trim($value);
+        }
+
+        if ($contact['contact_title'] === '') {
+            json_response(['erro' => 'Informe o nome da secretaria.'], 400);
+        }
+        if ($contact['contact_email'] !== '' &&
+            !filter_var($contact['contact_email'], FILTER_VALIDATE_EMAIL)) {
+            json_response(['erro' => 'Informe um e-mail de contato válido.'], 400);
+        }
+
+        if (!$this->model->updateContactInfo($contact)) {
+            json_response(['erro' => 'Não foi possível salvar as informações de contato.'], 500);
+        }
+
+        json_response(['mensagem' => 'Informações de contato atualizadas.']);
+    }
+
     // Valida se o href do serviço é válido, seja um link HTTPS ou um caminho interno.
     private function isValidServiceHref(string $href): bool
     {

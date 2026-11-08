@@ -46,12 +46,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(data.erro || 'Erro ao publicar notícia.');
             }
 
-            alert(data.mensagem || 'Notícia criada com sucesso!');
+            window.portalQueueNotification(data.mensagem || 'Notícia criada com sucesso!', 'success');
             window.location.href = '/noticias';
 
         } catch (error) {
             console.error('Erro ao publicar notícia:', error);
-            alert(error.message);
+            window.portalNotify(error.message, 'error');
         }
     });
 });

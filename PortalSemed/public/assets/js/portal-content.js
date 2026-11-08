@@ -48,6 +48,7 @@ function renderPortalCarousel(items) {
     const caption = document.createElement('p');
     caption.className = 'portal-carousel-caption';
     container.appendChild(caption);
+    container.setAttribute('aria-live', 'off');
 
     const showItem = () => {
         const item = items[currentIndex];
@@ -80,6 +81,28 @@ function renderPortalCarousel(items) {
         });
 
         container.append(previous, next);
+        const interval = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 5000;
+        if (interval) {
+            let timer = window.setInterval(() => {
+                currentIndex = (currentIndex + 1) % items.length;
+                showItem();
+            }, interval);
+            const pause = () => {
+                window.clearInterval(timer);
+                timer = 0;
+            };
+            const resume = () => {
+                if (timer) return;
+                timer = window.setInterval(() => {
+                    currentIndex = (currentIndex + 1) % items.length;
+                    showItem();
+                }, interval);
+            };
+            container.addEventListener('mouseenter', pause);
+            container.addEventListener('mouseleave', resume);
+            container.addEventListener('focusin', pause);
+            container.addEventListener('focusout', resume);
+        }
     }
 
     showItem();

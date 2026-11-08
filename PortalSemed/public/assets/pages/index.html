@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal da Educação - São Miguel do Tocantins</title>
-    <link rel="stylesheet" href="/assets/css/style.css?v=20261105">
+    <link rel="stylesheet" href="/assets/css/style.css?v=20261107">
     <link rel="stylesheet" href="/assets/css/responsive.css">
+    <link rel="stylesheet" href="/assets/css/notifications.css">
 </head>
 <body>
     <div id="header"></div>
 
     <main>
 
-        </section><section class="hero">
+        <section class="hero">
             <img class="hero-image" src="/assets/images/resources/hero-image.jpg" alt="">
         </section>
 
@@ -29,8 +30,23 @@
 
         <section class="ultimas-noticias">
             <h2>Últimas Notícias</h2>
-            <div id="container-noticias" class="grid-noticias">
-                <!-- Inserido dinamicamente pelo JavaScript -->
+            <div class="news-carousel" id="news-carousel">
+                <button class="news-carousel-control news-carousel-previous" type="button" aria-label="Notícias anteriores">‹</button>
+                <div id="container-noticias" class="grid-noticias" aria-live="polite"></div>
+                <button class="news-carousel-control news-carousel-next" type="button" aria-label="Próximas notícias">›</button>
+            </div>
+        </section>
+
+        <section class="home-contact-section" id="home-contact">
+            <h2>Fale conosco</h2>
+            <div class="home-contact-card">
+                <h3 id="home-contact-title">Secretaria Municipal de Educação</h3>
+                <p id="home-contact-address">Endereço: Rua Principal, nº 123 – São Miguel do Tocantins</p>
+                <p id="home-contact-phone">Telefone: (63) 99999-9999</p>
+                <p id="home-contact-email">E-mail: educacao@saomiguel.to.gov.br</p>
+                <p id="home-contact-hours">Atendimento: Seg - Sex | 08h às 17h</p>
+                <nav class="home-contact-social-links" id="home-contact-social-links" aria-label="Redes sociais da SEMED"></nav>
+                <a class="home-contact-more" href="/faleconosco.html">Mais informações</a>
             </div>
         </section>
     </main>
@@ -40,7 +56,8 @@
     <script src="/assets/js/config.js"></script>
     <script src="/assets/js/include-components.js"></script>
     <script src="/assets/js/model.js"></script>
-    <script src="/assets/js/controller.js?v=20261105"></script>
-    <script src="/assets/js/portal-content.js?v=20261105-services"></script>
+    <script src="/assets/js/controller.js?v=20261107"></script>
+    <script src="/assets/js/portal-content.js?v=20261107"></script>
+    <script src="/assets/js/contact-content.js?v=20261107"></script>
 </body>
 </html>

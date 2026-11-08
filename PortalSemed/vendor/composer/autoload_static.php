@@ -7,6 +7,10 @@ namespace Composer\Autoload;
 class ComposerStaticInit075707911e5ed50549149c4a914a10ab
 {
     public static $prefixLengthsPsr4 = array (
+        'P' =>
+        array (
+            'PHPMailer\\PHPMailer\\' => 20,
+        ),
         'F' =>
         array (
             'Firebase\\JWT\\' => 13,
@@ -18,6 +22,10 @@ class ComposerStaticInit075707911e5ed50549149c4a914a10ab
     );
 
     public static $prefixDirsPsr4 = array (
+        'PHPMailer\\PHPMailer\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
+        ),
         'Firebase\\JWT\\' =>
         array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',

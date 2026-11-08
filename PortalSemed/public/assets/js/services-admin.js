@@ -2,10 +2,7 @@ const SERVICES_ADMIN_API = `${window.location.origin}/api`;
 let servicesAdminCsrfToken = '';
 
 function showServicesAdminMessage(message, type = 'success') {
-    const container = document.getElementById('services-admin-message');
-    container.textContent = message;
-    container.className = `message message-${type}`;
-    container.style.display = 'block';
+    window.portalNotify(message, type);
 }
 
 async function servicesAdminRequest(endpoint, options = {}) {

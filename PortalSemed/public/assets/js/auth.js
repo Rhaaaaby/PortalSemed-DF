@@ -1,10 +1,7 @@
 const API_BASE_URL = `${window.location.origin}/api`;
 
 function showMessage(container, message, type = 'success') {
-    if (!container) return;
-    container.textContent = message;
-    container.className = `message message-${type}`;
-    container.style.display = 'block';
+    window.portalNotify(message, type);
 }
 
 function clearMessage(container) {
@@ -54,7 +51,7 @@ async function login(event) {
             throw new Error(payload.erro || 'Não foi possível entrar.');
         }
 
-        showMessage(message, 'Login realizado com sucesso. Redirecionando...', 'success');
+        window.portalQueueNotification('Login realizado com sucesso.', 'success');
         const destination = payload.user.role === 'admin'
             ? 'perfil-admin.html'
             : 'perfil-funcionario.html';

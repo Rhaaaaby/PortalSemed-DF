@@ -2,10 +2,7 @@ const PROFILE_API_URL = `${window.location.origin}/api`;
 let profileCsrfToken = '';
 
 function showProfileMessage(message, type = 'success') {
-    const container = document.getElementById('profile-message');
-    container.textContent = message;
-    container.className = `message message-${type}`;
-    container.style.display = 'block';
+    window.portalNotify(message, type);
 }
 
 async function profileRequest(endpoint, options = {}) {

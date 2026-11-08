@@ -122,7 +122,7 @@ nav a.active {
 /* Layout de 2 colunas */
 .contato-grid {
     display: grid;
-    grid-template-columns: 1fr 220px;
+    grid-template-columns: minmax(0, 1fr);
     gap: 24px;
     align-items: start;
 }
@@ -220,6 +220,27 @@ nav a.active {
     font-size: 1rem;
     flex-shrink: 0;
     margin-top: 1px;
+}
+
+.contact-social-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.contact-social-links a {
+    padding: 8px 12px;
+    border-radius: 5px;
+    background: var(--primary-color);
+    color: white;
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.contact-social-links a:hover {
+    background: #1e362e;
 }
 
 /* ── FOOTER ── */

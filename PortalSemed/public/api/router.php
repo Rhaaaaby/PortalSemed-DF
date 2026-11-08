@@ -69,8 +69,9 @@ function requireAdmin(): array
 
 function requireCsrf(): void
 {
+    $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     if ($_SERVER['REQUEST_METHOD'] === 'GET' || $_SERVER['REQUEST_METHOD'] === 'HEAD' ||
-        (parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) === '/api/login' &&
+        (in_array($path, ['/api/login', '/api/password/recovery', '/api/password/reset'], true) &&
             $_SERVER['REQUEST_METHOD'] === 'POST') ||
         empty($_SESSION['user_id'])) {
         return;
@@ -139,6 +140,11 @@ if ($uri === 'admin/portal/social-links' && $method === 'PUT') {
     $portalCtrl->updateSocialLinks(get_json_input());
 }
 
+if ($uri === 'admin/portal/contact' && $method === 'PUT') {
+    requireAdmin();
+    $portalCtrl->updateContactInfo(get_json_input());
+}
+
 if ($uri === 'admin/portal/logo' && $method === 'POST') {
     requireAdmin();
     $portalCtrl->uploadLogo();
@@ -186,6 +192,14 @@ if ($uri === 'cadastrar' && $method === 'POST') {
 
 if ($uri === 'login' && $method === 'POST') {
     $userCtrl->login(get_json_input());
+}
+
+if ($uri === 'password/recovery' && $method === 'POST') {
+    $userCtrl->requestPasswordReset(get_json_input());
+}
+
+if ($uri === 'password/reset' && $method === 'POST') {
+    $userCtrl->resetPassword(get_json_input());
 }
 
 if ($uri === 'auth/me' && $method === 'GET') {

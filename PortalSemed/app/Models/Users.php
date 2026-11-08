@@ -170,6 +170,86 @@ class Users
         return is_string($password) ? $password : null;
     }
 
+    public function createPasswordResetToken(string $email, string $tokenHash): ?array
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT id, name, email FROM users
+             WHERE LOWER(email) = LOWER(:email) AND status = TRUE
+             LIMIT 1'
+        );
+        $stmt->execute([':email' => $email]);
+        $user = $stmt->fetch();
+        if (!$user) {
+            return null;
+        }
+
+        $this->pdo->beginTransaction();
+        try {
+            $insert = $this->pdo->prepare(
+                'INSERT INTO password_reset_tokens (user_id, token_hash, expires_at)
+                 VALUES (:user_id, :token_hash, CURRENT_TIMESTAMP + INTERVAL \'1 hour\')
+                 ON CONFLICT (user_id) DO UPDATE SET
+                     token_hash = EXCLUDED.token_hash,
+                     expires_at = EXCLUDED.expires_at,
+                     created_at = CURRENT_TIMESTAMP'
+            );
+            $insert->execute([
+                ':user_id' => $user['id'],
+                ':token_hash' => $tokenHash,
+            ]);
+            $this->pdo->commit();
+        } catch (\Throwable $error) {
+            $this->pdo->rollBack();
+            throw $error;
+        }
+
+        return $user;
+    }
+
+    public function removePasswordResetTokens(int $userId): void
+    {
+        $stmt = $this->pdo->prepare('DELETE FROM password_reset_tokens WHERE user_id = :user_id');
+        $stmt->execute([':user_id' => $userId]);
+    }
+
+    public function resetPassword(string $tokenHash, string $password): bool
+    {
+        $this->pdo->beginTransaction();
+        try {
+            $find = $this->pdo->prepare(
+                'SELECT id, user_id FROM password_reset_tokens
+                 WHERE token_hash = :token_hash AND expires_at > CURRENT_TIMESTAMP
+                 FOR UPDATE'
+            );
+            $find->execute([':token_hash' => $tokenHash]);
+            $token = $find->fetch();
+            if (!$token) {
+                $this->pdo->rollBack();
+                return false;
+            }
+
+            $update = $this->pdo->prepare(
+                'UPDATE users SET password = :password WHERE id = :user_id'
+            );
+            $update->execute([
+                ':password' => password_hash($password, PASSWORD_ARGON2ID),
+                ':user_id' => $token['user_id'],
+            ]);
+            if ($update->rowCount() !== 1) {
+                $this->pdo->rollBack();
+                return false;
+            }
+
+            $remove = $this->pdo->prepare('DELETE FROM password_reset_tokens WHERE user_id = :user_id');
+            $remove->execute([':user_id' => $token['user_id']]);
+            $this->pdo->commit();
+            return true;
+        } catch (\Throwable $error) {
+            $this->pdo->rollBack();
+            throw $error;
+        }
+    }
+
     // UPDATE
     public function atualizar(int $id, array $data): bool
     {

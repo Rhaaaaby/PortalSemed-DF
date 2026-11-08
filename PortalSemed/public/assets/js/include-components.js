@@ -1,3 +1,42 @@
+const notificationStyles = document.createElement('link');
+notificationStyles.rel = 'stylesheet';
+notificationStyles.href = '/assets/css/notifications.css';
+document.head.appendChild(notificationStyles);
+
+window.portalNotify = function(message, type = 'success') {
+    if (typeof message !== 'string' || !message.trim()) return;
+
+    let container = document.getElementById('portal-notifications');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'portal-notifications';
+        container.className = 'portal-notifications';
+        container.setAttribute('aria-label', 'Notificações');
+        document.body.appendChild(container);
+    }
+
+    const notification = document.createElement('div');
+    const allowedTypes = ['success', 'error', 'warning', 'info'];
+    const safeType = allowedTypes.includes(type) ? type : 'info';
+    notification.className = `portal-notification portal-notification-${safeType}`;
+    notification.setAttribute('role', safeType === 'error' ? 'alert' : 'status');
+    notification.textContent = message;
+    container.appendChild(notification);
+
+    window.setTimeout(() => {
+        notification.classList.add('is-leaving');
+        window.setTimeout(() => notification.remove(), 250);
+    }, 4750);
+};
+
+window.portalQueueNotification = function(message, type = 'success') {
+    try {
+        sessionStorage.setItem('portal-notification', JSON.stringify({ message, type }));
+    } catch (error) {
+        console.error('Não foi possível guardar a notificação para a próxima página:', error);
+    }
+};
+
 async function includeComponent(containerId, componentUrl) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -14,6 +53,17 @@ async function includeComponent(containerId, componentUrl) {
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const queued = sessionStorage.getItem('portal-notification');
+        if (queued) {
+            sessionStorage.removeItem('portal-notification');
+            const notification = JSON.parse(queued);
+            window.portalNotify(notification.message, notification.type);
+        }
+    } catch (error) {
+        console.error('Não foi possível exibir a notificação pendente:', error);
+    }
+
     await Promise.all([
         includeComponent('header', '/components/header.html'),
         includeComponent('footer', '/components/footer.html'),
@@ -152,7 +202,7 @@ document.addEventListener('click', async event => {
     } catch (error) {
         button.disabled = false;
         console.error(error);
-        window.alert(error.message || 'Não foi possível encerrar a sessão.');
+        window.portalNotify(error.message || 'Não foi possível encerrar a sessão.', 'error');
     }
 });
 

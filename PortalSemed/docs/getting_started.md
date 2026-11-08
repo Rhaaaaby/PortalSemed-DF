@@ -297,6 +297,38 @@ Os valores reais devem seguir a configuração definida pela equipe do projeto.
 
 > **Importante:** o arquivo `.env` não deve ser enviado para o GitHub caso contenha credenciais ou informações sensíveis.
 
+Para habilitar a recuperação de senha por e-mail com Google Workspace, configure no `.env`:
+
+```env
+APP_URL=http://localhost
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@example.com
+$1=
+SMTP_SECURE=tls
+MAIL_FROM_EMAIL=your-email@example.com
+MAIL_FROM_NAME=Portal SEMED
+```
+
+`SMTP_USER` e `MAIL_FROM_EMAIL` devem ser a conta institucional autorizada a enviar mensagens. Gere uma senha de app nas configurações da Conta Google com a verificação em duas etapas ativada; use essa senha em `SMTP_PASSWORD`, não a senha normal da conta. Nunca envie nem versione essa credencial.
+
+Em desenvolvimento, `APP_URL` deve apontar para o endereço usado no navegador, normalmente `http://localhost`. Em produção, configure-o com o endereço público HTTPS do portal e defina essas mesmas variáveis como segredos/variáveis de ambiente do serviço de produção (não use `localhost`). Para ativar alterações no Docker local, recrie o container da aplicação:
+
+```powershell
+docker compose up -d --force-recreate app
+```
+
+Se a política do Google Workspace bloquear senhas de app, peça ao administrador do Workspace para configurar o SMTP Relay (`smtp-relay.gmail.com`) e a autorização do remetente/IP; nesse caso, ajuste host, porta e método de autenticação conforme a configuração da organização. O modo de segurança aceita `tls`, `ssl` ou `none`.
+
+Em instalações já existentes, aplique a migration `database/migrations/20261107_contact_and_password_reset.sql` antes de usar os novos campos de contato e recuperação de senha. Em PowerShell, com os containers iniciados, execute:
+
+```powershell
+Get-Content -Raw database\migrations\20261107_contact_and_password_reset.sql |
+    docker compose exec -T postgres psql -U postgres -d portalSemed -v ON_ERROR_STOP=1
+```
+
+O volume do PostgreSQL existente não reaplica automaticamente alterações no `schema.sql`; migrations novas precisam ser aplicadas explicitamente.
+
 ---
 
 # 8. Instalando as dependências PHP
