@@ -19,6 +19,8 @@ O objetivo é orientar um novo desenvolvedor para:
 
 Ao final deste processo, o desenvolvedor deverá possuir uma cópia funcional do Portal SEMED executando localmente.
 
+Para implantação pública, siga também o [guia de publicação segura](./production-deployment.md).
+
 ---
 
 # 2. Tecnologias utilizadas

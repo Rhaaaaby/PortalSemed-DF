@@ -1,0 +1,9 @@
+.git
+.gitignore
+.env
+.env.*
+.secrets/
+backups/
+**/node_modules/
+public/health.php
+public/assets/images/uploads/*
