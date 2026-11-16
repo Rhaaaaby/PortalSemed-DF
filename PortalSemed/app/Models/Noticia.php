@@ -4,6 +4,7 @@ namespace App\Models;
 
 use PDO;
 use App\Database\Connection;
+use App\Services\ImageStorage;
 
 class Noticia
 {
@@ -31,7 +32,10 @@ class Noticia
             ORDER BY created_at DESC"
         );
 
-        return $stmt->fetchAll();
+        return array_map(
+            fn(array $noticia): array => $this->withPublicImageUrl($noticia),
+            $stmt->fetchAll()
+        );
     }
 
     // BUSCAR UMA NOTÍCIA PELO ID
@@ -57,7 +61,7 @@ class Noticia
 
         $noticia = $stmt->fetch();
 
-        return $noticia ?: null;
+        return $noticia ? $this->withPublicImageUrl($noticia) : null;
     }
 
     // CRIAR UMA NOTÍCIA
@@ -127,5 +131,14 @@ class Noticia
         return $stmt->execute([
             ':id' => $id
         ]);
+    }
+
+    private function withPublicImageUrl(array $noticia): array
+    {
+        $noticia['imagem'] = ImageStorage::publicUrl(
+            isset($noticia['imagem']) ? (string) $noticia['imagem'] : null
+        );
+
+        return $noticia;
     }
 }

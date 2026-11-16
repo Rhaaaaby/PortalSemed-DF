@@ -1,4 +1,14 @@
 const NoticiaModel = {
+    imageUrl: function(value) {
+        if (typeof value !== 'string' || value === '') return null;
+        if (/^https:\/\//i.test(value) ||
+            value.startsWith('/images/uploads/') ||
+            /^data:image\/(?:jpeg|png|gif|webp);base64,/i.test(value)) {
+            return value;
+        }
+        return `${window.location.origin}/images/uploads/${encodeURIComponent(value)}`;
+    },
+
     getUltimasNoticias: async function() {
         if (typeof STORAGE_MODE !== 'undefined' && STORAGE_MODE === 'localstorage') {
             // Inicializar notícias em LocalStorage se estiver vazio
@@ -15,7 +25,7 @@ const NoticiaModel = {
                 id: n.id,
                 titulo: n.title || n.titulo,
                 resumo: n.content ? (n.content.substring(0, 100) + (n.content.length > 100 ? '...' : '')) : '',
-                imagem: n.imagem || null
+                imagem: this.imageUrl(n.imagem)
             }));
         }
 
@@ -32,7 +42,7 @@ const NoticiaModel = {
                 id: n.id,
                 titulo: n.title,
                 resumo: n.content ? (n.content.substring(0, 100) + (n.content.length > 100 ? '...' : '')) : '',
-                imagem: n.imagem ? `${window.location.origin}/images/uploads/${encodeURIComponent(n.imagem)}` : null
+                imagem: this.imageUrl(n.imagem)
             }));
         } catch (error) {
             console.warn("Usando notícias mockadas (motivo: " + error.message + ")");

@@ -44,8 +44,9 @@
             </div>
 
             <?php if (!empty($noticia['imagem'])): ?>
+                <?php $imagemUrl = \App\Services\ImageStorage::publicUrl((string) $noticia['imagem']); ?>
 
-                <img src="<?php echo '/images/uploads/' . rawurlencode(basename($noticia['imagem'])); ?>"
+                <img src="<?php echo htmlspecialchars($imagemUrl ?? '', ENT_QUOTES, 'UTF-8'); ?>"
                      alt="<?php echo htmlspecialchars($noticia['title'], ENT_QUOTES, 'UTF-8'); ?>"
                      class="news-image">
 

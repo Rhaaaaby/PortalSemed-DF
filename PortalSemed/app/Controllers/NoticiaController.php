@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Noticia;
+use App\Services\ImageStorage;
 
 class NoticiaController
 {
@@ -139,47 +140,12 @@ class NoticiaController
     // SALVAR IMAGEM ENVIADA
     private function saveUploadedImage(): ?string
     {
-        if (!isset($_FILES['imagem']) || $_FILES['imagem']['error'] === UPLOAD_ERR_NO_FILE) {
+        if (!isset($_FILES['imagem']) ||
+            ($_FILES['imagem']['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
             return null;
         }
 
-        $file = $_FILES['imagem'];
-        if ($file['error'] !== UPLOAD_ERR_OK) {
-            $message = match ($file['error']) {
-                UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE => 'A imagem deve ter no máximo 5 MB.',
-                UPLOAD_ERR_PARTIAL => 'O envio da imagem foi interrompido. Tente novamente.',
-                default => 'Não foi possível receber a imagem enviada.',
-            };
-            throw new \InvalidArgumentException($message);
-        }
-
-        if ($file['size'] > 5 * 1024 * 1024) {
-            throw new \InvalidArgumentException('A imagem deve ter no máximo 5 MB.');
-        }
-
-        $finfo = new \finfo(FILEINFO_MIME_TYPE);
-        $mime = $finfo->file($file['tmp_name']);
-        $extensions = [
-            'image/jpeg' => 'jpg',
-            'image/png' => 'png',
-            'image/webp' => 'webp',
-            'image/gif' => 'gif',
-        ];
-        if (!isset($extensions[$mime]) || @getimagesize($file['tmp_name']) === false) {
-            throw new \InvalidArgumentException('Envie uma imagem JPG, PNG, WEBP ou GIF válida.');
-        }
-
-        $directory = APP_ROOT . '/public/assets/images/uploads/';
-        if (!is_dir($directory) && !mkdir($directory, 0755, true) && !is_dir($directory)) {
-            throw new \RuntimeException('Não foi possível preparar o armazenamento de imagens.');
-        }
-
-        $filename = 'noticia-' . bin2hex(random_bytes(16)) . '.' . $extensions[$mime];
-        if (!move_uploaded_file($file['tmp_name'], $directory . $filename)) {
-            throw new \RuntimeException('Não foi possível salvar a imagem enviada.');
-        }
-
-        return $filename;
+        return ImageStorage::storeUploadedImage($_FILES['imagem'], 'noticia');
     }
 
     // DELETAR NOTÍCIA

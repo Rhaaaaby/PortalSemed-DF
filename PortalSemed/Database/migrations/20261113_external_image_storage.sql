@@ -1,0 +1,12 @@
+ALTER TABLE posts
+    ADD COLUMN IF NOT EXISTS categoria VARCHAR(50),
+    ADD COLUMN IF NOT EXISTS imagem TEXT;
+
+ALTER TABLE posts
+    ALTER COLUMN imagem TYPE TEXT;
+
+ALTER TABLE site_settings
+    ALTER COLUMN logo_path TYPE TEXT;
+
+ALTER TABLE site_carousel
+    ALTER COLUMN image_path TYPE TEXT;

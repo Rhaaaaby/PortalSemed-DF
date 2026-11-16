@@ -5,6 +5,7 @@
 namespace App\Controllers;
 
 use App\Models\PortalCustomization;
+use App\Services\ImageStorage;
 
 class PortalCustomizationController
 {
@@ -305,38 +306,17 @@ class PortalCustomizationController
     // Salva a imagem enviada no servidor e retorna o caminho relativo para acesso público.
     private function saveImageUpload(string $field): string
     {
-        if (!isset($_FILES[$field]) || $_FILES[$field]['error'] !== UPLOAD_ERR_OK) {
+        if (!isset($_FILES[$field])) {
             json_response(['erro' => 'Selecione uma imagem válida para enviar.'], 400);
         }
 
-        $file = $_FILES[$field];
-        if ($file['size'] > 5 * 1024 * 1024) {
-            json_response(['erro' => 'A imagem deve ter no máximo 5 MB.'], 400);
-        }
-
-        $finfo = new \finfo(FILEINFO_MIME_TYPE);
-        $mime = $finfo->file($file['tmp_name']);
-        $extensions = [
-            'image/jpeg' => 'jpg',
-            'image/png' => 'png',
-            'image/webp' => 'webp',
-            'image/gif' => 'gif',
-        ];
-
-        if (!isset($extensions[$mime]) || @getimagesize($file['tmp_name']) === false) {
-            json_response(['erro' => 'Formato inválido. Use uma imagem JPG, PNG, WEBP ou GIF.'], 400);
-        }
-
-        $filename = 'portal-' . bin2hex(random_bytes(16)) . '.' . $extensions[$mime];
-        $directory = APP_ROOT . '/public/assets/images/uploads/';
-        if (!is_dir($directory) && !mkdir($directory, 0755, true) && !is_dir($directory)) {
-            json_response(['erro' => 'Não foi possível preparar o armazenamento de imagens.'], 500);
-        }
-
-        if (!move_uploaded_file($file['tmp_name'], $directory . $filename)) {
+        try {
+            return ImageStorage::storeUploadedImage($_FILES[$field], 'portal');
+        } catch (\InvalidArgumentException $e) {
+            json_response(['erro' => $e->getMessage()], 400);
+        } catch (\RuntimeException $e) {
+            error_log('Erro ao salvar imagem do portal: ' . $e->getMessage());
             json_response(['erro' => 'Não foi possível salvar a imagem enviada.'], 500);
         }
-
-        return '/images/uploads/' . $filename;
     }
 }

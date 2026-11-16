@@ -15,8 +15,6 @@ CREATE TABLE users (
     role VARCHAR(20) NOT NULL DEFAULT 'user',
     status BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    categoria VARCHAR(50),
-    imagem VARCHAR(255),
 
     CONSTRAINT chk_user_role
         CHECK (role IN ('admin', 'funcionario'))
@@ -34,6 +32,8 @@ CREATE TABLE posts (
     author_id INT,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP,
+    categoria VARCHAR(50),
+    imagem TEXT,
 
     CONSTRAINT fk_author
         FOREIGN KEY (author_id)
@@ -82,7 +82,7 @@ CREATE TABLE site_settings (
     accent_color CHAR(7) NOT NULL DEFAULT '#8EB34E',
     background_color CHAR(7) NOT NULL DEFAULT '#FDF2F2',
     text_color CHAR(7) NOT NULL DEFAULT '#333333',
-    logo_path VARCHAR(255) NOT NULL DEFAULT '/images/logo.png',
+    logo_path TEXT NOT NULL DEFAULT '/images/logo.png',
     whatsapp_url VARCHAR(255) NOT NULL DEFAULT '',
     instagram_url VARCHAR(255) NOT NULL DEFAULT '',
     facebook_url VARCHAR(255) NOT NULL DEFAULT '',
@@ -116,7 +116,7 @@ ON CONFLICT (slug) DO NOTHING;
 
 CREATE TABLE site_carousel (
     id SERIAL PRIMARY KEY,
-    image_path VARCHAR(255) NOT NULL,
+    image_path TEXT NOT NULL,
     alt_text VARCHAR(180) NOT NULL,
     caption VARCHAR(180) NOT NULL DEFAULT '',
     is_public BOOLEAN NOT NULL DEFAULT TRUE,

@@ -76,12 +76,13 @@
 
                 <!-- editar imagem da noticia -->
                 <?php if (!empty($noticia['imagem'])): ?>
+                    <?php $imagemUrl = \App\Services\ImageStorage::publicUrl((string) $noticia['imagem']); ?>
 
                     <div class="input-group">
                         <label>Imagem Atual:</label>
 
                         <img
-                            src="/images/uploads/<?php echo rawurlencode(basename($noticia['imagem'])); ?>"
+                            src="<?php echo htmlspecialchars($imagemUrl ?? '', ENT_QUOTES, 'UTF-8'); ?>"
                             alt="Imagem atual da notícia">
 
                     </div>
@@ -104,7 +105,7 @@
                 </div>
 
                 <!-- Campos ocultos para manter a imagem atual e o ID do autor -->
-                <input type="hidden" name="imagem_atual" value="<?php echo isset($noticia['imagem']) ? $noticia['imagem'] : ''; ?>">
+                <input type="hidden" name="imagem_atual" value="<?php echo htmlspecialchars($noticia['imagem'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
 
                 <!-- Campo oculto para manter o ID do autor da notícia -->
                 <input type="hidden" name="author_id" value="<?php echo isset($noticia['author_id']) ? $noticia['author_id'] : ''; ?>">
