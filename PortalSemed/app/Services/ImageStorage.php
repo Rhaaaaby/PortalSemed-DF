@@ -4,6 +4,10 @@ namespace App\Services;
 
 use Aws\Exception\AwsException;
 use Aws\S3\S3Client;
+use Cloudinary\Api\Exception\ApiError;
+use Cloudinary\Api\Upload\UploadApi;
+use Cloudinary\Configuration\Configuration;
+use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -29,8 +33,12 @@ class ImageStorage
             return self::storeInR2($upload, $filename);
         }
 
+        if ($driver === 'cloudinary') {
+            return self::storeInCloudinary($upload, $filename);
+        }
+
         if ($driver !== 'local') {
-            throw new RuntimeException('IMAGE_STORAGE_DRIVER must be either local or r2.');
+            throw new RuntimeException('IMAGE_STORAGE_DRIVER must be local, r2, or cloudinary.');
         }
 
         $directory = APP_ROOT . '/public/assets/images/uploads/';
@@ -165,6 +173,36 @@ class ImageStorage
         $baseUrl = rtrim($publicBaseUrl, '/');
 
         return $baseUrl . '/portal/' . rawurlencode($filename);
+    }
+
+    private static function storeInCloudinary(array $upload, string $filename): string
+    {
+        $cloudinaryUrl = self::environmentValue('CLOUDINARY_URL');
+        if ($cloudinaryUrl === '') {
+            throw new RuntimeException('CLOUDINARY_URL must be configured.');
+        }
+
+        try {
+            Configuration::instance($cloudinaryUrl);
+            $result = (new UploadApi())->upload($upload['tmp_name'], [
+                'folder' => 'portal',
+                'public_id' => pathinfo($filename, PATHINFO_FILENAME),
+                'overwrite' => false,
+                'resource_type' => 'image',
+            ]);
+        } catch (ApiError | GuzzleException $e) {
+            error_log('Cloudinary image upload failed.');
+            throw new RuntimeException('Could not save uploaded image to remote storage.', 0, $e);
+        }
+
+        $secureUrl = $result['secure_url'] ?? null;
+        if (!is_string($secureUrl) ||
+            filter_var($secureUrl, FILTER_VALIDATE_URL) === false ||
+            strtolower((string) parse_url($secureUrl, PHP_URL_SCHEME)) !== 'https') {
+            throw new RuntimeException('Cloudinary did not return a valid HTTPS image URL.');
+        }
+
+        return $secureUrl;
     }
 
     private static function r2Client(): S3Client
