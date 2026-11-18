@@ -1,13 +1,17 @@
 FROM php:8.5-fpm-alpine
 
-RUN apk add --no-cache nginx postgresql-dev \
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
+
+RUN apk add --no-cache nginx postgresql-dev unzip \
     && docker-php-ext-install pdo pdo_pgsql pgsql
 
 WORKDIR /var/www/portalsemed
 
+COPY composer.json composer.lock ./
 COPY app/ app/
 COPY public/ public/
-COPY vendor/ vendor/
+RUN composer install --no-dev --no-interaction --prefer-dist --no-progress --optimize-autoloader
+
 COPY docker/php/production.ini /usr/local/etc/php/conf.d/zz-production.ini
 COPY docker/render/nginx.conf /etc/nginx/http.d/default.conf
 COPY docker/render/entrypoint.sh /usr/local/bin/render-entrypoint
