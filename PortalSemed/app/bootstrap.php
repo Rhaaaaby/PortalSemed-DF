@@ -12,10 +12,18 @@ if (file_exists($envPath)) {
         [$key, $value] = explode('=', $line, 2);
         $key = trim($key);
         $value = trim($value, " \"'");
-        if (!isset($_ENV[$key])) {
-            $_ENV[$key] = $value;
-            putenv("$key=$value");
+        if (isset($_ENV[$key])) {
+            continue;
         }
+
+        $environmentValue = getenv($key);
+        if ($environmentValue !== false) {
+            $_ENV[$key] = $environmentValue;
+            continue;
+        }
+
+        $_ENV[$key] = $value;
+        putenv("$key=$value");
     }
 }
 
