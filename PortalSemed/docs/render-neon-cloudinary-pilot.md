@@ -50,18 +50,17 @@ Use somente imagens apropriadas para publicação e dados fictícios no piloto.
 | `DATABASE_URL` | URL pooled do Neon com `sslmode=require` |
 | `IMAGE_STORAGE_DRIVER` | `cloudinary` |
 | `CLOUDINARY_URL` | API environment variable do Cloudinary |
-| `SMTP_HOST` | Host SMTP autorizado |
-| `SMTP_PORT` | Porta SMTP autorizada pelo provedor, normalmente `587` |
-| `SMTP_USER` | Usuário SMTP |
-| `SMTP_PASSWORD` | Senha/app password SMTP |
-| `SMTP_SECURE` | `tls` |
-| `MAIL_FROM_EMAIL` | Remetente autorizado |
+| `MAIL_TRANSPORT` | `brevo` |
+| `BREVO_API_KEY` | Chave de API do Brevo |
+| `MAIL_FROM_EMAIL` | E-mail remetente cadastrado e verificado no Brevo |
 | `MAIL_FROM_NAME` | `Portal SEMED` |
 
-No plano Free do Render, conexões de saída nas portas `25`, `465` e `587` são
-bloqueadas; a porta `25` é bloqueada em todos os serviços. Se usar o plano Free,
-prefira uma API de e-mail via HTTPS ou uma porta SMTP alternativa, como `2525`,
-somente se o provedor oferecer suporte a ela.
+O transporte `brevo` envia pela API HTTPS do provedor, sem usar as portas SMTP
+bloqueadas no plano Free do Render. Crie uma chave de API e cadastre/verifique
+o endereço remetente no Brevo antes de configurar o serviço. Sem um domínio
+próprio autenticado, a entrega pode ser menos confiável; use apenas dados
+fictícios no piloto. Para outros ambientes, `MAIL_TRANSPORT=smtp` continua
+disponível com as variáveis SMTP.
 
 O Render fornece `PORT` automaticamente. O container escuta essa porta; não
 defina uma porta fixa para o serviço. Insira todos os segredos diretamente no
@@ -89,7 +88,8 @@ Confirme no endereço HTTPS do Render:
 
 - carregamento da página inicial e das notícias;
 - login e logout;
-- envio de e-mail de recuperação, se o SMTP estiver autorizado;
+- envio de e-mail de recuperação pelo Brevo;
+- e-mail de recuperação com a logo e as cores salvas na personalização do portal;
 - upload de logo, carrossel e imagem de notícia;
 - acesso às imagens após um novo deploy, confirmando que os endereços apontam
   para o Cloudinary.

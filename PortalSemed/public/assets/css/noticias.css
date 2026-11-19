@@ -206,6 +206,7 @@ textarea {
 
 .btn-voltar {
     background-color: #6B7280 !important; 
+    border-radius: 8px !important;
     text-decoration: none; 
     color: white !important; 
     margin: 0 !important; 
