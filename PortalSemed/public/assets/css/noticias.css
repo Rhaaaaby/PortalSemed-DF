@@ -1,9 +1,24 @@
 body {
-    font-family: Arial;
-    background: #f4f6f9;
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
     background-color: #FDF2F2;
-    /* Fundo rosa bem claro*/
+}
+
+#header,
+#footer {
+    flex: 0 0 auto;
+}
+
+#footer > footer {
+    margin-top: 0;
+}
+
+main {
+    flex: 1 0 auto;
 }
 
 /* Estilo para os títulos das notícias */
@@ -41,17 +56,15 @@ h1 {
 /*nova Noticia*/
 
 .noticia-main-content {
-    background-color: #FDF2F2; 
-    min-height: 80vh; 
-    padding: 20px 10px;
-   
+    background-color: #FDF2F2;
+    padding: 32px 20px;
 }
 
 .news-article-container {
-    max-width: 800px;
-    margin: 40px auto;
+    max-width: 900px;
+    margin: 56px auto;
     background: #fff;
-    padding: 40px;
+    padding: 48px;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
@@ -87,16 +100,34 @@ h1 {
 }
 
 .btn-back-container {
-    margin-top: 40px;
+    margin-top: 48px;
     border-top: 1px solid #eee;
     padding-top: 20px;
 }
 
-.btn-verde-claro {
-    text-decoration: none; 
-    display: inline-block; 
-    padding: 10px 25px; 
-    border-radius: 6px;
+.news-back-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 22px;
+    border: 1px solid #6f923d;
+    border-radius: 8px;
+    background-color: #7A9B42;
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.news-back-button:hover {
+    background-color: #617d34;
+    transform: translateY(-1px);
+}
+
+.news-back-button:focus-visible {
+    outline: 3px solid #FBBF24;
+    outline-offset: 3px;
 }
 
 /*editar noticia*/
@@ -168,7 +199,7 @@ textarea {
     margin-top: 15px;
 }
 
-.btn-verde-claro {
+.btn-editar .btn-verde-claro {
     margin: 0 !important; 
     width: 48% !important;
 }
@@ -228,4 +259,27 @@ textarea {
     justify-content: center; 
     width: 100%; 
     margin-top: 15px;
+}
+
+.btn-criar .btn-verde-claro {
+    margin: 0 !important;
+    width: 48% !important;
+}
+
+@media (max-width: 900px) {
+    .noticia-main-content {
+        padding: 20px 16px;
+    }
+
+    .news-article-container {
+        margin: 32px auto;
+        padding: 30px 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .news-article-container {
+        margin: 20px auto;
+        padding: 24px 18px;
+    }
 }

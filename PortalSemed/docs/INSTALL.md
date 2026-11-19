@@ -357,12 +357,14 @@ postgres_data
 
 Em uma instalação que já possui banco de dados, aplique uma vez as migrações em `database/migrations/` no banco configurado antes de usar os recursos correspondentes. A migração `20261106_user_email.sql` deve ser aplicada antes de acessar o login de bancos criados antes da inclusão do e-mail.
 
-Com os serviços Docker em execução, aplique-as na ordem indicada:
+Em especial, `20261113_external_image_storage.sql` é necessária para criar ou ampliar as colunas de categoria e imagem usadas ao publicar notícias. Com os serviços Docker em execução, aplique as migrações pendentes na ordem indicada:
 
 ```bash
 docker compose exec -T app php -r 'require "app/bootstrap.php"; App\Database\Connection::connect()->exec(file_get_contents("database/migrations/20261015_portal_customization.sql"));'
 docker compose exec -T app php -r 'require "app/bootstrap.php"; App\Database\Connection::connect()->exec(file_get_contents("database/migrations/20261101_homepage_links_and_socials.sql"));'
 docker compose exec -T app php -r 'require "app/bootstrap.php"; App\Database\Connection::connect()->exec(file_get_contents("database/migrations/20261106_user_email.sql"));'
+docker compose exec -T app php -r 'require "app/bootstrap.php"; App\Database\Connection::connect()->exec(file_get_contents("database/migrations/20261107_contact_and_password_reset.sql"));'
+docker compose exec -T app php -r 'require "app/bootstrap.php"; App\Database\Connection::connect()->exec(file_get_contents("database/migrations/20261113_external_image_storage.sql"));'
 ```
 
 O painel fica em `personalizacao.html`, acessível pelo painel de administrador. Além do tema, da logo e do carrossel, ele permite editar os links e a visibilidade dos serviços existentes e os links HTTPS das redes sociais. Em `gerenciar-servicos.html`, administradores e funcionários podem criar serviços (nome, descrição, ícone e link) e editar ou ocultar os cadastrados. Serviços ativos com destino configurado aparecem nas páginas Início e Serviços. Botões sem destino e links sociais vazios não são exibidos. Configure o destino externo de Transparência antes de publicar esse botão. As alterações de tema, logo, carrossel e redes sociais continuam exclusivas de administradores; imagens enviadas aceitam JPG, PNG, WEBP ou GIF e têm limite de 5 MB.

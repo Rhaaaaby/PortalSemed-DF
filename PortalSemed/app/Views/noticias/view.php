@@ -60,7 +60,7 @@
             </div>
 
             <div class="btn-back-container">
-                <a href="/" class="btn-verde-claro">
+                <a href="/" class="news-back-button">
                     Voltar para o Início
                 </a>
             </div>

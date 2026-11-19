@@ -202,12 +202,13 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('logo-form').addEventListener('submit', async event => {
         event.preventDefault();
-        const formData = new FormData(event.currentTarget);
+        const form = event.currentTarget;
+        const formData = new FormData(form);
         try {
             const result = await portalAdminRequest('admin/portal/logo', { method: 'POST', body: formData });
             const logo = document.getElementById('portal-logo');
             if (logo) logo.src = `${result.logo_path}?v=${Date.now()}`;
-            event.currentTarget.reset();
+            form.reset();
             showPortalAdminMessage('Logo atualizada com sucesso.');
         } catch (error) {
             showPortalAdminMessage(error.message, 'error');
@@ -216,12 +217,31 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('carousel-form').addEventListener('submit', async event => {
         event.preventDefault();
-        const formData = new FormData(event.currentTarget);
+        const form = event.currentTarget;
+        const formData = new FormData(form);
         try {
             await portalAdminRequest('admin/portal/carousel', { method: 'POST', body: formData });
-            event.currentTarget.reset();
+            form.reset();
             await loadPortalAdminContent();
             showPortalAdminMessage('Imagem adicionada ao carrossel.');
+        } catch (error) {
+            showPortalAdminMessage(error.message, 'error');
+        }
+    });
+
+    document.getElementById('create-service-form').addEventListener('submit', async event => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const data = Object.fromEntries(new FormData(form));
+        try {
+            await portalAdminRequest('portal/services', {
+                method: 'POST',
+                body: JSON.stringify(data),
+            });
+            form.reset();
+            form.elements.namedItem('icon').value = '🔗';
+            await loadPortalAdminContent();
+            showPortalAdminMessage('Serviço criado e publicado nas páginas Início e Serviços.');
         } catch (error) {
             showPortalAdminMessage(error.message, 'error');
         }
