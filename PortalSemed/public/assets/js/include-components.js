@@ -79,7 +79,7 @@ async function loadPortalAppearance() {
             throw new Error(`Falha ao carregar a aparência do portal (${response.status}).`);
         }
 
-        const { settings } = await response.json();
+        const { settings, navigation } = await response.json();
         const root = document.documentElement;
         root.style.setProperty('--primary-color', settings.primary_color);
         root.style.setProperty('--accent-color', settings.accent_color);
@@ -91,6 +91,7 @@ async function loadPortalAppearance() {
             logo.src = settings.logo_path;
         }
         renderSocialLinks(settings);
+        renderPortalNavigation(navigation || []);
     } catch (error) {
         console.error('Não foi possível aplicar a aparência salva do portal:', error);
     }
@@ -122,6 +123,48 @@ function renderSocialLinks(settings) {
     }
 
     document.body.appendChild(container);
+}
+
+function renderPortalNavigation(links) {
+    const headerContainer = document.getElementById('header-custom-links');
+    const footerContainer = document.getElementById('footer-custom-links');
+    const accountItem = headerContainer?.querySelector('#account-link')?.closest('li');
+    const logoutItem = headerContainer?.querySelector('[data-logout]')?.closest('li');
+    if (headerContainer) headerContainer.replaceChildren();
+    if (footerContainer) footerContainer.replaceChildren();
+
+    const linksByLocation = {
+        header: links.filter(link => link.location === 'header'),
+        footer: links.filter(link => link.location === 'footer'),
+    };
+    for (const [location, container] of Object.entries({
+        header: headerContainer,
+        footer: footerContainer,
+    })) {
+        if (!container) continue;
+        linksByLocation[location].forEach((link, index) => {
+            const anchor = document.createElement('a');
+            anchor.href = link.href;
+            anchor.textContent = link.label;
+            if (/^https:\/\//i.test(link.href)) {
+                anchor.target = '_blank';
+                anchor.rel = 'noopener noreferrer';
+            }
+            if (location === 'footer') {
+                anchor.className = 'footer-link';
+                container.appendChild(anchor);
+            } else {
+                const item = document.createElement('li');
+                item.appendChild(anchor);
+                container.appendChild(item);
+            }
+            if (location === 'footer' && index < linksByLocation.footer.length - 1) {
+                container.appendChild(document.createTextNode(' | '));
+            }
+        });
+    }
+    if (headerContainer && accountItem) headerContainer.appendChild(accountItem);
+    if (headerContainer && logoutItem) headerContainer.appendChild(logoutItem);
 }
 
 async function updateAccountNavigation() {
@@ -158,6 +201,21 @@ async function updateAccountNavigation() {
 
         const userName = document.querySelector('[data-user-name]');
         if (userName) userName.textContent = user.name;
+
+        const permissionResponse = await fetch(`${window.location.origin}/api/portal/permissions`, {
+            credentials: 'same-origin',
+        });
+        if (!permissionResponse.ok) throw new Error('Não foi possível carregar as permissões do perfil.');
+        const { permissions, is_admin: isAdmin } = await permissionResponse.json();
+        if (!isAdmin) {
+            document.querySelectorAll('[data-feature]').forEach(card => {
+                if (!permissions[card.dataset.feature]) card.remove();
+            });
+            document.querySelectorAll('[data-feature-any]').forEach(card => {
+                const features = card.dataset.featureAny.split(',');
+                if (!features.some(feature => permissions[feature])) card.remove();
+            });
+        }
     } catch (error) {
         console.error('Não foi possível validar a sessão do usuário:', error);
     }

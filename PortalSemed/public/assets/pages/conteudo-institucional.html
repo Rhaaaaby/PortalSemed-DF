@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conteúdo institucional - SEMED</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/responsive.css">
+</head>
+<body>
+    <div id="header"></div>
+    <main class="portal-admin-container">
+        <div class="portal-admin-heading">
+            <div>
+                <p class="portal-admin-eyebrow">Conteúdo institucional</p>
+                <h1>FAQ, Sobre e navegação</h1>
+                <p>Atualize as informações públicas do portal e seus links.</p>
+            </div>
+            <a id="institutional-back" class="portal-admin-back" href="/perfil-admin.html">Voltar ao painel</a>
+        </div>
+        <section class="portal-admin-section" data-permission="faq_manage">
+            <div class="portal-admin-section-heading">
+                <div><h2>Perguntas frequentes</h2><p>Adicione, edite ou remova perguntas e respostas.</p></div>
+            </div>
+            <div id="faq-editor-list" class="portal-admin-services"></div>
+            <form id="faq-add-form" class="portal-user-form">
+                <label>Pergunta<input name="question" maxlength="300" required></label>
+                <label>Resposta<textarea name="answer" maxlength="10000" rows="4" required></textarea></label>
+                <button class="portal-admin-button" type="submit">Adicionar pergunta</button>
+            </form>
+            <button id="faq-save" class="portal-admin-button" type="button">Salvar FAQ</button>
+        </section>
+        <section class="portal-admin-section" data-permission="about_manage">
+            <div class="portal-admin-section-heading">
+                <div><h2>Sobre a SEMED</h2><p>Apresente a secretaria, a equipe e suas atribuições. Você também pode incluir fotos.</p></div>
+            </div>
+            <form id="about-form" class="portal-user-form">
+                <label>Título<input name="title" maxlength="150" required></label>
+                <label>Texto<textarea name="body" maxlength="20000" rows="10"></textarea></label>
+                <button class="portal-admin-button" type="submit">Salvar página Sobre</button>
+            </form>
+            <h3>Fotos</h3>
+            <form id="about-image-form" class="portal-user-form">
+                <label>Foto<input type="file" name="image" accept="image/jpeg,image/png,image/webp,image/gif" required></label>
+                <label>Texto alternativo<input name="alt_text" maxlength="180" required></label>
+                <button class="portal-admin-button" type="submit">Adicionar foto</button>
+            </form>
+            <div id="about-image-list" class="portal-admin-carousel-grid"></div>
+        </section>
+        <section class="portal-admin-section" data-permission="navigation_manage">
+            <div class="portal-admin-section-heading">
+                <div><h2>Links do cabeçalho e rodapé</h2><p>Edite, adicione ou remova links internos e endereços HTTPS.</p></div>
+            </div>
+            <div id="navigation-links-list" class="portal-admin-services"></div>
+            <form id="navigation-add-form" class="portal-user-form">
+                <label>Local<select name="location"><option value="header">Cabeçalho</option><option value="footer">Rodapé</option></select></label>
+                <label>Nome do link<input name="label" maxlength="80" required></label>
+                <label>Endereço<input name="href" maxlength="255" placeholder="/faq.html ou https://..." required></label>
+                <button class="portal-admin-button" type="submit">Adicionar link</button>
+            </form>
+            <button id="navigation-save" class="portal-admin-button" type="button">Salvar links</button>
+        </section>
+        <div id="institutional-message" class="message" role="status" aria-live="polite"></div>
+    </main>
+    <div id="footer"></div>
+    <script src="/assets/js/include-components.js"></script>
+    <script src="/assets/js/institutional-admin.js"></script>
+</body>
+</html>

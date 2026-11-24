@@ -77,19 +77,27 @@ function requirePageCsrf(): void
 
 $privatePageRoles = [
     'perfil-admin' => ['admin'],
-    'personalizacao' => ['admin'],
+    'personalizacao' => ['admin', 'funcionario'],
+    'conteudo-institucional' => ['admin', 'funcionario'],
     'gerenciar-usuarios' => ['admin'],
     'perfil-funcionario' => ['funcionario'],
     'gerenciar-servicos' => ['admin', 'funcionario'],
     'editar-conta' => ['admin', 'funcionario'],
 ];
 
-if (preg_match('#^/assets/pages/(perfil-admin|personalizacao|gerenciar-usuarios|perfil-funcionario|gerenciar-servicos|editar-conta)\.html$#', $request, $privateAlias)) {
+if (preg_match('#^/assets/pages/(perfil-admin|personalizacao|conteudo-institucional|gerenciar-usuarios|perfil-funcionario|gerenciar-servicos|editar-conta)\.html$#', $request, $privateAlias)) {
     $user = \App\Security\Auth::currentUser();
     if (!$user) {
         redirectToLogin();
     }
-    if (!in_array($user['role'], $privatePageRoles[$privateAlias[1]], true)) {
+    if (!in_array($user['role'], $privatePageRoles[$privateAlias[1]], true) ||
+        ($privateAlias[1] === 'personalizacao' && !\App\Security\Auth::canManageAnyPortalFeature($user)) ||
+        ($privateAlias[1] === 'gerenciar-servicos' &&
+            !\App\Security\Auth::canManageFeature($user, 'services_manage')) ||
+        ($privateAlias[1] === 'conteudo-institucional' &&
+            !\App\Security\Auth::canManageFeature($user, 'faq_manage') &&
+            !\App\Security\Auth::canManageFeature($user, 'about_manage') &&
+            !\App\Security\Auth::canManageFeature($user, 'navigation_manage'))) {
         header('Location: ' . ($user['role'] === 'admin' ? '/perfil-admin.html' : '/perfil-funcionario.html'));
         exit;
     }
@@ -111,6 +119,12 @@ if (isset($_GET['action']) || $request === '/noticias') {
         $user = \App\Security\Auth::currentUser();
         if (!$user) {
             redirectToLogin();
+        }
+        $feature = $action === 'create' ? 'news_create' : 'news_edit';
+        if (!\App\Security\Auth::canManageFeature($user, $feature)) {
+            http_response_code(403);
+            echo 'Seu perfil não tem permissão para esta função.';
+            exit;
         }
         header('Cache-Control: no-store, private');
     }
@@ -171,7 +185,8 @@ if ($request !== '/' && file_exists($requestFile)) {
 if (preg_match('#^/([^/]+\.html)$#', $request, $matches)) {
     $privatePages = [
         'perfil-admin.html' => 'admin',
-        'personalizacao.html' => 'admin',
+        'personalizacao.html' => ['admin', 'funcionario'],
+        'conteudo-institucional.html' => ['admin', 'funcionario'],
         'gerenciar-usuarios.html' => 'admin',
         'perfil-funcionario.html' => 'funcionario',
         'gerenciar-servicos.html' => ['admin', 'funcionario'],
@@ -187,7 +202,16 @@ if (preg_match('#^/([^/]+\.html)$#', $request, $matches)) {
         $allowedRoles = is_array($privatePages[$matches[1]])
             ? $privatePages[$matches[1]]
             : [$privatePages[$matches[1]]];
-        if (!in_array($user['role'], $allowedRoles, true)) {
+        $hasContentPermission = $matches[1] !== 'personalizacao.html' ||
+            \App\Security\Auth::canManageAnyPortalFeature($user);
+        $hasInstitutionalPermission = $matches[1] !== 'conteudo-institucional.html' ||
+            \App\Security\Auth::canManageFeature($user, 'faq_manage') ||
+            \App\Security\Auth::canManageFeature($user, 'about_manage') ||
+            \App\Security\Auth::canManageFeature($user, 'navigation_manage');
+        if (!in_array($user['role'], $allowedRoles, true) ||
+            !$hasContentPermission || !$hasInstitutionalPermission ||
+            ($matches[1] === 'gerenciar-servicos.html' &&
+                !\App\Security\Auth::canManageFeature($user, 'services_manage'))) {
             header('Location: ' . ($user['role'] === 'admin' ? '/perfil-admin.html' : '/perfil-funcionario.html'));
             exit;
         }
@@ -225,12 +249,19 @@ if (preg_match('#^/(css|js|img|images|components|assets|resources)/(.*)$#', $req
     } elseif ($prefix === 'components') {
         $mapped = __DIR__ . '/assets/components/' . $rest;
     } elseif ($prefix === 'assets') {
-        if (preg_match('#^pages/(perfil-admin|personalizacao|gerenciar-usuarios|perfil-funcionario|gerenciar-servicos|editar-conta)\.html$#', $rest, $pageMatch)) {
+        if (preg_match('#^pages/(perfil-admin|personalizacao|conteudo-institucional|gerenciar-usuarios|perfil-funcionario|gerenciar-servicos|editar-conta)\.html$#', $rest, $pageMatch)) {
             $user = \App\Security\Auth::currentUser();
             if (!$user) {
                 redirectToLogin();
             }
-            if (!in_array($user['role'], $privatePageRoles[$pageMatch[1]], true)) {
+            if (!in_array($user['role'], $privatePageRoles[$pageMatch[1]], true) ||
+                ($pageMatch[1] === 'personalizacao' && !\App\Security\Auth::canManageAnyPortalFeature($user)) ||
+                ($pageMatch[1] === 'gerenciar-servicos' &&
+                    !\App\Security\Auth::canManageFeature($user, 'services_manage')) ||
+                ($pageMatch[1] === 'conteudo-institucional' &&
+                    !\App\Security\Auth::canManageFeature($user, 'faq_manage') &&
+                    !\App\Security\Auth::canManageFeature($user, 'about_manage') &&
+                    !\App\Security\Auth::canManageFeature($user, 'navigation_manage'))) {
                 header('Location: ' . ($user['role'] === 'admin' ? '/perfil-admin.html' : '/perfil-funcionario.html'));
                 exit;
             }

@@ -1,5 +1,6 @@
 const PORTAL_ADMIN_API = `${window.location.origin}/api`;
 let portalAdminCsrfToken = '';
+let portalAdminIsAdmin = false;
 
 function showPortalAdminMessage(message, type = 'success') {
     window.portalNotify(message, type);
@@ -160,6 +161,28 @@ function makeAdminServiceRow(service) {
 async function loadPortalAdminContent() {
     const content = await portalAdminRequest('admin/portal');
     applyPortalAdminSettings(content.settings);
+    document.querySelectorAll('[data-permission]').forEach(section => {
+        section.hidden = !portalAdminIsAdmin && !content.permissions[section.dataset.permission];
+    });
+    document.querySelectorAll('[data-permission-any]').forEach(section => {
+        const features = section.dataset.permissionAny.split(',');
+        section.hidden = !portalAdminIsAdmin && !features.some(feature => content.permissions[feature]);
+    });
+    const permissionForm = document.getElementById('feature-permissions-form');
+    if (permissionForm && portalAdminIsAdmin) {
+        permissionForm.replaceChildren(...Object.entries(content.permission_labels).map(([feature, label]) => {
+            const wrapper = document.createElement('label');
+            wrapper.className = 'portal-permission-item';
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.name = feature;
+            checkbox.checked = content.permissions[feature];
+            const text = document.createElement('span');
+            text.textContent = label;
+            wrapper.append(checkbox, text);
+            return wrapper;
+        }));
+    }
 
     document.getElementById('portal-admin-carousel').replaceChildren(
         ...content.carousel.map(makeAdminCarouselCard)
@@ -175,15 +198,42 @@ window.addEventListener('DOMContentLoaded', async () => {
             credentials: 'same-origin',
         });
         const session = await sessionResponse.json();
-        if (!sessionResponse.ok || !session.user || session.user.role !== 'admin') {
+        if (!sessionResponse.ok || !session.user ||
+            !['admin', 'funcionario'].includes(session.user.role)) {
             window.location.href = '/login.html';
             return;
+        }
+        portalAdminIsAdmin = session.user.role === 'admin';
+        if (!portalAdminIsAdmin) {
+            document.getElementById('portal-admin-back').href = '/perfil-funcionario.html';
+            document.querySelectorAll('[data-admin-only]').forEach(section => { section.hidden = true; });
         }
         portalAdminCsrfToken = session.csrf_token;
         await loadPortalAdminContent();
     } catch (error) {
         showPortalAdminMessage(error.message, 'error');
     }
+
+    const savePermissions = document.getElementById('save-feature-permissions');
+    savePermissions.addEventListener('click', async () => {
+        const permissions = Object.fromEntries(
+            Array.from(document.querySelectorAll('#feature-permissions-form input[type="checkbox"]'))
+                .map(input => [input.name, input.checked])
+        );
+        savePermissions.disabled = true;
+        try {
+            await portalAdminRequest('admin/portal/permissions', {
+                method: 'PUT',
+                body: JSON.stringify({ permissions }),
+            });
+            await loadPortalAdminContent();
+            showPortalAdminMessage('Permissões dos funcionários atualizadas.');
+        } catch (error) {
+            showPortalAdminMessage(error.message, 'error');
+        } finally {
+            savePermissions.disabled = false;
+        }
+    });
 
     document.getElementById('theme-form').addEventListener('submit', async event => {
         event.preventDefault();

@@ -67,6 +67,26 @@ function requireAdmin(): array
     return $user;
 }
 
+function requirePortalFeature(string $feature): array
+{
+    $user = auth();
+    if (!Auth::canManageFeature($user, $feature)) {
+        json_response(['erro' => 'Seu perfil não tem permissão para esta função. Solicite acesso a um administrador.'], 403);
+    }
+
+    return $user;
+}
+
+function requireAnyPortalFeature(): array
+{
+    $user = auth();
+    if (!Auth::canManageAnyPortalFeature($user)) {
+        json_response(['erro' => 'Seu perfil não tem permissão para editar o portal.'], 403);
+    }
+
+    return $user;
+}
+
 function requireCsrf(): void
 {
     $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -126,58 +146,95 @@ if (preg_match('/^admin\/usuarios\/(\d+)$/', $uri, $matches) && $method === 'PAT
 }
 
 if ($uri === 'admin/portal' && $method === 'GET') {
-    requireAdmin();
-    $portalCtrl->adminContent();
+    $portalCtrl->adminContent(requireAnyPortalFeature());
 }
 
 if ($uri === 'admin/portal/settings' && $method === 'PUT') {
-    requireAdmin();
+    requirePortalFeature('appearance_manage');
     $portalCtrl->updateSettings(get_json_input());
 }
 
 if ($uri === 'admin/portal/social-links' && $method === 'PUT') {
-    requireAdmin();
+    requirePortalFeature('social_manage');
     $portalCtrl->updateSocialLinks(get_json_input());
 }
 
 if ($uri === 'admin/portal/contact' && $method === 'PUT') {
-    requireAdmin();
+    requirePortalFeature('contact_manage');
     $portalCtrl->updateContactInfo(get_json_input());
 }
 
 if ($uri === 'admin/portal/logo' && $method === 'POST') {
-    requireAdmin();
+    requirePortalFeature('appearance_manage');
     $portalCtrl->uploadLogo();
 }
 
 if ($uri === 'admin/portal/carousel' && $method === 'POST') {
-    requireAdmin();
+    requirePortalFeature('carousel_manage');
     $portalCtrl->addCarouselImage();
 }
 
 if (preg_match('/^admin\/portal\/carousel\/(\d+)$/', $uri, $matches) && $method === 'DELETE') {
-    requireAdmin();
+    requirePortalFeature('carousel_manage');
     $portalCtrl->deleteCarouselImage((int) $matches[1]);
 }
 
 if (preg_match('/^admin\/portal\/services\/([a-z0-9-]+)$/', $uri, $matches) && $method === 'PATCH') {
-    requireAdmin();
+    requirePortalFeature('services_manage');
     $portalCtrl->updateService($matches[1], get_json_input());
 }
 
 if ($uri === 'portal/services' && $method === 'GET') {
-    auth();
+    requirePortalFeature('services_manage');
     $portalCtrl->manageServices();
 }
 
 if ($uri === 'portal/services' && $method === 'POST') {
-    auth();
+    requirePortalFeature('services_manage');
     $portalCtrl->createService(get_json_input());
 }
 
 if (preg_match('/^portal\/services\/([a-z0-9-]+)$/', $uri, $matches) && $method === 'PATCH') {
-    auth();
+    requirePortalFeature('services_manage');
     $portalCtrl->updateService($matches[1], get_json_input());
+}
+
+if ($uri === 'admin/portal/permissions' && $method === 'PUT') {
+    requireAdmin();
+    $portalCtrl->updateFeaturePermissions(get_json_input());
+}
+
+if ($uri === 'admin/portal/faq' && $method === 'PUT') {
+    requirePortalFeature('faq_manage');
+    $portalCtrl->updateFaq(get_json_input());
+}
+
+if ($uri === 'admin/portal/about' && $method === 'PUT') {
+    requirePortalFeature('about_manage');
+    $portalCtrl->updateAbout(get_json_input());
+}
+
+if ($uri === 'admin/portal/about/images' && $method === 'POST') {
+    requirePortalFeature('about_manage');
+    $portalCtrl->addAboutImage();
+}
+
+if (preg_match('/^admin\/portal\/about\/images\/(\d+)$/', $uri, $matches) && $method === 'DELETE') {
+    requirePortalFeature('about_manage');
+    $portalCtrl->deleteAboutImage((int) $matches[1]);
+}
+
+if ($uri === 'admin/portal/navigation' && $method === 'PUT') {
+    requirePortalFeature('navigation_manage');
+    $portalCtrl->updateNavigation(get_json_input());
+}
+
+if ($uri === 'portal/permissions' && $method === 'GET') {
+    $user = auth();
+    json_response([
+        'is_admin' => $user['role'] === 'admin',
+        'permissions' => (new \App\Models\PortalCustomization())->featurePermissions(),
+    ]);
 }
 
 if ($uri === 'portal' && $method === 'GET') {
@@ -241,7 +298,7 @@ if ($uri === 'deletar' && $method === 'DELETE') {
 }
 
 if ($uri === 'noticias' && $method === 'POST') {
-    $user = auth();
+    $user = requirePortalFeature('news_create');
     $noticiaCtrl->create((int) $user['id']);
 }
 

@@ -6,6 +6,33 @@ use App\Models\Users;
 
 class Auth
 {
+    public static function canManageFeature(array $user, string $feature): bool
+    {
+        return $user['role'] === 'admin' ||
+            (new \App\Models\PortalCustomization())->featureEnabled($feature);
+    }
+
+    public static function canManageAnyPortalFeature(array $user): bool
+    {
+        if ($user['role'] === 'admin') {
+            return true;
+        }
+
+        $permissions = (new \App\Models\PortalCustomization())->featurePermissions();
+        $portalFeatures = array_flip([
+            'services_manage',
+            'carousel_manage',
+            'faq_manage',
+            'about_manage',
+            'navigation_manage',
+            'appearance_manage',
+            'contact_manage',
+            'social_manage',
+        ]);
+
+        return in_array(true, array_intersect_key($permissions, $portalFeatures), true);
+    }
+
     public static function currentUser(): ?array
     {
         $now = time();

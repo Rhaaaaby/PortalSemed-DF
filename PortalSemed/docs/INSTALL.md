@@ -365,9 +365,12 @@ docker compose exec -T app php -r 'require "app/bootstrap.php"; App\Database\Con
 docker compose exec -T app php -r 'require "app/bootstrap.php"; App\Database\Connection::connect()->exec(file_get_contents("database/migrations/20261106_user_email.sql"));'
 docker compose exec -T app php -r 'require "app/bootstrap.php"; App\Database\Connection::connect()->exec(file_get_contents("database/migrations/20261107_contact_and_password_reset.sql"));'
 docker compose exec -T app php -r 'require "app/bootstrap.php"; App\Database\Connection::connect()->exec(file_get_contents("database/migrations/20261113_external_image_storage.sql"));'
+docker compose exec -T app php -r 'require "app/bootstrap.php"; App\Database\Connection::connect()->exec(file_get_contents("database/migrations/20261123_faq_about_permissions_navigation.sql"));'
 ```
 
-O painel fica em `personalizacao.html`, acessível pelo painel de administrador. Além do tema, da logo e do carrossel, ele permite editar os links e a visibilidade dos serviços existentes e os links HTTPS das redes sociais. Em `gerenciar-servicos.html`, administradores e funcionários podem criar serviços (nome, descrição, ícone e link) e editar ou ocultar os cadastrados. Serviços ativos com destino configurado aparecem nas páginas Início e Serviços. Botões sem destino e links sociais vazios não são exibidos. Configure o destino externo de Transparência antes de publicar esse botão. As alterações de tema, logo, carrossel e redes sociais continuam exclusivas de administradores; imagens enviadas aceitam JPG, PNG, WEBP ou GIF e têm limite de 5 MB.
+O painel fica em `personalizacao.html`. Administradores podem editar o tema, a logo, o carrossel, os serviços, o contato e as redes sociais, além de conceder ou revogar permissões individuais dos funcionários. Criar/editar notícias e gerenciar serviços permanecem habilitados para funcionários por padrão; as demais permissões começam desabilitadas. A gestão de usuários e contas continua exclusiva de administradores.
+
+Em `conteudo-institucional.html`, usuários autorizados podem editar as perguntas e respostas do FAQ, o texto e as fotos da página Sobre e os links do cabeçalho e rodapé. As páginas públicas são `faq.html` e `sobre.html`. Imagens enviadas aceitam JPG, PNG, WEBP ou GIF e têm limite de 5 MB.
 
 ## Contas e acesso administrativo
 

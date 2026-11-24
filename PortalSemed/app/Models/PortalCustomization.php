@@ -9,6 +9,19 @@ class PortalCustomization
 {
     private PDO $pdo;
 
+    public const FEATURE_LABELS = [
+        'news_create' => 'Criar notícias',
+        'news_edit' => 'Editar e remover notícias',
+        'services_manage' => 'Gerenciar serviços',
+        'carousel_manage' => 'Adicionar e remover fotos do carrossel',
+        'faq_manage' => 'Gerenciar FAQ',
+        'about_manage' => 'Editar a página Sobre e suas fotos',
+        'navigation_manage' => 'Gerenciar links do cabeçalho e rodapé',
+        'appearance_manage' => 'Editar cores e logo do portal',
+        'contact_manage' => 'Editar informações de contato',
+        'social_manage' => 'Editar links de redes sociais',
+    ];
+
     public function __construct()
     {
         $this->pdo = Connection::connect();
@@ -42,6 +55,156 @@ class PortalCustomization
             'contact_email' => 'educacao@saomiguel.to.gov.br',
             'contact_hours' => 'Seg - Sex | 08h às 17h',
         ];
+    }
+
+    public function featurePermissions(): array
+    {
+        $stmt = $this->pdo->query('SELECT feature_key, is_enabled FROM site_feature_permissions');
+        $permissions = array_fill_keys(array_keys(self::FEATURE_LABELS), false);
+        foreach ($stmt->fetchAll() as $row) {
+            if (array_key_exists($row['feature_key'], $permissions)) {
+                $permissions[$row['feature_key']] = in_array($row['is_enabled'], [true, 1, '1', 't', 'true'], true);
+            }
+        }
+
+        return $permissions;
+    }
+
+    public function featureEnabled(string $feature): bool
+    {
+        if (!array_key_exists($feature, self::FEATURE_LABELS)) {
+            return false;
+        }
+
+        $stmt = $this->pdo->prepare('SELECT is_enabled FROM site_feature_permissions WHERE feature_key = :feature');
+        $stmt->execute([':feature' => $feature]);
+        return in_array($stmt->fetchColumn(), [true, 1, '1', 't', 'true'], true);
+    }
+
+    public function updateFeaturePermissions(array $permissions): bool
+    {
+        $this->pdo->beginTransaction();
+        try {
+            $stmt = $this->pdo->prepare(
+                'INSERT INTO site_feature_permissions (feature_key, is_enabled)
+                 VALUES (:feature_key, :is_enabled)
+                 ON CONFLICT (feature_key) DO UPDATE SET is_enabled = EXCLUDED.is_enabled'
+            );
+            foreach ($permissions as $feature => $enabled) {
+                $stmt->bindValue(':feature_key', $feature, PDO::PARAM_STR);
+                $stmt->bindValue(':is_enabled', $enabled, PDO::PARAM_BOOL);
+                $stmt->execute();
+            }
+            $this->pdo->commit();
+            return true;
+        } catch (\Throwable $error) {
+            $this->pdo->rollBack();
+            throw $error;
+        }
+    }
+
+    public function publicFaq(): array
+    {
+        return $this->pdo->query(
+            'SELECT id, question, answer FROM site_faq ORDER BY sort_order, id'
+        )->fetchAll();
+    }
+
+    public function replaceFaq(array $items): bool
+    {
+        $this->pdo->beginTransaction();
+        try {
+            $this->pdo->exec('DELETE FROM site_faq');
+            $stmt = $this->pdo->prepare(
+                'INSERT INTO site_faq (question, answer, sort_order)
+                 VALUES (:question, :answer, :sort_order)'
+            );
+            foreach ($items as $index => $item) {
+                $stmt->execute([
+                    ':question' => $item['question'],
+                    ':answer' => $item['answer'],
+                    ':sort_order' => $index,
+                ]);
+            }
+            $this->pdo->commit();
+            return true;
+        } catch (\Throwable $error) {
+            $this->pdo->rollBack();
+            throw $error;
+        }
+    }
+
+    public function aboutContent(): array
+    {
+        $about = $this->pdo->query('SELECT title, body FROM site_about WHERE id = 1')->fetch();
+        return [
+            'title' => $about['title'] ?? 'Sobre a SEMED',
+            'body' => $about['body'] ?? '',
+            'images' => $this->pdo->query(
+                'SELECT id, image_path, alt_text FROM site_about_images ORDER BY sort_order, id'
+            )->fetchAll(),
+        ];
+    }
+
+    public function updateAbout(string $title, string $body): bool
+    {
+        $stmt = $this->pdo->prepare(
+            'INSERT INTO site_about (id, title, body, updated_at)
+             VALUES (1, :title, :body, CURRENT_TIMESTAMP)
+             ON CONFLICT (id) DO UPDATE SET
+                 title = EXCLUDED.title, body = EXCLUDED.body, updated_at = CURRENT_TIMESTAMP'
+        );
+        return $stmt->execute([':title' => $title, ':body' => $body]);
+    }
+
+    public function addAboutImage(string $path, string $altText): bool
+    {
+        $stmt = $this->pdo->prepare(
+            'INSERT INTO site_about_images (image_path, alt_text, sort_order)
+             VALUES (:image_path, :alt_text, COALESCE((SELECT MAX(sort_order) + 1 FROM site_about_images), 0))'
+        );
+        return $stmt->execute([':image_path' => $path, ':alt_text' => $altText]);
+    }
+
+    public function deleteAboutImage(int $id): bool
+    {
+        $stmt = $this->pdo->prepare('DELETE FROM site_about_images WHERE id = :id');
+        $stmt->execute([':id' => $id]);
+        return $stmt->rowCount() > 0;
+    }
+
+    public function navigationLinks(): array
+    {
+        return $this->pdo->query(
+            'SELECT id, location, label, href FROM site_navigation_links ORDER BY location, sort_order, id'
+        )->fetchAll();
+    }
+
+    public function replaceNavigationLinks(array $links): bool
+    {
+        $this->pdo->beginTransaction();
+        try {
+            $this->pdo->exec('DELETE FROM site_navigation_links');
+            $stmt = $this->pdo->prepare(
+                'INSERT INTO site_navigation_links (location, label, href, sort_order)
+                 VALUES (:location, :label, :href, :sort_order)'
+            );
+            $orders = ['header' => 0, 'footer' => 0];
+            foreach ($links as $link) {
+                $location = $link['location'];
+                $stmt->execute([
+                    ':location' => $location,
+                    ':label' => $link['label'],
+                    ':href' => $link['href'],
+                    ':sort_order' => $orders[$location]++,
+                ]);
+            }
+            $this->pdo->commit();
+            return true;
+        } catch (\Throwable $error) {
+            $this->pdo->rollBack();
+            throw $error;
+        }
     }
 
     // RETORNA OS SERVIÇOS PÚBLICOS DO PORTAL

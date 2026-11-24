@@ -7,22 +7,33 @@
     <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="stylesheet" href="/assets/css/responsive.css">
 </head>
-<body data-required-role="admin">
+<body>
     <div id="header"></div>
 
     <main class="portal-admin-container">
         <div class="portal-admin-heading">
             <div>
-                <p class="portal-admin-eyebrow">Área exclusiva de administrador</p>
+                <p class="portal-admin-eyebrow">Administração do portal</p>
                 <h1>Personalização do portal</h1>
-                <p>Edite cores, identidade visual, destaques e serviços públicos.</p>
+                <p>Edite o portal e escolha quais funções os funcionários podem usar.</p>
             </div>
-            <a class="portal-admin-back" href="perfil-admin.html">Voltar ao painel</a>
+            <a id="portal-admin-back" class="portal-admin-back" href="perfil-admin.html">Voltar ao painel</a>
         </div>
 
         <div id="portal-admin-message" class="message" role="status" aria-live="polite"></div>
 
-        <section class="portal-admin-section">
+        <section class="portal-admin-section" data-admin-only>
+            <div class="portal-admin-section-heading">
+                <div>
+                    <h2>Permissões dos funcionários</h2>
+                    <p>Ative cada função para permitir que funcionários a utilizem. A administração de contas continua exclusiva de administradores.</p>
+                </div>
+            </div>
+            <form id="feature-permissions-form" class="portal-permission-list"></form>
+            <button id="save-feature-permissions" class="portal-admin-button" type="button">Salvar permissões</button>
+        </section>
+
+        <section class="portal-admin-section" data-permission="appearance_manage">
             <div class="portal-admin-section-heading">
                 <div>
                     <h2>Aparência</h2>
@@ -51,7 +62,7 @@
             </form>
         </section>
 
-        <section class="portal-admin-section">
+        <section class="portal-admin-section" data-permission="appearance_manage">
             <div class="portal-admin-section-heading">
                 <div>
                     <h2>Logo do portal</h2>
@@ -65,7 +76,7 @@
             </form>
         </section>
 
-        <section class="portal-admin-section">
+        <section class="portal-admin-section" data-permission="carousel_manage">
             <div class="portal-admin-section-heading">
                 <div>
                     <h2>Imagens em destaque</h2>
@@ -91,7 +102,7 @@
             <div id="portal-admin-carousel" class="portal-admin-carousel-grid"></div>
         </section>
 
-        <section class="portal-admin-section">
+        <section class="portal-admin-section" data-permission="services_manage">
             <div class="portal-admin-section-heading">
                 <div>
                     <h2>Links da página inicial</h2>
@@ -123,7 +134,7 @@
             </form>
         </section>
 
-        <section class="portal-admin-section">
+        <section class="portal-admin-section" data-permission="contact_manage">
             <div class="portal-admin-section-heading">
                 <div>
                     <h2>Informações de contato</h2>
@@ -141,7 +152,7 @@
             </form>
         </section>
 
-        <section class="portal-admin-section">
+        <section class="portal-admin-section" data-permission="social_manage">
             <div class="portal-admin-section-heading">
                 <div>
                     <h2>Redes sociais</h2>
@@ -164,6 +175,16 @@
                 </label>
                 <button type="submit" class="portal-admin-button">Salvar links sociais</button>
             </form>
+        </section>
+
+        <section class="portal-admin-section" data-permission-any="faq_manage,about_manage,navigation_manage">
+            <div class="portal-admin-section-heading">
+                <div>
+                    <h2>Conteúdo institucional</h2>
+                    <p>Edite o FAQ, a página Sobre e os links exibidos no cabeçalho e rodapé.</p>
+                </div>
+            </div>
+            <a class="portal-admin-button" href="/conteudo-institucional.html">Editar FAQ, Sobre e navegação</a>
         </section>
     </main>
 

@@ -24,17 +24,149 @@ class PortalCustomizationController
             'settings' => $this->model->settings(),
             'services' => $this->model->publicServices(),
             'carousel' => $this->model->publicCarousel(),
+            'faq' => $this->model->publicFaq(),
+            'about' => $this->model->aboutContent(),
+            'navigation' => $this->model->navigationLinks(),
         ]);
     }
 
     // Retorna o conteúdo administrativo do portal, incluindo configurações,
-    public function adminContent(): void
+    public function adminContent(array $user): void
     {
+        $permissions = $this->model->featurePermissions();
+        $isAdmin = $user['role'] === 'admin';
         json_response([
             'settings' => $this->model->settings(),
-            'services' => $this->model->allServices(),
-            'carousel' => $this->model->allCarousel(),
+            'services' => $isAdmin || $permissions['services_manage'] ? $this->model->allServices() : [],
+            'carousel' => $isAdmin || $permissions['carousel_manage'] ? $this->model->allCarousel() : [],
+            'permissions' => $permissions,
+            'permission_labels' => PortalCustomization::FEATURE_LABELS,
+            'faq' => $isAdmin || $permissions['faq_manage'] ? $this->model->publicFaq() : [],
+            'about' => $isAdmin || $permissions['about_manage']
+                ? $this->model->aboutContent()
+                : ['title' => '', 'body' => '', 'images' => []],
+            'navigation' => $isAdmin || $permissions['navigation_manage']
+                ? $this->model->navigationLinks()
+                : [],
         ]);
+    }
+
+    public function updateFeaturePermissions(array $data): void
+    {
+        $permissions = $data['permissions'] ?? null;
+        if (!is_array($permissions) ||
+            array_diff(array_keys(PortalCustomization::FEATURE_LABELS), array_keys($permissions)) !== [] ||
+            array_diff(array_keys($permissions), array_keys(PortalCustomization::FEATURE_LABELS)) !== []) {
+            json_response(['erro' => 'Informe todas as permissões disponíveis.'], 400);
+        }
+
+        foreach ($permissions as $enabled) {
+            if (!is_bool($enabled)) {
+                json_response(['erro' => 'Os valores das permissões devem ser verdadeiro ou falso.'], 400);
+            }
+        }
+
+        if (!$this->model->updateFeaturePermissions($permissions)) {
+            json_response(['erro' => 'Não foi possível salvar as permissões.'], 500);
+        }
+        json_response(['mensagem' => 'Permissões dos funcionários atualizadas.']);
+    }
+
+    public function updateFaq(array $data): void
+    {
+        $items = $data['items'] ?? null;
+        if (!is_array($items) || count($items) > 100) {
+            json_response(['erro' => 'Informe até 100 perguntas frequentes.'], 400);
+        }
+
+        $validated = [];
+        foreach ($items as $item) {
+            if (!is_array($item) || !is_string($item['question'] ?? null) ||
+                !is_string($item['answer'] ?? null)) {
+                json_response(['erro' => 'Preencha a pergunta e a resposta de cada item.'], 400);
+            }
+            $question = trim($item['question']);
+            $answer = trim($item['answer']);
+            $questionLength = preg_match_all('/./us', $question);
+            $answerLength = preg_match_all('/./us', $answer);
+            if ($question === '' || $answer === '' || $questionLength === false ||
+                $questionLength > 300 || $answerLength === false || $answerLength > 10000) {
+                json_response(['erro' => 'A pergunta deve ter até 300 caracteres e a resposta até 10.000.'], 400);
+            }
+            $validated[] = ['question' => $question, 'answer' => $answer];
+        }
+
+        if (!$this->model->replaceFaq($validated)) {
+            json_response(['erro' => 'Não foi possível salvar as perguntas frequentes.'], 500);
+        }
+        json_response(['mensagem' => 'FAQ atualizado.']);
+    }
+
+    public function updateAbout(array $data): void
+    {
+        $title = $data['title'] ?? null;
+        $body = $data['body'] ?? null;
+        if (!is_string($title) || !is_string($body) || trim($title) === '' ||
+            ($titleLength = preg_match_all('/./us', trim($title))) === false || $titleLength > 150 ||
+            ($bodyLength = preg_match_all('/./us', $body)) === false || $bodyLength > 20000) {
+            json_response(['erro' => 'Informe um título válido e um texto de até 20.000 caracteres.'], 400);
+        }
+        if (!$this->model->updateAbout(trim($title), trim($body))) {
+            json_response(['erro' => 'Não foi possível salvar a página Sobre.'], 500);
+        }
+        json_response(['mensagem' => 'Página Sobre atualizada.']);
+    }
+
+    public function addAboutImage(): void
+    {
+        $altText = $_POST['alt_text'] ?? '';
+        if (!is_string($altText) || trim($altText) === '' ||
+            ($length = preg_match_all('/./us', trim($altText))) === false || $length > 180) {
+            json_response(['erro' => 'Informe um texto alternativo de até 180 caracteres.'], 400);
+        }
+        $path = $this->saveImageUpload('image');
+        if (!$this->model->addAboutImage($path, trim($altText))) {
+            json_response(['erro' => 'Não foi possível adicionar a foto à página Sobre.'], 500);
+        }
+        json_response(['mensagem' => 'Foto adicionada à página Sobre.'], 201);
+    }
+
+    public function deleteAboutImage(int $id): void
+    {
+        if (!$this->model->deleteAboutImage($id)) {
+            json_response(['erro' => 'Foto não encontrada.'], 404);
+        }
+        json_response(['mensagem' => 'Foto removida da página Sobre.']);
+    }
+
+    public function updateNavigation(array $data): void
+    {
+        $links = $data['links'] ?? null;
+        if (!is_array($links) || count($links) > 100) {
+            json_response(['erro' => 'Informe até 100 links de navegação.'], 400);
+        }
+        $validated = [];
+        foreach ($links as $link) {
+            if (!is_array($link) || !in_array($link['location'] ?? null, ['header', 'footer'], true) ||
+                !is_string($link['label'] ?? null) || !is_string($link['href'] ?? null)) {
+                json_response(['erro' => 'Preencha o local, o nome e o endereço de cada link.'], 400);
+            }
+            $label = trim($link['label']);
+            $href = trim($link['href']);
+            if ($label === '' || ($length = preg_match_all('/./us', $label)) === false ||
+                $length > 80 || !$this->isValidServiceHref($href)) {
+                json_response(['erro' => 'Informe um nome com até 80 caracteres e um link HTTPS ou caminho interno válido.'], 400);
+            }
+            $validated[] = [
+                'location' => $link['location'],
+                'label' => $label,
+                'href' => $href,
+            ];
+        }
+        if (!$this->model->replaceNavigationLinks($validated)) {
+            json_response(['erro' => 'Não foi possível salvar os links de navegação.'], 500);
+        }
+        json_response(['mensagem' => 'Links do cabeçalho e rodapé atualizados.']);
     }
 
     // Retorna todos os serviços cadastrados no portal, incluindo os privados.
